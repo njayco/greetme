@@ -436,16 +436,30 @@ export default function GreetingCardsApp() {
         )
       case "centerfold":
         return (
-          <div className="aspect-[3/4] bg-white rounded-lg shadow-lg flex items-center justify-center p-6">
-            <div className="text-center">
-              <h3 className="text-xl font-bold mb-4">Special Greeting!</h3>
-              <p className="text-gray-700 mb-4">{card.centerfold}</p>
-              {data.personalNote && (
-                <div className="mt-6 p-4 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg border-l-4 border-yellow-400">
-                  <p className="text-sm italic text-gray-800 font-medium">"{data.personalNote}"</p>
-                  <p className="text-xs text-gray-600 mt-2">- {data.from}</p>
+          <div className="aspect-[3/4] bg-white rounded-lg shadow-lg overflow-hidden">
+            <div className="h-full p-4 overflow-y-auto">
+              <div className="min-h-full flex flex-col">
+                <h3 className="text-lg font-bold mb-3 text-center flex-shrink-0">Special Greeting!</h3>
+                <div className="flex-1 flex flex-col justify-center">
+                  <p
+                    className={`text-gray-700 mb-4 text-center leading-relaxed ${
+                      card.centerfold.length > 200
+                        ? "text-sm"
+                        : card.centerfold.length > 150
+                          ? "text-base"
+                          : "text-base"
+                    }`}
+                  >
+                    {card.centerfold}
+                  </p>
+                  {data.personalNote && (
+                    <div className="mt-4 p-3 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg border-l-4 border-yellow-400 flex-shrink-0">
+                      <p className="text-sm italic text-gray-800 font-medium break-words">"{data.personalNote}"</p>
+                      <p className="text-xs text-gray-600 mt-2">- {data.from}</p>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
           </div>
         )
@@ -747,14 +761,33 @@ export default function GreetingCardsApp() {
 
                 <div>
                   <Label htmlFor="note">Personal Note (Optional):</Label>
-                  <Textarea
-                    id="note"
-                    value={formData.personalNote}
-                    onChange={(e) => setFormData({ ...formData, personalNote: e.target.value })}
-                    placeholder="Add your personal message here... This will appear inside the card."
-                    className="mt-1"
-                    rows={3}
-                  />
+                  <div className="relative">
+                    <Textarea
+                      id="note"
+                      value={formData.personalNote}
+                      onChange={(e) => {
+                        const text = e.target.value
+                        if (text.length <= 200) {
+                          setFormData({ ...formData, personalNote: text })
+                        }
+                      }}
+                      placeholder="Add your personal message here... This will appear inside the card."
+                      className="mt-1 pr-16"
+                      rows={3}
+                      maxLength={200}
+                    />
+                    <div
+                      className={`absolute bottom-2 right-2 text-xs font-medium ${
+                        formData.personalNote.length > 180
+                          ? "text-red-500"
+                          : formData.personalNote.length > 150
+                            ? "text-yellow-600"
+                            : "text-gray-500"
+                      }`}
+                    >
+                      {formData.personalNote.length}/200
+                    </div>
+                  </div>
                 </div>
               </div>
 
