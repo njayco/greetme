@@ -119,34 +119,34 @@ const cardCategories = {
       {
         id: 13,
         title: "Birthday Cake Celebration",
-        cover: "/placeholder.svg?height=300&width=240&text=Birthday+Cake",
+        cover: "/images/birthday-cake-celebration.png",
         centerfold:
-          "Another year older, another year wiser, and another year more amazing! Hope your special day is filled with joy, laughter, and all your favorite things.",
-        back: "Wishing you the happiest of birthdays!",
+          "🎂 Another year of amazing memories and incredible adventures! May this special day be filled with all your favorite things - delicious cake, wonderful surprises, and the warmth of those who love you most. Here's to celebrating YOU and all the joy you bring to the world!",
+        back: "Wishing you the happiest of birthdays and a year ahead filled with dreams come true!",
       },
       {
         id: 14,
-        title: "Party Time",
-        cover: "/placeholder.svg?height=300&width=240&text=Party+Balloons",
+        title: "Special Gift For You",
+        cover: "/images/birthday-gift-box.png",
         centerfold:
-          "It's time to celebrate YOU! May this new year of life bring you endless happiness, exciting adventures, and dreams come true.",
-        back: "Let's party and celebrate you!",
+          "🎁 Today is all about celebrating the amazing person you are! Like the perfect gift, you bring joy, laughter, and happiness wherever you go. May your birthday be wrapped in love, tied with joy, and filled with all the wonderful surprises life has to offer!",
+        back: "Hope your special day is as wonderful as the gift of having you in our lives!",
       },
       {
         id: 15,
-        title: "Birthday Wishes",
-        cover: "/placeholder.svg?height=300&width=240&text=Birthday+Star",
+        title: "Balloons & Cake",
+        cover: "/images/birthday-cake-balloons.png",
         centerfold:
-          "On your special day, I'm sending you warm wishes for happiness, success, and all the wonderful things life has to offer.",
-        back: "Hope all your birthday wishes come true!",
+          "🎈 Let's celebrate with balloons reaching for the sky and cake sweet enough to match your wonderful spirit! Another year means another chapter of your incredible story. May it be filled with new adventures, cherished moments, and all the happiness your heart can hold!",
+        back: "Here's to floating through life with joy and sweetness in every moment!",
       },
       {
         id: 16,
-        title: "Another Year Awesome",
-        cover: "/placeholder.svg?height=300&width=240&text=Awesome+Birthday",
+        title: "Colorful Birthday Wishes",
+        cover: "/images/birthday-balloons.png",
         centerfold:
-          "You're not getting older, you're getting more awesome! Here's to celebrating another fantastic year of being you.",
-        back: "Stay awesome, birthday star!",
+          "🌈 Just like these colorful balloons, may your birthday lift your spirits high and fill your heart with pure joy! You deserve all the celebration, laughter, and love that this special day can bring. Here's to another year of being absolutely wonderful!",
+        back: "May your birthday be as bright and colorful as you make everyone else's days!",
       },
     ],
   },
@@ -539,9 +539,7 @@ export default function GreetingCardsApp() {
                   </div>
                   <h3 className="text-xl font-bold text-gray-800 mb-2">{category.name}</h3>
                   <p className="text-gray-600 text-sm">{category.cards.length} cards available</p>
-                  <Button className={`mt-4 bg-${category.color}-600 hover:bg-${category.color}-700`}>
-                    Browse Cards
-                  </Button>
+                  <Button className={`mt-4 bg-purple-600 hover:bg-purple-700 text-white`}>Browse Cards</Button>
                 </CardContent>
               </Card>
             ))}
