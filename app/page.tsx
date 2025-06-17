@@ -216,19 +216,19 @@ const cardCategories = {
     cards: [
       {
         id: 23,
-        title: "Freedom Day Celebration",
-        cover: "/placeholder.svg?height=300&width=240&text=Juneteenth+Freedom",
+        title: "Celebrating Freedom & Heritage",
+        cover: "/images/juneteenth-heritage.png",
         centerfold:
-          "Celebrating Juneteenth - a day of freedom, reflection, and hope. May we continue to honor this important day and work towards equality and justice for all.",
-        back: "Freedom, justice, and equality for all!",
+          "🌟 Happy Juneteenth! Today we celebrate freedom, honor our ancestors, and embrace the rich heritage that makes us strong. This day reminds us of the resilience, courage, and hope that have carried us through history and continue to inspire our future. Let us remember the past, celebrate the present, and work together for a brighter tomorrow.",
+        back: "Freedom, heritage, and unity - celebrating Juneteenth with pride and hope!",
       },
       {
         id: 24,
-        title: "Emancipation Joy",
-        cover: "/placeholder.svg?height=300&width=240&text=Emancipation+Joy",
+        title: "Freedom Day Celebration",
+        cover: "/images/juneteenth-celebration.jpeg",
         centerfold:
-          "On this Juneteenth, we celebrate freedom, remember our history, and look forward to a future of continued progress and unity.",
-        back: "Celebrating freedom and progress!",
+          "✊ On this Juneteenth, we gather to celebrate the end of slavery and the beginning of true freedom for all. This day represents triumph over oppression, the power of community, and the ongoing journey toward equality and justice. May we continue to honor this legacy by building bridges, fostering understanding, and creating a world where freedom truly rings for everyone.",
+        back: "Celebrating freedom, remembering history, and building a better future together!",
       },
     ],
   },
