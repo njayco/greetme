@@ -47,8 +47,13 @@ styles/                      - Global CSS
 - `tailwind.config.ts` - Tailwind CSS configuration
 
 ## Valentine's Day Cards (Paid via Stripe)
-- **Paid cards** (IDs 28, 29, 31, 32, 33): $0.99 each, require Stripe checkout
+- **32 total cards** (IDs 28-59): 7 original + 25 new
 - **Free cards** (IDs 30, 34): No payment required
+- **$0.99 cards**: IDs 28, 29, 31, 32, 33, 35, 39, 43, 46, 53
+- **$1.49 cards**: IDs 36, 41, 45, 48, 56, 59
+- **$1.99 cards**: IDs 37, 40, 49, 51, 57
+- **$2.49 cards**: IDs 38, 44, 52, 54
+- **$2.99 cards**: IDs 42, 47, 50, 55, 58
 - Stripe products seeded via `scripts/seed-valentines-products.ts`
 
 ## Post-Payment Flow (Paid Cards)

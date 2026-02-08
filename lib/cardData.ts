@@ -79,6 +79,231 @@ export const cardCategories: Record<string, CategoryType> = {
           "Sending you the biggest bear hug! You make my heart as full as a panda eating bamboo. I'm so grateful to have you, and I just want to hold you close forever!",
         back: "Bear hugs and all my love!",
       },
+      {
+        id: 35,
+        title: "Lovebirds",
+        cover: "/images/valentine-lovebirds.png",
+        centerfold:
+          "Just like these lovebirds, we were made to be together! Every song you sing makes my heart soar. You are my favorite melody, my sweetest harmony, and the love of my life.",
+        back: "Two hearts, one love song!",
+        price: 0.99,
+      },
+      {
+        id: 36,
+        title: "Foxy Valentine",
+        cover: "/images/valentine-fox-roses.png",
+        centerfold:
+          "You're the foxiest valentine I know! These roses can't even compare to how beautiful you are, inside and out. You make every day brighter just by being you.",
+        back: "For my foxy valentine!",
+        price: 1.49,
+      },
+      {
+        id: 37,
+        title: "Penguin Love",
+        cover: "/images/valentine-penguins.png",
+        centerfold:
+          "Like penguins who mate for life, I choose you every single day! Through every storm and every season, you're the one I want to waddle through life with. You keep my heart warm!",
+        back: "Waddling through life together!",
+        price: 1.99,
+      },
+      {
+        id: 38,
+        title: "Love Potion",
+        cover: "/images/valentine-love-potion.png",
+        centerfold:
+          "No magic potion needed — I'm already completely enchanted by you! Your smile is the most powerful spell, and your love is the sweetest magic I've ever known. You've bewitched my heart forever!",
+        back: "Enchanted by your love!",
+        price: 2.49,
+      },
+      {
+        id: 39,
+        title: "Sloth Love",
+        cover: "/images/valentine-sloth-heart.png",
+        centerfold:
+          "I'm not slow to say I love you — I just want to hang onto this feeling forever! You make my heart feel full and my days feel cozy. Let's take life slow and enjoy every beautiful moment together.",
+        back: "Hanging onto love forever!",
+        price: 0.99,
+      },
+      {
+        id: 40,
+        title: "Owl Always Love You",
+        cover: "/images/valentine-owls-moon.png",
+        centerfold:
+          "Owl always love you, no matter what! Under the stars and moonlight, my love for you shines brighter than any constellation. You are the magic in my night sky.",
+        back: "Owl always love you!",
+        price: 1.99,
+      },
+      {
+        id: 41,
+        title: "Love Letters",
+        cover: "/images/valentine-love-letters.png",
+        centerfold:
+          "If I wrote you a love letter every day, my mailbox would overflow — just like my heart does for you! Every word I write is a tiny piece of my love, and I have an endless supply.",
+        back: "Sealed with a kiss!",
+        price: 1.49,
+      },
+      {
+        id: 42,
+        title: "Butterfly Kisses",
+        cover: "/images/valentine-butterflies.png",
+        centerfold:
+          "You give me butterflies every single day! Like these beautiful wings, our love is colorful, free, and absolutely magical. Thank you for making my heart flutter!",
+        back: "Flutter by, my love!",
+        price: 2.99,
+      },
+      {
+        id: 43,
+        title: "Hedge-Hug",
+        cover: "/images/valentine-hedgehog.png",
+        centerfold:
+          "You make my prickly days feel smooth and my cloudy skies feel bright! Even though I might be a little prickly sometimes, you love me anyway. That's what makes you so special!",
+        back: "Sending you a hedge-hug!",
+        price: 0.99,
+      },
+      {
+        id: 44,
+        title: "Seas The Day",
+        cover: "/images/valentine-seahorses.png",
+        centerfold:
+          "In the vast ocean of life, I found my perfect match in you! Like seahorses who swim heart to heart, we're meant to ride the waves together. You're my anchor and my adventure!",
+        back: "You're my perfect catch!",
+        price: 2.49,
+      },
+      {
+        id: 45,
+        title: "Puppy Love",
+        cover: "/images/valentine-puppy-heart.png",
+        centerfold:
+          "You had me at 'woof'! My tail wags with joy every time I see you. You're the treat that makes every day sweeter, and I'm pawsitively crazy about you!",
+        back: "Pawsitively in love with you!",
+        price: 1.49,
+      },
+      {
+        id: 46,
+        title: "Sweetheart",
+        cover: "/images/valentine-candy-hearts.png",
+        centerfold:
+          "You're sweeter than a whole jar of candy hearts! Every moment with you is like unwrapping the perfect treat. You fill my life with sweetness, color, and endless joy.",
+        back: "You're my favorite sweet!",
+        price: 0.99,
+      },
+      {
+        id: 47,
+        title: "Magical Love",
+        cover: "/images/valentine-unicorn.png",
+        centerfold:
+          "Our love is as magical as a unicorn and as bright as a rainbow! You make the impossible feel possible and every ordinary day feel extraordinary. You are my fairy tale come true!",
+        back: "Believe in magical love!",
+        price: 2.99,
+      },
+      {
+        id: 48,
+        title: "Some-Bunny Loves You",
+        cover: "/images/valentine-bunnies.png",
+        centerfold:
+          "Some-bunny loves you very much! You make my heart hop with joy and my days bloom with happiness. Like these bunnies, I want to share everything with you!",
+        back: "Hoppy Valentine's Day!",
+        price: 1.49,
+      },
+      {
+        id: 49,
+        title: "You're My Jam",
+        cover: "/images/valentine-music.png",
+        centerfold:
+          "You're the song that plays on repeat in my heart! Every beat, every melody reminds me of you. Our love is like a classic vinyl — timeless, beautiful, and always worth playing again.",
+        back: "You're my favorite song!",
+        price: 1.99,
+      },
+      {
+        id: 50,
+        title: "Love Takes Flight",
+        cover: "/images/valentine-balloon-ride.png",
+        centerfold:
+          "Our love lifts me higher than any balloon could! Every adventure with you is breathtaking, and I can't wait to see where our hearts take us next. You make life an incredible journey!",
+        back: "Soaring on love with you!",
+        price: 2.99,
+      },
+      {
+        id: 51,
+        title: "Otterly In Love",
+        cover: "/images/valentine-otters.png",
+        centerfold:
+          "You're my significant otter! I love holding your hand and floating through life together. You make even the calmest waters feel exciting and every moment feel meaningful.",
+        back: "You're otterly amazing!",
+        price: 1.99,
+      },
+      {
+        id: 52,
+        title: "Key To My Heart",
+        cover: "/images/valentine-locket.png",
+        centerfold:
+          "You hold the key to my heart, and I never want it back! Like this golden locket, our love is precious, timeless, and always close to my heart. You are my greatest treasure.",
+        back: "Forever locked in love!",
+        price: 2.49,
+      },
+      {
+        id: 53,
+        title: "Toadally Yours",
+        cover: "/images/valentine-frog-prince.png",
+        centerfold:
+          "I'm toadally in love with you! You turned this ordinary life into a fairy tale, and every day with you feels like happily ever after. No kiss needed — you're already my prince/princess!",
+        back: "Toadally and completely yours!",
+        price: 0.99,
+      },
+      {
+        id: 54,
+        title: "Warmth of Love",
+        cover: "/images/valentine-cozy-fire.png",
+        centerfold:
+          "Like a cozy fire on a cold winter night, your love warms my soul from the inside out. Curled up next to you is my favorite place in the world. You are my comfort and my home.",
+        back: "You warm my heart always!",
+        price: 2.49,
+      },
+      {
+        id: 55,
+        title: "Rose Garden",
+        cover: "/images/valentine-rose-gate.png",
+        centerfold:
+          "Walking through life with you is like strolling through the most beautiful garden — every moment blooms with love and wonder. You make my world more beautiful just by being in it.",
+        back: "Our love garden blooms forever!",
+        price: 2.99,
+      },
+      {
+        id: 56,
+        title: "Tons of Love",
+        cover: "/images/valentine-elephant.png",
+        centerfold:
+          "I love you a ton — an elephant ton! My love for you is as big as the biggest heart and as strong as the mightiest trunk. You fill my life with an enormous amount of happiness!",
+        back: "Sending you tons of love!",
+        price: 1.49,
+      },
+      {
+        id: 57,
+        title: "Lucky In Love",
+        cover: "/images/valentine-ladybugs.png",
+        centerfold:
+          "I'm the luckiest person alive because I found you! Like ladybugs bring good fortune, you've brought so much joy, laughter, and love into my life. Every day with you is a lucky day!",
+        back: "Lucky to have your love!",
+        price: 1.99,
+      },
+      {
+        id: 58,
+        title: "Stained Glass Heart",
+        cover: "/images/valentine-stained-glass.png",
+        centerfold:
+          "Our love is a masterpiece — colorful, radiant, and absolutely stunning! Like light shining through stained glass, you illuminate my life with beauty I never knew existed. You are my work of art.",
+        back: "Our love shines bright!",
+        price: 2.99,
+      },
+      {
+        id: 59,
+        title: "Koala-ty Love",
+        cover: "/images/valentine-koala.png",
+        centerfold:
+          "You're a koala-ty catch, and I'm never letting go! Clinging to you is my favorite thing to do. You make my heart feel as warm and fuzzy as a koala hug. I'm eucalyptus over you!",
+        back: "Koala-fied for your love!",
+        price: 1.49,
+      },
     ],
   },
   "fathers-day": {
