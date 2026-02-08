@@ -14,31 +14,35 @@ A Next.js greeting card application that lets users browse, customize, and share
 
 ## Project Structure
 ```
-app/                    - Next.js app router pages
-app/api/checkout/       - Stripe checkout session API
-app/api/products/       - Stripe products listing API
-app/api/share/          - Short link creation API
-app/api/stripe/webhook/ - Stripe webhook handler
-app/c/[id]/             - Dynamic share page with OG metadata
-components/             - UI components (shadcn/ui)
-lib/                    - Utility functions
-lib/cardData.ts         - Shared card data definitions (used by page.tsx and share page)
-lib/stripeClient.ts     - Stripe client and StripeSync initialization
-lib/initStripe.ts       - Stripe schema migration and webhook setup
-public/images/          - Card images and assets
-scripts/                - Seed scripts (seed-valentines-products.ts)
-styles/                 - Global CSS
+app/                         - Next.js app router pages
+app/api/checkout/            - Stripe checkout session API
+app/api/products/            - Stripe products listing API
+app/api/share/               - Short link creation API
+app/api/send-confirmation/   - Purchase confirmation email API
+app/api/stripe/webhook/      - Stripe webhook handler
+app/c/[id]/                  - Dynamic share page with OG metadata
+components/                  - UI components (shadcn/ui)
+lib/                         - Utility functions
+lib/cardData.ts              - Shared card data definitions
+lib/resendClient.ts          - Resend email client (via Replit connector)
+lib/stripeClient.ts          - Stripe client and StripeSync initialization
+lib/initStripe.ts            - Stripe schema migration and webhook setup
+public/images/               - Card images and assets
+scripts/                     - Seed scripts (seed-valentines-products.ts)
+styles/                      - Global CSS
 ```
 
 ## Key Files
 - `app/page.tsx` - Main application page with all card logic, screens, and payment flow
 - `app/layout.tsx` - Root layout with GreetMe metadata
 - `lib/cardData.ts` - Card categories and data (shared between client and server)
+- `lib/resendClient.ts` - Resend email client using Replit connector credentials
 - `app/api/share/route.ts` - Creates short share links stored in DB
 - `app/c/[id]/page.tsx` - Server-side share page with OG metadata
 - `app/c/[id]/ShareCardClient.tsx` - Client component for share page card display
 - `app/api/checkout/route.ts` - Creates Stripe checkout sessions for paid cards
 - `app/api/products/route.ts` - Returns Stripe products mapped by card ID
+- `app/api/send-confirmation/route.ts` - Sends purchase confirmation email with card link
 - `next.config.mjs` - Next.js configuration
 - `tailwind.config.ts` - Tailwind CSS configuration
 
@@ -46,6 +50,14 @@ styles/                 - Global CSS
 - **Paid cards** (IDs 28, 29, 31, 32, 33): $0.99 each, require Stripe checkout
 - **Free cards** (IDs 30, 34): No payment required
 - Stripe products seeded via `scripts/seed-valentines-products.ts`
+
+## Post-Payment Flow (Paid Cards)
+1. User fills in card details and clicks Send
+2. Share link is created in DB before checkout
+3. User is redirected to Stripe checkout (shareId stored in session metadata)
+4. After successful payment, Stripe redirects to `/?payment=success&shareId=XXX&session_id=YYY`
+5. Frontend shows the share link page with copy/share buttons
+6. Confirmation email is sent via Resend with the card link (email from Stripe session)
 
 ## Sharing System
 - Short links generated via `/api/share` endpoint, stored in `shared_cards` table

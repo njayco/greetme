@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUncachableStripeClient } from '@/lib/stripeClient';
+import { getUncachableResendClient } from '@/lib/resendClient';
 
 export async function POST(request: NextRequest) {
   try {
@@ -7,12 +8,6 @@ export async function POST(request: NextRequest) {
 
     if (!sessionId || !shareId) {
       return NextResponse.json({ error: 'sessionId and shareId are required' }, { status: 400 });
-    }
-
-    const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) {
-      console.error('RESEND_API_KEY not configured');
-      return NextResponse.json({ error: 'Email service not configured' }, { status: 500 });
     }
 
     const stripe = await getUncachableStripeClient();
@@ -74,28 +69,21 @@ export async function POST(request: NextRequest) {
       </div>
     `;
 
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: 'GreetMe <onboarding@resend.dev>',
-        to: [email],
-        subject: `Your GreetMe Card is Ready to Share!`,
-        html: htmlContent,
-      }),
+    const { client: resend, fromEmail } = await getUncachableResendClient();
+
+    const result = await resend.emails.send({
+      from: fromEmail || 'GreetMe <onboarding@resend.dev>',
+      to: [email],
+      subject: 'Your GreetMe Card is Ready to Share!',
+      html: htmlContent,
     });
 
-    const result = await response.json();
-
-    if (!response.ok) {
-      console.error('Resend error:', result);
+    if (result.error) {
+      console.error('Resend error:', result.error);
       return NextResponse.json({ error: 'Failed to send email' }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true, messageId: result.id });
+    return NextResponse.json({ success: true, messageId: result.data?.id });
   } catch (error: any) {
     console.error('Email send error:', error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });

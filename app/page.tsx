@@ -245,7 +245,12 @@ export default function GreetingCardsApp() {
           }),
         })
         const shareData = await shareResponse.json()
-        const shareId = shareData.id || ''
+        if (!shareResponse.ok || !shareData.id) {
+          alert('Error preparing your card. Please try again.')
+          setIsProcessingPayment(false)
+          return
+        }
+        const shareId = shareData.id
 
         const response = await fetch('/api/checkout', {
           method: 'POST',
