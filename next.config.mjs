@@ -9,7 +9,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  allowedDevOrigins: ['*'],
+  allowedDevOrigins: ['https://ff149cac-aba8-4669-942d-ae755d24f669-00-1uzogga77msh3.spock.replit.dev', 'https://*.replit.dev', 'http://127.0.0.1'],
 }
 
 export default nextConfig

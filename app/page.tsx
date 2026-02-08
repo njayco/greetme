@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Progress } from "@/components/ui/progress"
 import { Eye, EyeOff, ChevronLeft, ChevronRight, Copy, Share2, ArrowLeft } from "lucide-react"
 
-const cardCategories = {
+const cardCategories: Record<string, { name: string; color: string; cards: { id: number; title: string; cover: string; centerfold: string; back: string }[] }> = {
   "fathers-day": {
     name: "Father's Day",
     color: "yellow",
@@ -121,7 +121,7 @@ const cardCategories = {
         title: "Birthday Cake Celebration",
         cover: "/images/birthday-cake-celebration.png",
         centerfold:
-          "🎂 Another year of amazing memories and incredible adventures! May this special day be filled with all your favorite things - delicious cake, wonderful surprises, and the warmth of those who love you most. Here's to celebrating YOU and all the joy you bring to the world!",
+          "Another year of amazing memories and incredible adventures! May this special day be filled with all your favorite things - delicious cake, wonderful surprises, and the warmth of those who love you most. Here's to celebrating YOU and all the joy you bring to the world!",
         back: "Wishing you the happiest of birthdays and a year ahead filled with dreams come true!",
       },
       {
@@ -129,7 +129,7 @@ const cardCategories = {
         title: "Special Gift For You",
         cover: "/images/birthday-gift-box.png",
         centerfold:
-          "🎁 Today is all about celebrating the amazing person you are! Like the perfect gift, you bring joy, laughter, and happiness wherever you go. May your birthday be wrapped in love, tied with joy, and filled with all the wonderful surprises life has to offer!",
+          "Today is all about celebrating the amazing person you are! Like the perfect gift, you bring joy, laughter, and happiness wherever you go. May your birthday be wrapped in love, tied with joy, and filled with all the wonderful surprises life has to offer!",
         back: "Hope your special day is as wonderful as the gift of having you in our lives!",
       },
       {
@@ -137,7 +137,7 @@ const cardCategories = {
         title: "Balloons & Cake",
         cover: "/images/birthday-cake-balloons.png",
         centerfold:
-          "🎈 Let's celebrate with balloons reaching for the sky and cake sweet enough to match your wonderful spirit! Another year means another chapter of your incredible story. May it be filled with new adventures, cherished moments, and all the happiness your heart can hold!",
+          "Let's celebrate with balloons reaching for the sky and cake sweet enough to match your wonderful spirit! Another year means another chapter of your incredible story. May it be filled with new adventures, cherished moments, and all the happiness your heart can hold!",
         back: "Here's to floating through life with joy and sweetness in every moment!",
       },
       {
@@ -145,7 +145,7 @@ const cardCategories = {
         title: "Colorful Birthday Wishes",
         cover: "/images/birthday-balloons.png",
         centerfold:
-          "🌈 Just like these colorful balloons, may your birthday lift your spirits high and fill your heart with pure joy! You deserve all the celebration, laughter, and love that this special day can bring. Here's to another year of being absolutely wonderful!",
+          "Just like these colorful balloons, may your birthday lift your spirits high and fill your heart with pure joy! You deserve all the celebration, laughter, and love that this special day can bring. Here's to another year of being absolutely wonderful!",
         back: "May your birthday be as bright and colorful as you make everyone else's days!",
       },
     ],
@@ -219,7 +219,7 @@ const cardCategories = {
         title: "Celebrating Freedom & Heritage",
         cover: "/images/juneteenth-heritage.png",
         centerfold:
-          "🌟 Happy Juneteenth! Today we celebrate freedom, honor our ancestors, and embrace the rich heritage that makes us strong. This day reminds us of the resilience, courage, and hope that have carried us through history and continue to inspire our future. Let us remember the past, celebrate the present, and work together for a brighter tomorrow.",
+          "Happy Juneteenth! Today we celebrate freedom, honor our ancestors, and embrace the rich heritage that makes us strong. This day reminds us of the resilience, courage, and hope that have carried us through history and continue to inspire our future. Let us remember the past, celebrate the present, and work together for a brighter tomorrow.",
         back: "Freedom, heritage, and unity - celebrating Juneteenth with pride and hope!",
       },
       {
@@ -227,7 +227,7 @@ const cardCategories = {
         title: "Freedom Day Celebration",
         cover: "/images/juneteenth-celebration.jpeg",
         centerfold:
-          "✊ On this Juneteenth, we gather to celebrate the end of slavery and the beginning of true freedom for all. This day represents triumph over oppression, the power of community, and the ongoing journey toward equality and justice. May we continue to honor this legacy by building bridges, fostering understanding, and creating a world where freedom truly rings for everyone.",
+          "On this Juneteenth, we gather to celebrate the end of slavery and the beginning of true freedom for all. This day represents triumph over oppression, the power of community, and the ongoing journey toward equality and justice. May we continue to honor this legacy by building bridges, fostering understanding, and creating a world where freedom truly rings for everyone.",
         back: "Celebrating freedom, remembering history, and building a better future together!",
       },
     ],
@@ -264,10 +264,75 @@ const cardCategories = {
   },
 }
 
+function CloudDecoration({ className = "" }: { className?: string }) {
+  return (
+    <div className={`absolute pointer-events-none ${className}`}>
+      <div className="relative">
+        <div className="w-40 h-20 bg-white rounded-full opacity-90"></div>
+        <div className="absolute -top-6 left-8 w-24 h-24 bg-white rounded-full opacity-90"></div>
+        <div className="absolute -top-4 left-20 w-20 h-20 bg-white rounded-full opacity-90"></div>
+        <div className="absolute -top-2 left-2 w-16 h-16 bg-white rounded-full opacity-90"></div>
+      </div>
+    </div>
+  )
+}
+
+function BookshelfBackground({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="min-h-screen relative"
+      style={{
+        background: `
+          linear-gradient(135deg, #c49a6c 0%, #b8860b 25%, #c49a6c 50%, #d4a574 75%, #c49a6c 100%)
+        `,
+      }}
+    >
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `
+            repeating-linear-gradient(
+              90deg,
+              transparent 0px,
+              transparent 48px,
+              rgba(139, 90, 43, 0.3) 48px,
+              rgba(139, 90, 43, 0.3) 50px
+            )
+          `,
+          opacity: 0.5,
+        }}
+      />
+      {children}
+    </div>
+  )
+}
+
+function WoodenShelf() {
+  return (
+    <div className="relative w-full h-6">
+      <div
+        className="absolute inset-x-0 top-0 h-5"
+        style={{
+          background: 'linear-gradient(180deg, #8B6914 0%, #a07830 40%, #7a5a20 100%)',
+          borderRadius: '0 0 4px 4px',
+          boxShadow: '0 4px 8px rgba(0,0,0,0.4), inset 0 -2px 4px rgba(0,0,0,0.2)',
+        }}
+      />
+      <div
+        className="absolute inset-x-0 top-0 h-2"
+        style={{
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 100%)',
+          borderRadius: '0 0 4px 4px',
+        }}
+      />
+    </div>
+  )
+}
+
 export default function GreetingCardsApp() {
   const [currentScreen, setCurrentScreen] = useState("loading")
-  const [selectedCategory, setSelectedCategory] = useState(null)
-  const [selectedCard, setSelectedCard] = useState(null)
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [selectedCard, setSelectedCard] = useState<any>(null)
   const [cardView, setCardView] = useState("cover")
   const [showInstructions, setShowInstructions] = useState(false)
   const [loadingProgress, setLoadingProgress] = useState(0)
@@ -279,9 +344,9 @@ export default function GreetingCardsApp() {
     personalNote: "",
   })
   const [isViewingSharedCard, setIsViewingSharedCard] = useState(false)
-  const [sharedCardData, setSharedCardData] = useState(null)
+  const [sharedCardData, setSharedCardData] = useState<any>(null)
 
-  const cardsPerPage = 6
+  const cardsPerPage = 8
 
   useEffect(() => {
     if (currentScreen === "loading") {
@@ -297,7 +362,6 @@ export default function GreetingCardsApp() {
       return () => clearInterval(timer)
     }
 
-    // Check URL for shared card parameters
     const urlParams = new URLSearchParams(window.location.search)
     const cardId = urlParams.get("card")
     const from = urlParams.get("from")
@@ -305,9 +369,8 @@ export default function GreetingCardsApp() {
     const note = urlParams.get("note")
 
     if (cardId && from && to) {
-      // Find card across all categories
-      let foundCard = null
-      let foundCategory = null
+      let foundCard: any = null
+      let foundCategory: string | null = null
 
       Object.entries(cardCategories).forEach(([categoryKey, category]) => {
         const card = category.cards.find((c) => c.id === Number.parseInt(cardId))
@@ -335,14 +398,15 @@ export default function GreetingCardsApp() {
     setCurrentScreen("categories")
   }
 
-  const handleCategorySelect = (categoryKey) => {
+  const handleCategorySelect = (categoryKey: string) => {
     setSelectedCategory(categoryKey)
     setCurrentPage(0)
     setCurrentScreen("library")
   }
 
-  const handleCardSelect = (card) => {
+  const handleCardSelect = (card: any) => {
     setSelectedCard(card)
+    setCardView("cover")
     setCurrentScreen("customize")
   }
 
@@ -417,7 +481,7 @@ export default function GreetingCardsApp() {
     }
   }
 
-  const renderCardContent = (cardData = null, viewData = null) => {
+  const renderCardContent = (cardData: any = null, viewData: any = null) => {
     const card = cardData || selectedCard
     const data = viewData || formData
 
@@ -426,7 +490,7 @@ export default function GreetingCardsApp() {
     switch (cardView) {
       case "cover":
         return (
-          <div className="aspect-[3/4] bg-white rounded-lg shadow-lg flex items-center justify-center p-4">
+          <div className="aspect-[3/4] bg-white rounded-lg shadow-2xl flex items-center justify-center p-2 border border-gray-200">
             <img
               src={card.cover || "/placeholder.svg"}
               alt={card.title}
@@ -436,25 +500,24 @@ export default function GreetingCardsApp() {
         )
       case "centerfold":
         return (
-          <div className="aspect-[3/4] bg-white rounded-lg shadow-lg overflow-hidden">
-            <div className="h-full p-4 overflow-y-auto">
+          <div className="aspect-[3/4] bg-gradient-to-b from-gray-50 to-white rounded-lg shadow-2xl overflow-hidden border border-gray-200">
+            <div className="h-full p-5 overflow-y-auto">
               <div className="min-h-full flex flex-col">
-                <h3 className="text-lg font-bold mb-3 text-center flex-shrink-0">Special Greeting!</h3>
+                <h3 className="text-xl font-bold mb-4 text-center text-gray-800" style={{ fontFamily: "Georgia, serif" }}>Special Greeting!</h3>
                 <div className="flex-1 flex flex-col justify-center">
                   <p
                     className={`text-gray-700 mb-4 text-center leading-relaxed ${
                       card.centerfold.length > 200
                         ? "text-sm"
-                        : card.centerfold.length > 150
-                          ? "text-base"
-                          : "text-base"
+                        : "text-base"
                     }`}
+                    style={{ fontFamily: "Georgia, serif" }}
                   >
                     {card.centerfold}
                   </p>
                   {data.personalNote && (
-                    <div className="mt-4 p-3 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg border-l-4 border-yellow-400 flex-shrink-0">
-                      <p className="text-sm italic text-gray-800 font-medium break-words">"{data.personalNote}"</p>
+                    <div className="mt-4 p-4 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg border-l-4 border-amber-500">
+                      <p className="text-sm italic text-gray-800 font-medium break-words" style={{ fontFamily: "Georgia, serif" }}>"{data.personalNote}"</p>
                       <p className="text-xs text-gray-600 mt-2">- {data.from}</p>
                     </div>
                   )}
@@ -465,23 +528,22 @@ export default function GreetingCardsApp() {
         )
       case "back":
         return (
-          <div className="aspect-[3/4] bg-white rounded-lg shadow-lg flex items-center justify-center p-6 relative overflow-hidden">
-            <div className="absolute inset-0 bg-white/80 rounded-lg"></div>
-            <div className="text-center relative z-10">
-              <div className="mb-6 p-4 bg-white/90 rounded-lg shadow-sm border-2 border-yellow-600/20">
-                <p className="text-lg text-gray-700 font-medium mb-4">{card.back}</p>
-                <div className="space-y-3 text-left">
-                  <div className="flex items-center">
-                    <span className="font-semibold text-gray-800 mr-2">From:</span>
-                    <span className="text-gray-700 font-medium">{data.from || "___________"}</span>
+          <div className="aspect-[3/4] bg-gradient-to-b from-gray-50 to-white rounded-lg shadow-2xl flex items-center justify-center p-6 border border-gray-200">
+            <div className="text-center w-full">
+              <div className="mb-6 p-5 bg-white rounded-lg shadow-sm border border-gray-100">
+                <p className="text-lg text-gray-700 font-medium mb-5" style={{ fontFamily: "Georgia, serif" }}>{card.back}</p>
+                <div className="space-y-4 text-left">
+                  <div className="flex items-center border-b border-gray-300 pb-2">
+                    <span className="font-bold text-gray-800 mr-3" style={{ fontFamily: "Georgia, serif" }}>From:</span>
+                    <span className="text-gray-700">{data.from || "___________"}</span>
                   </div>
-                  <div className="flex items-center">
-                    <span className="font-semibold text-gray-800 mr-2">To:</span>
-                    <span className="text-gray-700 font-medium">{data.to || "___________"}</span>
+                  <div className="flex items-center border-b border-gray-300 pb-2">
+                    <span className="font-bold text-gray-800 mr-3" style={{ fontFamily: "Georgia, serif" }}>To:</span>
+                    <span className="text-gray-700">{data.to || "___________"}</span>
                   </div>
                 </div>
               </div>
-              <div className="text-xs text-gray-500 italic">GreetMe 2024</div>
+              <div className="text-xs text-gray-500 italic" style={{ fontFamily: "Georgia, serif" }}>GreetMe 2024</div>
             </div>
           </div>
         )
@@ -490,461 +552,629 @@ export default function GreetingCardsApp() {
     }
   }
 
-  // Loading Screen
+  const CardViewTabs = ({ className = "" }: { className?: string }) => (
+    <div className={`flex justify-center items-center gap-6 ${className}`}>
+      <button
+        onClick={() => setCardView("cover")}
+        className={`px-6 py-2 rounded font-bold text-sm transition-all ${
+          cardView === "cover"
+            ? "bg-[#4EAAA2] text-white shadow-md"
+            : "bg-transparent text-gray-300 hover:text-white"
+        }`}
+      >
+        Cover
+      </button>
+      <button
+        onClick={() => setCardView("centerfold")}
+        className={`px-6 py-2 rounded font-bold text-sm transition-all ${
+          cardView === "centerfold"
+            ? "bg-[#4EAAA2] text-white shadow-md"
+            : "bg-transparent text-gray-300 hover:text-white"
+        }`}
+      >
+        Centerfold
+      </button>
+      <button
+        onClick={() => setCardView("back")}
+        className={`px-6 py-2 rounded font-bold text-sm transition-all ${
+          cardView === "back"
+            ? "bg-[#4EAAA2] text-white shadow-md"
+            : "bg-transparent text-gray-300 hover:text-white"
+        }`}
+      >
+        Back
+      </button>
+    </div>
+  )
+
   if (currentScreen === "loading") {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-100 to-purple-200 flex flex-col items-center justify-center p-4 relative overflow-hidden">
-        <div className="absolute bottom-0 left-0 w-32 h-32 bg-white rounded-full opacity-80 -mb-16 -ml-16"></div>
-        <div className="absolute bottom-0 right-0 w-24 h-24 bg-white rounded-full opacity-60 -mb-12 -mr-12"></div>
+      <div
+        className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden"
+        style={{
+          background: `
+            linear-gradient(135deg, #a89060 0%, #9a8050 50%, #8a7040 100%)
+          `,
+        }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `
+              repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 20px,
+                rgba(255,255,255,0.03) 20px,
+                rgba(255,255,255,0.03) 40px
+              )
+            `,
+          }}
+        />
 
-        <div className="bg-white border-4 border-purple-600 rounded-lg p-6 max-w-sm w-full text-center shadow-lg">
-          <h1 className="text-3xl font-bold text-purple-800 mb-4" style={{ fontFamily: "cursive" }}>
-            GreetMe
-          </h1>
+        <div className="relative z-10 w-full max-w-md">
+          <div
+            className="rounded-xl p-8 text-center relative overflow-hidden"
+            style={{
+              background: 'linear-gradient(180deg, #f5ecd0 0%, #ede0b8 60%, #e8d8a8 100%)',
+              border: '3px solid #b8a060',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.5)',
+            }}
+          >
+            <h1
+              className="text-5xl font-bold text-gray-800 mb-2"
+              style={{ fontFamily: "cursive" }}
+            >
+              GreetMe
+            </h1>
 
-          <div className="mb-4">
-            <Progress value={loadingProgress} className="w-full" />
-            <p className="text-sm text-gray-600 mt-2">Loading {loadingProgress}%...</p>
-          </div>
+            <div className="mb-4 px-4">
+              <div className="relative w-full h-6 bg-gray-300 rounded overflow-hidden border border-gray-400">
+                <div
+                  className="h-full rounded transition-all duration-300"
+                  style={{
+                    width: `${loadingProgress}%`,
+                    background: 'linear-gradient(90deg, #5BA3D9, #4A90C4)',
+                  }}
+                />
+                <span className="absolute inset-0 flex items-center justify-center text-xs font-medium text-gray-700">
+                  Loading {loadingProgress}%...
+                </span>
+              </div>
+            </div>
 
-          <h2 className="text-lg font-bold text-purple-800 mb-2" style={{ fontFamily: "cursive" }}>
-            Not Just a Card—An Experience
-          </h2>
-          <p className="text-sm text-purple-600 mb-6 font-medium">No Sign Up. And It's Free.</p>
+            <h2
+              className="text-xl text-gray-700 mb-2"
+              style={{ fontFamily: "cursive" }}
+            >
+              Not Just a Card—An Experience
+            </h2>
+            <p className="text-sm text-gray-600 mb-4 font-medium">No Sign Up. And It's Free.</p>
 
-          <div className="bg-purple-600 text-white px-4 py-2 rounded inline-block">
-            <span className="text-sm font-italic">by Najee Jeremiah</span>
+            <div
+              className="w-full h-3 mb-4"
+              style={{
+                background: `repeating-linear-gradient(
+                  90deg,
+                  #b8860b 0px,
+                  #b8860b 4px,
+                  #c49a3c 4px,
+                  #c49a3c 8px
+                )`,
+                borderRadius: '2px',
+              }}
+            />
+
+            <div
+              className="inline-block px-6 py-2 rounded-md relative"
+              style={{
+                background: 'linear-gradient(180deg, #d32f2f, #b71c1c)',
+                boxShadow: '0 3px 6px rgba(0,0,0,0.3)',
+              }}
+            >
+              <span className="text-white text-sm font-bold italic" style={{ fontFamily: "Georgia, serif" }}>by Najee Jeremiah</span>
+            </div>
           </div>
         </div>
 
         {loadingProgress >= 100 && (
-          <Button
+          <button
             onClick={handleEnterApp}
-            className="mt-6 bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 text-lg font-bold shadow-lg"
+            className="relative z-10 mt-8 text-3xl font-bold text-white/90 hover:text-white transition-colors cursor-pointer"
+            style={{ fontFamily: "Georgia, serif", textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}
           >
             Enter Here
-          </Button>
+          </button>
         )}
+
+        <CloudDecoration className="bottom-0 left-0 -mb-4 -ml-8 z-10" />
       </div>
     )
   }
 
-  // Categories Screen
   if (currentScreen === "categories") {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-100 to-purple-200 p-4">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold text-center text-purple-800 mb-8" style={{ fontFamily: "cursive" }}>
+      <BookshelfBackground>
+        <div className="relative z-10 p-6">
+          <h1
+            className="text-4xl font-bold text-center text-white mb-8 drop-shadow-lg"
+            style={{ fontFamily: "cursive", textShadow: '0 2px 6px rgba(0,0,0,0.4)' }}
+          >
             GreetMe - Choose a Category
           </h1>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-4">
             {Object.entries(cardCategories).map(([categoryKey, category]) => (
-              <Card
+              <button
                 key={categoryKey}
-                className="cursor-pointer hover:shadow-xl transition-shadow duration-300 bg-white/90"
                 onClick={() => handleCategorySelect(categoryKey)}
+                className="group transform hover:scale-105 transition-all duration-300"
               >
-                <CardContent className="p-6 text-center">
-                  <div
-                    className={`w-16 h-16 bg-${category.color}-100 rounded-full flex items-center justify-center mx-auto mb-4`}
-                  >
-                    <div className={`w-8 h-8 bg-${category.color}-600 rounded-full`}></div>
+                <div
+                  className="rounded-lg p-5 text-center"
+                  style={{
+                    background: 'linear-gradient(180deg, #f5ecd0 0%, #ede0b8 100%)',
+                    border: '2px solid #b8a060',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                  }}
+                >
+                  <div className="w-12 h-12 bg-[#4EAAA2] rounded-full flex items-center justify-center mx-auto mb-3">
+                    <span className="text-white text-lg font-bold">{category.cards.length}</span>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-800 mb-2">{category.name}</h3>
-                  <p className="text-gray-600 text-sm">{category.cards.length} cards available</p>
-                  <Button className={`mt-4 bg-purple-600 hover:bg-purple-700 text-white`}>Browse Cards</Button>
-                </CardContent>
-              </Card>
+                  <h3 className="text-lg font-bold text-gray-800 mb-1" style={{ fontFamily: "Georgia, serif" }}>{category.name}</h3>
+                  <p className="text-gray-600 text-xs">{category.cards.length} cards</p>
+                </div>
+              </button>
             ))}
           </div>
+
+          <CloudDecoration className="bottom-0 left-0 -mb-4 -ml-8" />
         </div>
-      </div>
+      </BookshelfBackground>
     )
   }
 
-  // Library Screen
   if (currentScreen === "library") {
     const currentCards = getCurrentPageCards()
     const totalPages = getTotalPages()
-    const category = cardCategories[selectedCategory]
+    const category = selectedCategory ? cardCategories[selectedCategory] : null
 
     if (!category) {
       return <div>Category not found</div>
     }
 
+    const topRowCards = currentCards.slice(0, 4)
+    const bottomRowCards = currentCards.slice(4, 8)
+
     return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-100 to-purple-200 relative pb-32">
-        <div className="flex items-center justify-between p-4 bg-purple-800 text-white">
-          <Button onClick={() => setCurrentScreen("categories")} className="bg-purple-700 hover:bg-purple-600">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Categories
-          </Button>
-          <h1 className="text-2xl font-bold">{category.name} Cards</h1>
-          <div></div>
-        </div>
-
-        <div
-          className="min-h-screen bg-cover bg-center relative"
-          style={{
-            backgroundImage: `linear-gradient(rgba(139, 69, 19, 0.1), rgba(139, 69, 19, 0.1)), 
-                           repeating-linear-gradient(90deg, #8B4513 0px, #A0522D 2px, #8B4513 4px)`,
-          }}
-        >
-          {/* Shelf structure */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-900/10 to-transparent">
-            <div className="absolute top-16 left-4 right-4 h-32 bg-purple-800/20 rounded border-b-2 border-purple-900/30"></div>
-            <div className="absolute top-56 left-4 right-4 h-32 bg-purple-800/20 rounded border-b-2 border-purple-900/30"></div>
-            <div className="absolute top-96 left-4 right-4 h-32 bg-purple-800/20 rounded border-b-2 border-purple-900/30"></div>
+      <BookshelfBackground>
+        <div className="relative z-10 flex flex-col min-h-screen">
+          <div className="flex items-center justify-between p-3 bg-[#4EAAA2] text-white">
+            <button
+              onClick={() => setCurrentScreen("categories")}
+              className="flex items-center gap-1 text-sm font-medium hover:opacity-80 transition-opacity"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Categories
+            </button>
+            <h1 className="text-lg font-bold" style={{ fontFamily: "Georgia, serif" }}>
+              {category.name} Cards
+            </h1>
+            <button
+              onClick={() => setShowInstructions(!showInstructions)}
+              className="text-sm hover:opacity-80 transition-opacity"
+            >
+              {showInstructions ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            </button>
           </div>
 
-          {/* Page indicator */}
-          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-purple-800/80 text-white px-4 py-2 rounded-full text-sm font-bold z-20">
-            Page {currentPage + 1} of {totalPages}
-          </div>
-
-          {/* Cards on shelves */}
-          <div className="relative z-10 p-4 pt-20">
-            {/* Top shelf cards */}
-            <div className="flex justify-center gap-3 mb-12">
-              {currentCards.slice(0, 2).map((card) => (
-                <button
-                  key={card.id}
-                  onClick={() => handleCardSelect(card)}
-                  className="transform hover:scale-105 transition-transform"
-                >
-                  <img
-                    src={card.cover || "/placeholder.svg"}
-                    alt={card.title}
-                    className="w-20 h-24 object-cover rounded shadow-lg border-2 border-purple-900/30"
-                  />
-                </button>
-              ))}
+          <div className="flex-1 relative">
+            <div className="px-4 pt-6">
+              <div className="flex justify-center items-end gap-3 mb-0 min-h-[140px]">
+                {topRowCards.map((card) => (
+                  <button
+                    key={card.id}
+                    onClick={() => handleCardSelect(card)}
+                    className="transform hover:scale-110 hover:-translate-y-2 transition-all duration-200 flex-shrink-0"
+                  >
+                    <img
+                      src={card.cover || "/placeholder.svg"}
+                      alt={card.title}
+                      className="w-[72px] h-[96px] md:w-[100px] md:h-[130px] object-cover rounded shadow-lg"
+                      style={{
+                        boxShadow: '2px 4px 8px rgba(0,0,0,0.4)',
+                      }}
+                    />
+                  </button>
+                ))}
+              </div>
+              <WoodenShelf />
             </div>
 
-            {/* Middle shelf cards */}
-            <div className="flex justify-center gap-3 mb-12">
-              {currentCards.slice(2, 4).map((card) => (
-                <button
-                  key={card.id}
-                  onClick={() => handleCardSelect(card)}
-                  className="transform hover:scale-105 transition-transform"
-                >
-                  <img
-                    src={card.cover || "/placeholder.svg"}
-                    alt={card.title}
-                    className="w-20 h-24 object-cover rounded shadow-lg border-2 border-purple-900/30"
-                  />
-                </button>
-              ))}
+            {bottomRowCards.length > 0 && (
+              <div className="px-4 pt-6">
+                <div className="flex justify-center items-end gap-3 mb-0 min-h-[140px]">
+                  {bottomRowCards.map((card) => (
+                    <button
+                      key={card.id}
+                      onClick={() => handleCardSelect(card)}
+                      className="transform hover:scale-110 hover:-translate-y-2 transition-all duration-200 flex-shrink-0"
+                    >
+                      <img
+                        src={card.cover || "/placeholder.svg"}
+                        alt={card.title}
+                        className="w-[72px] h-[96px] md:w-[100px] md:h-[130px] object-cover rounded shadow-lg"
+                        style={{
+                          boxShadow: '2px 4px 8px rgba(0,0,0,0.4)',
+                        }}
+                      />
+                    </button>
+                  ))}
+                </div>
+                <WoodenShelf />
+              </div>
+            )}
+
+            <div className="px-4 pt-6">
+              <div className="min-h-[140px]"></div>
+              <WoodenShelf />
             </div>
 
-            {/* Bottom shelf cards */}
-            <div className="flex justify-center gap-3 mb-12">
-              {currentCards.slice(4, 6).map((card) => (
-                <button
-                  key={card.id}
-                  onClick={() => handleCardSelect(card)}
-                  className="transform hover:scale-105 transition-transform"
-                >
-                  <img
-                    src={card.cover || "/placeholder.svg"}
-                    alt={card.title}
-                    className="w-20 h-24 object-cover rounded shadow-lg border-2 border-purple-900/30"
-                  />
-                </button>
-              ))}
+            <div className="px-4 pt-6">
+              <div className="min-h-[100px]"></div>
+              <WoodenShelf />
             </div>
 
-            {/* Pagination controls */}
-            <div className="flex justify-center gap-4 mt-16 relative z-20">
-              <Button
-                onClick={handlePrevPage}
-                disabled={currentPage === 0}
-                className="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <ChevronLeft className="w-4 h-4 mr-1" />
-                Previous
-              </Button>
-              <div className="flex items-center px-4 py-2 bg-white/80 rounded-lg">
-                <span className="text-sm font-medium">
+            {totalPages > 1 && (
+              <div className="flex justify-center gap-4 py-4 relative z-20">
+                <button
+                  onClick={handlePrevPage}
+                  disabled={currentPage === 0}
+                  className="flex items-center gap-1 px-4 py-2 bg-[#4EAAA2] text-white rounded font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#3d8f88] transition-colors"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  Previous
+                </button>
+                <div className="flex items-center px-3 py-2 bg-white/80 rounded text-sm font-medium">
                   {currentPage + 1} of {totalPages}
-                </span>
+                </div>
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage >= totalPages - 1}
+                  className="flex items-center gap-1 px-4 py-2 bg-[#4EAAA2] text-white rounded font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#3d8f88] transition-colors"
+                >
+                  Next
+                  <ChevronRight className="w-4 h-4" />
+                </button>
               </div>
-              <Button
-                onClick={handleNextPage}
-                disabled={currentPage >= totalPages - 1}
-                className="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Next
-                <ChevronRight className="w-4 h-4 ml-1" />
-              </Button>
-            </div>
+            )}
           </div>
 
-          {/* Instructions */}
           {showInstructions && (
-            <div className="absolute bottom-4 left-4 right-4 bg-purple-800/90 text-white p-4 rounded-lg z-30">
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="text-lg font-bold">How it Works:</h3>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowInstructions(false)}
-                  className="text-white hover:bg-purple-700"
-                >
-                  Hide
-                </Button>
+            <div className="absolute bottom-16 left-4 right-4 z-30">
+              <div
+                className="p-4 rounded-lg"
+                style={{
+                  background: 'rgba(120, 100, 70, 0.92)',
+                  backdropFilter: 'blur(4px)',
+                }}
+              >
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="text-lg font-bold text-white" style={{ fontFamily: "cursive" }}>How it Works:</h3>
+                  <button
+                    onClick={() => setShowInstructions(false)}
+                    className="px-3 py-1 bg-white/20 text-white text-sm rounded hover:bg-white/30 transition-colors"
+                  >
+                    Hide
+                  </button>
+                </div>
+                <ol className="list-decimal list-inside space-y-1 text-amber-100" style={{ fontFamily: "cursive" }}>
+                  <li>Choose a Greeting Card</li>
+                  <li>Personalize with your message</li>
+                  <li>Share the link with someone special</li>
+                </ol>
               </div>
-              <ol className="list-decimal list-inside space-y-1">
-                <li>Choose a Greeting Card</li>
-                <li>Personalize with your message</li>
-                <li>Share the link with someone special</li>
-              </ol>
             </div>
           )}
 
-          <Button
-            onClick={() => setShowInstructions(!showInstructions)}
-            className="absolute bottom-4 right-4 bg-purple-600 hover:bg-purple-700 z-30"
-          >
-            {showInstructions ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-          </Button>
+          <CloudDecoration className="bottom-0 left-0 -mb-4 -ml-8" />
         </div>
-      </div>
+      </BookshelfBackground>
     )
   }
 
-  // Customize Screen
   if (currentScreen === "customize") {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-100 to-purple-200">
-        <div className="flex justify-between items-center p-4 bg-purple-800 text-white">
-          <div className="text-lg font-bold">Free Card</div>
-          <Button
-            onClick={generateShareableLink}
-            className="bg-teal-600 hover:bg-teal-700 px-6"
-            disabled={!formData.from || !formData.to}
-          >
-            <Share2 className="w-4 h-4 mr-2" />
-            Share
-          </Button>
-        </div>
+      <BookshelfBackground>
+        <div className="relative z-10 flex flex-col min-h-screen">
+          <div className="flex justify-between items-center px-4 py-3 bg-[#4EAAA2] text-white">
+            <div className="text-lg font-bold" style={{ fontFamily: "Georgia, serif" }}>Price: $0.00</div>
+            <button
+              onClick={generateShareableLink}
+              className="px-6 py-2 rounded font-bold text-lg transition-all"
+              style={{
+                background: 'linear-gradient(180deg, #f48fb1, #e57399)',
+                color: 'white',
+                boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+              }}
+              disabled={!formData.from || !formData.to}
+            >
+              Send
+            </button>
+          </div>
 
-        <div className="p-4">
-          <Card className="max-w-md mx-auto bg-white/95 shadow-xl">
-            <CardContent className="p-6">
-              <h2 className="text-2xl font-bold text-center mb-6">Personalize Your Greeting Card</h2>
-
-              <div className="space-y-4 mb-6">
-                <div>
-                  <Label htmlFor="from">From:</Label>
-                  <Input
-                    id="from"
-                    value={formData.from}
-                    onChange={(e) => setFormData({ ...formData, from: e.target.value })}
-                    className="border-b-2 border-gray-300 rounded-none bg-transparent"
-                    placeholder="Your name"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="to">To:</Label>
-                  <Input
-                    id="to"
-                    value={formData.to}
-                    onChange={(e) => setFormData({ ...formData, to: e.target.value })}
-                    className="border-b-2 border-gray-300 rounded-none bg-transparent"
-                    placeholder="Recipient's name"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="note">Personal Note (Optional):</Label>
-                  <div className="relative">
-                    <Textarea
-                      id="note"
-                      value={formData.personalNote}
-                      onChange={(e) => {
-                        const text = e.target.value
-                        if (text.length <= 200) {
-                          setFormData({ ...formData, personalNote: text })
-                        }
-                      }}
-                      placeholder="Add your personal message here... This will appear inside the card."
-                      className="mt-1 pr-16"
-                      rows={3}
-                      maxLength={200}
-                    />
-                    <div
-                      className={`absolute bottom-2 right-2 text-xs font-medium ${
-                        formData.personalNote.length > 180
-                          ? "text-red-500"
-                          : formData.personalNote.length > 150
-                            ? "text-yellow-600"
-                            : "text-gray-500"
-                      }`}
-                    >
-                      {formData.personalNote.length}/200
+          <div className="flex-1 flex flex-col">
+            <div className="px-4 pt-2">
+              <div className="flex justify-center items-end gap-2 mb-0 min-h-[80px]">
+                {selectedCategory && cardCategories[selectedCategory] &&
+                  cardCategories[selectedCategory].cards.slice(0, 4).map((card) => (
+                    <div key={card.id} className="flex-shrink-0 opacity-60">
+                      <img
+                        src={card.cover || "/placeholder.svg"}
+                        alt={card.title}
+                        className="w-[50px] h-[65px] md:w-[70px] md:h-[90px] object-cover rounded shadow-md"
+                      />
                     </div>
+                  ))
+                }
+              </div>
+              <WoodenShelf />
+            </div>
+
+            <div className="flex-1 flex items-start justify-center px-4 -mt-4 relative z-20">
+              <div className="w-full max-w-sm">
+                {cardView === "cover" || cardView === "centerfold" || cardView === "back" ? (
+                  <div>
+                    {cardView === "cover" ? (
+                      <div
+                        className="bg-gradient-to-b from-gray-100 to-gray-50 rounded-lg shadow-2xl p-6"
+                        style={{ border: '1px solid #ddd' }}
+                      >
+                        <h2 className="text-2xl font-bold text-center mb-5 text-gray-800" style={{ fontFamily: "Georgia, serif" }}>
+                          {selectedCategory && cardCategories[selectedCategory]
+                            ? `${cardCategories[selectedCategory].name} Greeting Card`
+                            : "Greeting Card"}
+                        </h2>
+
+                        <div className="space-y-4 mb-5">
+                          <div>
+                            <label className="font-bold text-gray-800 text-lg" style={{ fontFamily: "Georgia, serif" }}>From:</label>
+                            <Input
+                              value={formData.from}
+                              onChange={(e) => setFormData({ ...formData, from: e.target.value })}
+                              className="border-0 border-b-2 border-gray-800 rounded-none bg-transparent text-lg focus:ring-0 mt-1"
+                              placeholder=""
+                            />
+                          </div>
+
+                          <div>
+                            <label className="font-bold text-gray-800 text-lg" style={{ fontFamily: "Georgia, serif" }}>To:</label>
+                            <Input
+                              value={formData.to}
+                              onChange={(e) => setFormData({ ...formData, to: e.target.value })}
+                              className="border-0 border-b-2 border-gray-800 rounded-none bg-transparent text-lg focus:ring-0 mt-1"
+                              placeholder=""
+                            />
+                          </div>
+
+                          <div>
+                            <label className="font-bold text-gray-800 text-lg" style={{ fontFamily: "Georgia, serif" }}>Personal Note:</label>
+                            <div className="relative">
+                              <Textarea
+                                value={formData.personalNote}
+                                onChange={(e) => {
+                                  const text = e.target.value
+                                  if (text.length <= 200) {
+                                    setFormData({ ...formData, personalNote: text })
+                                  }
+                                }}
+                                placeholder="Add a personal message (optional)"
+                                className="mt-1 border-gray-300 text-base"
+                                rows={2}
+                                maxLength={200}
+                              />
+                              <div
+                                className={`absolute bottom-2 right-2 text-xs font-medium ${
+                                  formData.personalNote.length > 180
+                                    ? "text-red-500"
+                                    : "text-gray-400"
+                                }`}
+                              >
+                                {formData.personalNote.length}/200
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="text-left mb-5">
+                          <span className="font-bold text-gray-800 text-lg" style={{ fontFamily: "Georgia, serif" }}>Total: $0.00</span>
+                        </div>
+
+                        <div className="flex justify-end">
+                          <button
+                            onClick={generateShareableLink}
+                            className="px-10 py-3 rounded font-bold text-xl text-white transition-all"
+                            style={{
+                              background: 'linear-gradient(180deg, #4CD964, #34C759)',
+                              boxShadow: '0 3px 8px rgba(0,0,0,0.2)',
+                            }}
+                            disabled={!formData.from || !formData.to}
+                          >
+                            Send
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="max-w-sm mx-auto">
+                        {renderCardContent()}
+                      </div>
+                    )}
                   </div>
-                </div>
+                ) : null}
+              </div>
+            </div>
+
+            <div className="mt-auto pb-2">
+              <div className="flex justify-center mb-3">
+                <button
+                  onClick={() => {
+                    setCurrentScreen("library")
+                    setSelectedCard(null)
+                  }}
+                  className="text-white/80 hover:text-white text-sm underline transition-colors"
+                >
+                  Back to Library
+                </button>
               </div>
 
-              <Button
-                onClick={generateShareableLink}
-                className="w-full bg-green-600 hover:bg-green-700 text-white py-3 text-lg font-bold"
-                disabled={!formData.from || !formData.to}
+              <div
+                className="py-3"
+                style={{
+                  background: 'linear-gradient(180deg, #3d3d3d, #2a2a2a)',
+                }}
               >
-                <Share2 className="w-4 h-4 mr-2" />
-                Generate Share Link
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Card preview */}
-          <div className="mt-6 max-w-md mx-auto">
-            {renderCardContent()}
-
-            <div className="flex justify-center gap-2 mt-4">
-              <Button
-                variant={cardView === "cover" ? "default" : "outline"}
-                onClick={() => setCardView("cover")}
-                className="bg-teal-600 hover:bg-teal-700"
-              >
-                Front
-              </Button>
-              <Button
-                variant={cardView === "centerfold" ? "default" : "outline"}
-                onClick={() => setCardView("centerfold")}
-              >
-                Inside
-              </Button>
-              <Button variant={cardView === "back" ? "default" : "outline"} onClick={() => setCardView("back")}>
-                Back
-              </Button>
+                <CardViewTabs />
+              </div>
             </div>
           </div>
-
-          <div className="text-center mt-6">
-            <Button
-              variant="outline"
-              onClick={() => {
-                setCurrentScreen("library")
-                setSelectedCard(null)
-              }}
-            >
-              Back to Library
-            </Button>
-          </div>
         </div>
-      </div>
+      </BookshelfBackground>
     )
   }
 
-  // Share Link Screen
   if (currentScreen === "shareLink") {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-100 to-purple-200 flex items-center justify-center p-4">
-        <Card className="max-w-md w-full bg-white/95 shadow-xl">
-          <CardContent className="p-6">
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Share2 className="w-8 h-8 text-green-600" />
+      <BookshelfBackground>
+        <div className="relative z-10 flex flex-col min-h-screen">
+          <div className="flex justify-between items-center px-4 py-3 bg-[#4EAAA2] text-white">
+            <div className="text-lg font-bold" style={{ fontFamily: "Georgia, serif" }}>Card Ready!</div>
+            <div></div>
+          </div>
+
+          <div className="flex-1 flex items-center justify-center px-4">
+            <div
+              className="w-full max-w-sm rounded-lg p-6"
+              style={{
+                background: 'linear-gradient(180deg, #f5ecd0 0%, #ede0b8 100%)',
+                border: '2px solid #b8a060',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+              }}
+            >
+              <div className="text-center mb-5">
+                <div className="w-14 h-14 bg-[#4CD964] rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Share2 className="w-7 h-7 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2" style={{ fontFamily: "Georgia, serif" }}>Card Ready to Share!</h2>
+                <p className="text-gray-600 text-sm">Share the link below with someone special:</p>
               </div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">Card Ready to Share!</h2>
-              <p className="text-gray-600">Your personalized greeting card is ready. Share the link below:</p>
+
+              <div className="space-y-4">
+                <div className="p-3 bg-white rounded-lg border border-gray-300">
+                  <p className="text-sm text-gray-600 break-all">{shareableLink}</p>
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={copyToClipboard}
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border-2 border-gray-300 rounded font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                  >
+                    <Copy className="w-4 h-4" />
+                    Copy
+                  </button>
+                  <button
+                    onClick={shareLink}
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded font-bold text-white transition-colors"
+                    style={{ background: 'linear-gradient(180deg, #4CD964, #34C759)' }}
+                  >
+                    <Share2 className="w-4 h-4" />
+                    Share
+                  </button>
+                </div>
+
+                <div className="text-center pt-2">
+                  <button
+                    onClick={() => {
+                      setCurrentScreen("categories")
+                      setSelectedCard(null)
+                      setSelectedCategory(null)
+                      setFormData({ from: "", to: "", personalNote: "" })
+                      setShareableLink("")
+                    }}
+                    className="text-[#4EAAA2] font-medium hover:underline"
+                    style={{ fontFamily: "Georgia, serif" }}
+                  >
+                    Create Another Card
+                  </button>
+                </div>
+              </div>
             </div>
+          </div>
 
-            <div className="space-y-4">
-              <div className="p-3 bg-gray-50 rounded-lg border">
-                <p className="text-sm text-gray-600 break-all">{shareableLink}</p>
-              </div>
-
-              <div className="flex gap-2">
-                <Button onClick={copyToClipboard} className="flex-1" variant="outline">
-                  <Copy className="w-4 h-4 mr-2" />
-                  Copy Link
-                </Button>
-                <Button onClick={shareLink} className="flex-1 bg-green-600 hover:bg-green-700">
-                  <Share2 className="w-4 h-4 mr-2" />
-                  Share
-                </Button>
-              </div>
-
-              <div className="text-center pt-4">
-                <Button
-                  variant="ghost"
-                  onClick={() => {
-                    setCurrentScreen("categories")
-                    setSelectedCard(null)
-                    setSelectedCategory(null)
-                    setFormData({ from: "", to: "", personalNote: "" })
-                    setShareableLink("")
-                  }}
-                >
-                  Create Another Card
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          <CloudDecoration className="bottom-0 left-0 -mb-4 -ml-8" />
+        </div>
+      </BookshelfBackground>
     )
   }
 
-  // View Card Screen
   if (currentScreen === "viewCard") {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-100 to-purple-200">
-        <div className="flex justify-between items-center p-4 bg-purple-800 text-white">
-          <div className="text-lg font-bold">Greeting Card</div>
-          <div className="text-sm">
-            From: {sharedCardData?.from} → To: {sharedCardData?.to}
+      <BookshelfBackground>
+        <div className="relative z-10 flex flex-col min-h-screen">
+          <div className="flex justify-between items-center px-4 py-3 bg-[#4EAAA2] text-white">
+            <div className="text-lg font-bold" style={{ fontFamily: "Georgia, serif" }}>Greeting Card</div>
+            <div className="text-sm" style={{ fontFamily: "Georgia, serif" }}>
+              From: {sharedCardData?.from} → To: {sharedCardData?.to}
+            </div>
           </div>
-        </div>
 
-        <div className="p-4">
-          <div className="max-w-md mx-auto">
-            <h2 className="text-2xl font-bold text-center mb-6 text-purple-800">{sharedCardData?.card.title}</h2>
-
-            {renderCardContent(sharedCardData?.card, sharedCardData)}
-
-            <div className="flex justify-center gap-2 mt-4">
-              <Button
-                variant={cardView === "cover" ? "default" : "outline"}
-                onClick={() => setCardView("cover")}
-                className="bg-teal-600 hover:bg-teal-700"
-              >
-                Front
-              </Button>
-              <Button
-                variant={cardView === "centerfold" ? "default" : "outline"}
-                onClick={() => setCardView("centerfold")}
-              >
-                Inside
-              </Button>
-              <Button variant={cardView === "back" ? "default" : "outline"} onClick={() => setCardView("back")}>
-                Back
-              </Button>
+          <div className="flex-1 flex flex-col">
+            <div className="px-4 pt-2">
+              <div className="min-h-[60px]"></div>
+              <WoodenShelf />
             </div>
 
-            <div className="text-center mt-8">
-              <Button
-                onClick={() => {
-                  setIsViewingSharedCard(false)
-                  setSharedCardData(null)
-                  setCurrentScreen("categories")
-                  window.history.replaceState({}, document.title, window.location.pathname)
+            <div className="flex-1 flex items-start justify-center px-4 -mt-2 relative z-20">
+              <div className="w-full max-w-sm">
+                <h2
+                  className="text-xl font-bold text-center mb-3 text-white drop-shadow-lg"
+                  style={{ fontFamily: "Georgia, serif", textShadow: '0 2px 4px rgba(0,0,0,0.4)' }}
+                >
+                  {sharedCardData?.card.title}
+                </h2>
+                {renderCardContent(sharedCardData?.card, sharedCardData)}
+
+                <div className="text-center mt-6">
+                  <button
+                    onClick={() => {
+                      setIsViewingSharedCard(false)
+                      setSharedCardData(null)
+                      setCurrentScreen("categories")
+                      window.history.replaceState({}, document.title, window.location.pathname)
+                    }}
+                    className="px-6 py-3 bg-[#4EAAA2] hover:bg-[#3d8f88] text-white rounded font-bold transition-colors"
+                    style={{ fontFamily: "Georgia, serif" }}
+                  >
+                    Create Your Own Card
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-auto">
+              <div
+                className="py-3"
+                style={{
+                  background: 'linear-gradient(180deg, #3d3d3d, #2a2a2a)',
                 }}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3"
               >
-                Create Your Own Card
-              </Button>
+                <CardViewTabs />
+              </div>
             </div>
           </div>
+
+          <CloudDecoration className="bottom-12 left-0 -ml-8" />
         </div>
-      </div>
+      </BookshelfBackground>
     )
   }
 
