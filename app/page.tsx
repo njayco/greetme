@@ -112,7 +112,23 @@ export default function GreetingCardsApp() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search)
     const payment = urlParams.get("payment")
-    if (payment === "success") {
+    const shareId = urlParams.get("shareId")
+    if (payment === "success" && shareId) {
+      const domain = window.location.origin
+      setShareableLink(`${domain}/c/${shareId}`)
+      setCurrentScreen("shareLink")
+
+      const sessionId = urlParams.get("session_id")
+      if (sessionId) {
+        fetch('/api/send-confirmation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId, shareId }),
+        }).catch(err => console.error('Email send error:', err))
+      }
+
+      window.history.replaceState({}, document.title, window.location.pathname)
+    } else if (payment === "success") {
       setPaymentStatus("success")
       window.history.replaceState({}, document.title, window.location.pathname)
     } else if (payment === "cancelled") {
@@ -218,13 +234,28 @@ export default function GreetingCardsApp() {
     if (cardPrice > 0 && stripeProduct?.priceId) {
       setIsProcessingPayment(true)
       try {
+        const shareResponse = await fetch('/api/share', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            cardId: selectedCard.id,
+            from: formData.from,
+            to: formData.to,
+            note: formData.personalNote,
+          }),
+        })
+        const shareData = await shareResponse.json()
+        const shareId = shareData.id || ''
+
         const response = await fetch('/api/checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             priceId: stripeProduct.priceId,
             cardTitle: selectedCard.title,
-            successUrl: `${window.location.origin}/?payment=success`,
+            shareId,
+            senderName: formData.from,
+            successUrl: `${window.location.origin}/?payment=success&shareId=${shareId}&session_id={CHECKOUT_SESSION_ID}`,
             cancelUrl: `${window.location.origin}/?payment=cancelled`,
           }),
         })

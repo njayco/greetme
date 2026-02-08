@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     await initStripe();
 
-    const { priceId, cardTitle, successUrl, cancelUrl } = await request.json();
+    const { priceId, cardTitle, shareId, senderName, successUrl, cancelUrl } = await request.json();
 
     if (!priceId) {
       return NextResponse.json({ error: 'priceId is required' }, { status: 400 });
@@ -24,6 +24,8 @@ export async function POST(request: NextRequest) {
       cancel_url: cancelUrl || `${origin}/?payment=cancelled`,
       metadata: {
         cardTitle: cardTitle || '',
+        shareId: shareId || '',
+        senderName: senderName || '',
       },
     });
 
