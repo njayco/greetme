@@ -1,0 +1,60 @@
+You are my senior Next.js security + build engineer.
+
+Context:
+- The Security & Privacy Scanner reports outdated/vulnerable deps:
+  - next@15.2.4 -> 15.0.5 / 15.0.8 / 14.2.34 (weird because these are downgrades)
+  - glob@10.4.5 -> 11.1.0
+- However, my project is already running on Next.js 15.5.12 and compiles fine.
+- The agent claims next@15.2.4 and glob@10.4.5 are not present in the current lockfile; likely the scanner is reading stale cached state or an old lockfile/nested dependency reference.
+
+Goal:
+Make the scanner findings go away in a clean, reproducible way (not just “works on my machine”), and document exactly what changed.
+
+Instructions:
+1) First, prove or disprove the scanner’s claim with hard evidence.
+   - Search for the exact strings "next@15.2.4", "glob@10.4.5", "next@14.2.34", "next@15.0.5", "next@15.0.8" across:
+     - package.json
+     - package-lock.json / pnpm-lock.yaml / yarn.lock (whichever exists)
+     - any .replit / build cache / deployment config files
+   - Print the command output and file paths where matches occur (if any).
+
+2) Identify which package manager is actually in use (npm/pnpm/yarn) and enforce ONE.
+   - If multiple lockfiles exist, pick the correct one and delete the others.
+   - Ensure the install command used by the platform matches the chosen lockfile.
+
+3) Do a fully clean dependency rebuild to eliminate stale cache problems:
+   - Remove node_modules
+   - Remove the lockfile (only the active one) and regenerate it from scratch
+   - Clear platform caches if applicable (e.g., .next, .turbo, any .cache folders)
+   - Reinstall with a deterministic command (e.g., npm ci if lockfile is trusted; otherwise npm install to regenerate)
+   - Re-run: `npm audit --production` (or pnpm/yarn equivalent) and show results.
+
+4) Pin/override any nested vulnerable dependency if it truly exists:
+   - If glob is found as a transitive dependency, identify the parent package pulling it in (`npm ls glob` / `pnpm why glob` / `yarn why glob`)
+   - Upgrade the parent package if possible.
+   - If needed, add an override:
+     - npm: "overrides"
+     - pnpm: "pnpm.overrides"
+     - yarn: "resolutions"
+   - Only do overrides if you can confirm the vulnerable version is actually installed.
+
+5) Next.js handling:
+   - Do NOT downgrade Next.js. Keep it at the latest compatible stable version already working (currently 15.5.12).
+   - Confirm with `npm ls next` (or equivalent) that only one Next version is installed.
+   - If multiple Next versions exist, dedupe / resolve.
+
+6) Validation:
+   - Run `npm run build` and `npm run start` (or `next build` / `next start`) and confirm no runtime errors.
+   - Re-run the platform’s Security & Privacy scan (or explain exactly what to click / rerun).
+   - Provide a concise final report:
+     - root cause (stale cache vs actual nested dep)
+     - commands run
+     - files changed
+     - before/after versions
+     - how to prevent recurrence.
+
+Output format:
+- Start with “Findings” (evidence from searches and dependency tree)
+- Then “Fix applied” (steps + diffs)
+- Then “Verification” (audit/build/run results)
+- Then “Prevention” (1–3 bullets)
