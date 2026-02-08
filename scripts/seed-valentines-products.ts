@@ -181,6 +181,12 @@ const paidCards = [
     metadata: { cardId: "59", category: "valentines-day" },
     priceInCents: 149,
   },
+  {
+    name: "Valentine's - The Raven's Truth",
+    description: "Raven painting Valentine's Day card",
+    metadata: { cardId: "60", category: "valentines-day" },
+    priceInCents: 214,
+  },
 ];
 
 async function seedProducts() {
