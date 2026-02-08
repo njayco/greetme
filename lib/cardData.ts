@@ -304,6 +304,15 @@ export const cardCategories: Record<string, CategoryType> = {
         back: "Koala-fied for your love!",
         price: 1.49,
       },
+      {
+        id: 60,
+        title: "The Raven's Truth",
+        cover: "/images/valentine-raven.jpeg",
+        centerfold:
+          "I asked the raven what love was—\nIt answered not with sound, but truth.\nIt stayed.",
+        back: "Love stays. Always.",
+        price: 2.14,
+      },
     ],
   },
   "fathers-day": {
