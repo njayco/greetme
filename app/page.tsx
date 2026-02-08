@@ -9,7 +9,74 @@ import { Textarea } from "@/components/ui/textarea"
 import { Progress } from "@/components/ui/progress"
 import { Eye, EyeOff, ChevronLeft, ChevronRight, Copy, Share2, ArrowLeft } from "lucide-react"
 
-const cardCategories: Record<string, { name: string; color: string; cards: { id: number; title: string; cover: string; centerfold: string; back: string }[] }> = {
+const cardCategories: Record<string, { name: string; color: string; cards: { id: number; title: string; cover: string; centerfold: string; back: string; price?: number }[] }> = {
+  "valentines-day": {
+    name: "Valentine's Day",
+    color: "red",
+    cards: [
+      {
+        id: 28,
+        title: "Cupid's Arrow",
+        cover: "/images/valentine-cupid-heart.png",
+        centerfold:
+          "You've shot your arrow straight into my heart! Every moment with you feels like a fairy tale, and I wouldn't trade it for the world. You make my heart skip a beat every single day.",
+        back: "Struck by love, forever yours!",
+        price: 0.99,
+      },
+      {
+        id: 29,
+        title: "Pizza My Heart",
+        cover: "/images/valentine-pizza-heart.png",
+        centerfold:
+          "You've got a pizza my heart, and I never want it back! Just like the perfect slice, you're cheesy, warm, and absolutely irresistible. Life with you is always a party!",
+        back: "You're the topping to my pizza!",
+        price: 0.99,
+      },
+      {
+        id: 30,
+        title: "Bee Mine",
+        cover: "/images/valentine-bee-mine.png",
+        centerfold:
+          "Will you BEE mine? You make my heart buzz with joy! Like honey, you sweeten every moment of my life. I'm completely smitten and buzzing with love for you!",
+        back: "Buzzing with love for you!",
+      },
+      {
+        id: 31,
+        title: "Roses & Gold",
+        cover: "/images/valentine-roses-heart.png",
+        centerfold:
+          "Like the finest roses, your beauty and grace take my breath away. Every petal reminds me of another reason I love you. You are the most precious treasure in my life.",
+        back: "My love blooms for you eternally!",
+        price: 0.99,
+      },
+      {
+        id: 32,
+        title: "Purrfect Love",
+        cover: "/images/valentine-cat-balloon.png",
+        centerfold:
+          "You're absolutely purrfect and I'm not kitten around! My heart floats like a balloon whenever you're near. You've got me feline so in love!",
+        back: "You're the cat's meow!",
+        price: 0.99,
+      },
+      {
+        id: 33,
+        title: "Cup of Love",
+        cover: "/images/valentine-coffee-love.png",
+        centerfold:
+          "You're my favorite cup of love! Like the perfect brew, you warm my soul and give me energy to face anything. I love you a latte, and that's no mocha-ry!",
+        back: "You keep me brewing with happiness!",
+        price: 0.99,
+      },
+      {
+        id: 34,
+        title: "Bear Hug",
+        cover: "/images/valentine-panda-hug.png",
+        centerfold:
+          "Sending you the biggest bear hug! You make my heart as full as a panda eating bamboo. I'm so grateful to have you, and I just want to hold you close forever!",
+        back: "Bear hugs and all my love!",
+      },
+    ],
+  },
   "fathers-day": {
     name: "Father's Day",
     color: "yellow",
@@ -345,8 +412,34 @@ export default function GreetingCardsApp() {
   })
   const [isViewingSharedCard, setIsViewingSharedCard] = useState(false)
   const [sharedCardData, setSharedCardData] = useState<any>(null)
+  const [stripeProducts, setStripeProducts] = useState<Record<string, { productId: string; priceId: string; unitAmount: number; currency: string }>>({})
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false)
+  const [paymentStatus, setPaymentStatus] = useState<string | null>(null)
 
   const cardsPerPage = 8
+
+  useEffect(() => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => {
+        if (data.products) {
+          setStripeProducts(data.products)
+        }
+      })
+      .catch(err => console.error('Error loading products:', err))
+  }, [])
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const payment = urlParams.get("payment")
+    if (payment === "success") {
+      setPaymentStatus("success")
+      window.history.replaceState({}, document.title, window.location.pathname)
+    } else if (payment === "cancelled") {
+      setPaymentStatus("cancelled")
+      window.history.replaceState({}, document.title, window.location.pathname)
+    }
+  }, [])
 
   useEffect(() => {
     if (currentScreen === "loading") {
@@ -422,6 +515,42 @@ export default function GreetingCardsApp() {
     const link = `${baseUrl}?${params.toString()}`
     setShareableLink(link)
     setCurrentScreen("shareLink")
+  }
+
+  const handleSendCard = async () => {
+    if (!selectedCard || !formData.from || !formData.to) return
+
+    const cardPrice = selectedCard.price || 0
+    const stripeProduct = stripeProducts[selectedCard.id.toString()]
+
+    if (cardPrice > 0 && stripeProduct?.priceId) {
+      setIsProcessingPayment(true)
+      try {
+        const response = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            priceId: stripeProduct.priceId,
+            cardTitle: selectedCard.title,
+            successUrl: `${window.location.origin}/?payment=success`,
+            cancelUrl: `${window.location.origin}/?payment=cancelled`,
+          }),
+        })
+        const data = await response.json()
+        if (data.url) {
+          window.location.href = data.url
+        } else {
+          alert('Error creating checkout. Please try again.')
+          setIsProcessingPayment(false)
+        }
+      } catch (error) {
+        console.error('Checkout error:', error)
+        alert('Error processing payment. Please try again.')
+        setIsProcessingPayment(false)
+      }
+    } else {
+      generateShareableLink()
+    }
   }
 
   const copyToClipboard = async () => {
@@ -696,6 +825,26 @@ export default function GreetingCardsApp() {
     return (
       <BookshelfBackground>
         <div className="relative z-10 p-6">
+          {paymentStatus && (
+            <div className={`mb-4 p-4 rounded-lg text-center max-w-md mx-auto ${
+              paymentStatus === 'success'
+                ? 'bg-green-100 border border-green-400 text-green-800'
+                : 'bg-yellow-100 border border-yellow-400 text-yellow-800'
+            }`}>
+              <p className="font-bold text-lg" style={{ fontFamily: "Georgia, serif" }}>
+                {paymentStatus === 'success'
+                  ? 'Payment Successful! Your card has been sent.'
+                  : 'Payment was cancelled. You can try again anytime.'}
+              </p>
+              <button
+                onClick={() => setPaymentStatus(null)}
+                className="mt-2 text-sm underline opacity-70 hover:opacity-100"
+              >
+                Dismiss
+              </button>
+            </div>
+          )}
+
           <h1
             className="text-4xl font-bold text-center text-white mb-8 drop-shadow-lg"
             style={{ fontFamily: "cursive", textShadow: '0 2px 6px rgba(0,0,0,0.4)' }}
@@ -775,7 +924,7 @@ export default function GreetingCardsApp() {
                   <button
                     key={card.id}
                     onClick={() => handleCardSelect(card)}
-                    className="transform hover:scale-110 hover:-translate-y-2 transition-all duration-200 flex-shrink-0"
+                    className="transform hover:scale-110 hover:-translate-y-2 transition-all duration-200 flex-shrink-0 relative"
                   >
                     <img
                       src={card.cover || "/placeholder.svg"}
@@ -785,6 +934,11 @@ export default function GreetingCardsApp() {
                         boxShadow: '2px 4px 8px rgba(0,0,0,0.4)',
                       }}
                     />
+                    {card.price && card.price > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-md">
+                        ${card.price.toFixed(2)}
+                      </span>
+                    )}
                   </button>
                 ))}
               </div>
@@ -798,7 +952,7 @@ export default function GreetingCardsApp() {
                     <button
                       key={card.id}
                       onClick={() => handleCardSelect(card)}
-                      className="transform hover:scale-110 hover:-translate-y-2 transition-all duration-200 flex-shrink-0"
+                      className="transform hover:scale-110 hover:-translate-y-2 transition-all duration-200 flex-shrink-0 relative"
                     >
                       <img
                         src={card.cover || "/placeholder.svg"}
@@ -808,6 +962,11 @@ export default function GreetingCardsApp() {
                           boxShadow: '2px 4px 8px rgba(0,0,0,0.4)',
                         }}
                       />
+                      {card.price && card.price > 0 && (
+                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-md">
+                          ${card.price.toFixed(2)}
+                        </span>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -888,18 +1047,20 @@ export default function GreetingCardsApp() {
       <BookshelfBackground>
         <div className="relative z-10 flex flex-col min-h-screen">
           <div className="flex justify-between items-center px-4 py-3 bg-[#4EAAA2] text-white">
-            <div className="text-lg font-bold" style={{ fontFamily: "Georgia, serif" }}>Price: $0.00</div>
+            <div className="text-lg font-bold" style={{ fontFamily: "Georgia, serif" }}>
+              Price: ${selectedCard?.price ? selectedCard.price.toFixed(2) : '0.00'}
+            </div>
             <button
-              onClick={generateShareableLink}
-              className="px-6 py-2 rounded font-bold text-lg transition-all"
+              onClick={handleSendCard}
+              className="px-6 py-2 rounded font-bold text-lg transition-all disabled:opacity-50"
               style={{
                 background: 'linear-gradient(180deg, #f48fb1, #e57399)',
                 color: 'white',
                 boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
               }}
-              disabled={!formData.from || !formData.to}
+              disabled={!formData.from || !formData.to || isProcessingPayment}
             >
-              Send
+              {isProcessingPayment ? 'Processing...' : 'Send'}
             </button>
           </div>
 
@@ -987,20 +1148,22 @@ export default function GreetingCardsApp() {
                         </div>
 
                         <div className="text-left mb-5">
-                          <span className="font-bold text-gray-800 text-lg" style={{ fontFamily: "Georgia, serif" }}>Total: $0.00</span>
+                          <span className="font-bold text-gray-800 text-lg" style={{ fontFamily: "Georgia, serif" }}>
+                            Total: ${selectedCard?.price ? selectedCard.price.toFixed(2) : '0.00'}
+                          </span>
                         </div>
 
                         <div className="flex justify-end">
                           <button
-                            onClick={generateShareableLink}
-                            className="px-10 py-3 rounded font-bold text-xl text-white transition-all"
+                            onClick={handleSendCard}
+                            className="px-10 py-3 rounded font-bold text-xl text-white transition-all disabled:opacity-50"
                             style={{
                               background: 'linear-gradient(180deg, #4CD964, #34C759)',
                               boxShadow: '0 3px 8px rgba(0,0,0,0.2)',
                             }}
-                            disabled={!formData.from || !formData.to}
+                            disabled={!formData.from || !formData.to || isProcessingPayment}
                           >
-                            Send
+                            {isProcessingPayment ? 'Processing...' : 'Send'}
                           </button>
                         </div>
                       </div>
