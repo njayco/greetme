@@ -1,0 +1,142 @@
+You are a senior full-stack engineer. Integrate Tremendous into my web app GreetMe.me to allow customers to add a “Virtual Visa Gift” to a digital greeting card.
+
+CONTEXT
+- GreetMe.me sells digital greeting cards (digital goods).
+- Site is simple: no login required.
+- Payments are via Stripe.
+- Add-on: customer can include a Virtual Visa prepaid gift to the greeting card.
+- Customer can choose fixed amounts AND custom amounts.
+- We charge an additional 2% service fee on the gift card amount (in addition to the gift value).
+- After payment succeeds, we issue the Visa via Tremendous and deliver it to the recipient alongside the greeting card.
+- The recipient must be able to add the Visa to Apple Pay / Google Pay when supported. This should be done through Tremendous’ claim experience for “Virtual Visa” (wallet provisioning happens on their side if the specific product supports it). We should show “Add to Apple Pay / Google Pay (where available)” language and send the Tremendous claim link.
+
+REQUIREMENTS (MUST)
+1) UI/UX
+   - On the “Create Greeting Card” flow, add an optional toggle: “Add Virtual Visa Gift”.
+   - When enabled, show:
+     - Fixed amount buttons: $10, $25, $50, $100, $200
+     - Custom amount input: allow $5–$500 (hard limits).
+     - Display a breakdown:
+       - Greeting Card Price (existing)
+       - Gift Value (selected amount)
+       - Greet Me Gift Service Fee = 2% of Gift Value
+       - Stripe processing should NOT be shown as line item to user (we absorb it).
+       - Total = card price + gift value + service fee
+   - Validate custom amounts (numbers only, min/max, no decimals or allow cents? Prefer whole dollars only).
+   - Add clear text: “Recipient can add the Visa to Apple Pay / Google Pay where available.”
+
+2) Payments (Stripe)
+   - Use Stripe PaymentIntent (or Checkout Session if already used).
+   - Ensure the total charge includes:
+     total = cardPrice + giftAmount + (giftAmount * 0.02)
+   - Store metadata:
+     - order_id
+     - gift_amount
+     - service_fee
+     - recipient_email and/or recipient_phone
+     - card_template_id
+   - Use Stripe webhooks to confirm payment success before issuing the Visa.
+
+3) Tremendous Issuance (Server-side)
+   - Integrate Tremendous API server-side ONLY (never expose API key to client).
+   - After Stripe webhook confirms payment succeeded:
+     - Create a Tremendous “reward” for a Virtual Visa product (use Tremendous’ Virtual Visa option).
+     - Use the recipient email (and phone if available) to deliver the claim.
+     - Attach order reference in Tremendous request for reconciliation.
+   - Save the returned Tremendous reward ID and claim link (or redemption details) to the order record.
+   - IMPORTANT: Idempotency — if webhook retries, do not issue a second reward:
+     - Use order status + Tremendous reward ID check
+     - Use Stripe event id as idempotency key
+     - Prefer Tremendous idempotency header if available in their API.
+
+4) Delivery
+   - After Tremendous reward is created, deliver the greeting card + gift link to recipient:
+     - If app already sends emails/SMS, extend it.
+     - If no sending exists, implement minimal email sending via SendGrid (or Resend) with env vars:
+       - EMAIL_PROVIDER_API_KEY
+       - FROM_EMAIL
+     - Email content:
+       - Greeting card message + link to view the card on GreetMe.me
+       - A button: “Claim your Virtual Visa Gift”
+       - Note: “Add to Apple Pay / Google Pay where available” (do not promise universally)
+   - Also show a confirmation page to the purchaser with share links.
+
+5) Data Model / Storage
+   - Add a persistent Orders table (SQLite/Postgres depending on current app; use Prisma if Next.js):
+     Fields:
+       id (uuid)
+       created_at
+       purchaser_email (optional)
+       recipient_email (required if using email)
+       recipient_phone (optional)
+       card_template_id
+       card_message
+       card_price_cents
+       gift_amount_cents
+       service_fee_cents
+       total_cents
+       stripe_payment_intent_id (or session id)
+       stripe_status
+       tremendous_reward_id (nullable)
+       tremendous_status (nullable)
+       tremendous_claim_link (nullable)
+       status enum: DRAFT | PAID | ISSUED | DELIVERED | FAILED
+       last_error (nullable)
+   - Ensure all money stored in cents (integers).
+
+6) Security & Compliance
+   - Never store full Visa card details; only store Tremendous reward ID + claim link.
+   - Sanitize user inputs, rate limit issuance endpoints, and protect webhooks.
+   - Add webhook signature verification for Stripe.
+   - Add basic fraud controls:
+     - max gift amount per order: $500
+     - block repeated attempts from same IP quickly (simple rate limit)
+
+7) Wallet support (Apple Pay / Google Pay)
+   - Use Tremendous “Virtual Visa” claim experience; wallet add is handled by issuer/provider.
+   - In UI and email copy, say: “Add to Apple Pay / Google Pay where available.”
+   - Do NOT build direct Apple Pay provisioning; just ensure claim link is delivered and accessible on mobile.
+
+IMPLEMENTATION DETAILS (ASSUME)
+- If stack is Next.js:
+  - Create API routes:
+    - POST /api/orders/create (creates draft order and Stripe PaymentIntent)
+    - POST /api/stripe/webhook (handles payment_intent.succeeded)
+  - Add /card/[orderId] to render greeting card + claim button for recipient.
+- If stack is not Next.js, adapt accordingly but keep architecture.
+
+ENV VARS
+- STRIPE_SECRET_KEY
+- STRIPE_WEBHOOK_SECRET
+- TREMENDOUS_API_KEY
+- TREMENDOUS_ENV (sandbox|production)
+- TREMENDOUS_FUNDING_SOURCE_ID (if needed)
+- TREMENDOUS_VIRTUAL_VISA_PRODUCT_ID (or lookup by name in init step)
+- EMAIL_PROVIDER_API_KEY (SendGrid/Resend)
+- FROM_EMAIL
+- APP_BASE_URL
+
+DELIVERABLES
+- Working end-to-end flow in sandbox:
+  1) Select card → add Visa gift (fixed/custom) → pay
+  2) Stripe webhook triggers issuance
+  3) Tremendous reward created
+  4) Recipient receives email with greeting card + claim link
+  5) Recipient opens claim link on mobile and can add to Apple Pay/Google Pay where available
+- Include a README section:
+  - How to run locally
+  - How to set env vars
+  - How to test with Stripe CLI
+  - How to switch Tremendous sandbox to production
+
+QUALITY BAR
+- Clean code, error handling, logs, and idempotent issuance.
+- Unit tests for fee calculation and amount validation.
+- Avoid double issuance in all cases.
+
+Start by scanning the existing codebase to identify the framework and current Stripe integration. Then implement the minimal changes required to meet all requirements above.
+
+When creating a new greeting card add a selection that reads gift card which will be optional. If there is no gift card sent in the greeting card the gift card selection will not be visible in the shared link.
+
+Tremendous offers three ways to deliver rewards:
+On the shared greeting card gift card section will be link to deliver the greeting card
