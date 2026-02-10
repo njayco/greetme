@@ -21,6 +21,11 @@ app/api/products/            - Stripe products listing API
 app/api/share/               - Short link creation API
 app/api/send-confirmation/   - Purchase confirmation email API
 app/api/stripe/webhook/      - Stripe webhook handler
+app/artists/                 - Greet Me for Artists card creation studio
+app/api/artists/upload/      - Artist image upload API
+app/api/artists/create/      - Artist card creation API (with Stripe for personal cards)
+app/api/artists/cards/       - Fetch approved public custom cards
+app/api/artists/confirm-payment/ - Confirm Stripe payment for personal cards
 app/c/[id]/                  - Dynamic share page with OG metadata
 components/                  - UI components (shadcn/ui)
 lib/                         - Utility functions
@@ -126,8 +131,18 @@ CategoryType: { name, color, group?, cards[] }
 - **Centerfold tab**: Preview of inside message with personal note
 - **Back tab**: Preview of back with From/To info
 
+## Greet Me for Artists
+- **URL**: `/artists`
+- **Features**: Upload cover image, write centerfold/back messages, select categories, preview card
+- **Personal cards**: $4.99 via Stripe checkout
+- **Catalog submissions**: Free (100% discount), cards become part of public library
+- **Flow**: Welcome > Upload Image > Write Messages > Choose Categories > Preview > Submit
+- **API routes**: `/api/artists/upload`, `/api/artists/create`, `/api/artists/cards`, `/api/artists/confirm-payment`
+- **Payment**: Stripe checkout with session_id tracking, payment confirmed on return
+
 ## Database Tables
 - `shared_cards` - Short link storage (id VARCHAR(8) PK, card_id, sender_name, recipient_name, personal_note, created_at)
+- `custom_cards` - Artist-created cards (id VARCHAR(8) PK, cover_image_url, centerfold_message, caption, back_message, category_ids TEXT[], creator_name, is_public, is_approved, is_paid, stripe_session_id, created_at)
 - `stripe.*` - Stripe sync tables (managed by stripe-replit-sync)
 
 ## Design Theme

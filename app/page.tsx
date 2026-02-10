@@ -590,6 +590,26 @@ export default function GreetingCardsApp() {
             GreetMe - Choose a Category
           </h1>
 
+          <div className="max-w-4xl mx-auto mb-6">
+            <a
+              href="/artists"
+              className="block w-full rounded-lg p-4 text-center transform hover:scale-[1.02] transition-all duration-300"
+              style={{
+                background: 'linear-gradient(135deg, #4EAAA2 0%, #3d8f88 100%)',
+                border: '2px solid #3d8f88',
+                boxShadow: '0 4px 16px rgba(78, 170, 162, 0.4)',
+              }}
+            >
+              <div className="flex items-center justify-center gap-3">
+                <span className="text-2xl">🎨</span>
+                <div>
+                  <h3 className="text-lg font-bold text-white" style={{ fontFamily: "Georgia, serif" }}>Create with Greet Me for Artists</h3>
+                  <p className="text-white/80 text-sm">Design your own custom greeting card</p>
+                </div>
+              </div>
+            </a>
+          </div>
+
           <div className="max-w-4xl mx-auto space-y-6">
             {categoryGroups.map((group) => (
               <div key={group.id}>

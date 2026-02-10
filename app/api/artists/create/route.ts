@@ -1,0 +1,106 @@
+import { NextRequest, NextResponse } from 'next/server';
+import pg from 'pg';
+import { getUncachableStripeClient } from '@/lib/stripeClient';
+import { initStripe } from '@/lib/initStripe';
+
+function generateId(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+  let result = '';
+  for (let i = 0; i < 7; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const {
+      coverUrl,
+      centerfold,
+      caption,
+      backMessage,
+      categories,
+      artistName,
+      addToCatalog,
+    } = body;
+
+    if (!coverUrl || !centerfold || !backMessage || !artistName) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    if (!categories || !Array.isArray(categories) || categories.length === 0) {
+      return NextResponse.json({ error: 'At least one category is required' }, { status: 400 });
+    }
+
+    if (centerfold.length > 250) {
+      return NextResponse.json({ error: 'Card message too long (max 250 chars)' }, { status: 400 });
+    }
+
+    const client = new pg.Client({ connectionString: process.env.DATABASE_URL });
+    await client.connect();
+
+    let cardId = generateId();
+    let attempts = 0;
+    while (attempts < 5) {
+      const existing = await client.query('SELECT id FROM custom_cards WHERE id = $1', [cardId]);
+      if (existing.rows.length === 0) break;
+      cardId = generateId();
+      attempts++;
+    }
+
+    const safeCreatorName = String(artistName).trim().slice(0, 100);
+    const safeCenterfold = String(centerfold).trim().slice(0, 250);
+    const safeCaption = caption ? String(caption).trim().slice(0, 100) : null;
+    const safeBack = String(backMessage).trim().slice(0, 100);
+    const isPublicBool = Boolean(addToCatalog);
+
+    await client.query(
+      `INSERT INTO custom_cards (id, cover_image_url, centerfold_message, caption, back_message, category_ids, creator_name, is_public, is_approved, is_paid)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+      [cardId, coverUrl, safeCenterfold, safeCaption, safeBack, categories, safeCreatorName, isPublicBool, isPublicBool, isPublicBool]
+    );
+
+    await client.end();
+
+    if (!isPublicBool) {
+      await initStripe();
+      const stripe = await getUncachableStripeClient();
+      const origin = request.headers.get('origin') || request.nextUrl.origin;
+
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [{
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'Custom Greeting Card',
+              description: `Custom card by ${safeCreatorName}`,
+            },
+            unit_amount: 499,
+          },
+          quantity: 1,
+        }],
+        mode: 'payment',
+        success_url: `${origin}/artists?payment=artist_success&cardId=${cardId}&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/artists?payment=artist_cancelled`,
+        metadata: {
+          customCardId: cardId,
+          creatorName: safeCreatorName,
+        },
+      });
+
+      const updateClient = new pg.Client({ connectionString: process.env.DATABASE_URL });
+      await updateClient.connect();
+      await updateClient.query('UPDATE custom_cards SET stripe_session_id = $1 WHERE id = $2', [session.id, cardId]);
+      await updateClient.end();
+
+      return NextResponse.json({ id: cardId, checkoutUrl: session.url });
+    }
+
+    return NextResponse.json({ id: cardId });
+  } catch (error: any) {
+    console.error('Create custom card error:', error.message);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
