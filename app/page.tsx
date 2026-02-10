@@ -482,7 +482,7 @@ export default function GreetingCardsApp() {
             <img
               src="/images/greetme-logo.png"
               alt="GreetMe - Spread Love, Share Joy"
-              className="relative z-10 w-[300px] sm:w-[400px] h-auto mx-auto"
+              className="relative z-10 w-full max-w-xs h-auto mx-auto"
             />
           </div>
 
