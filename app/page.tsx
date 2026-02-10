@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Progress } from "@/components/ui/progress"
 import { Eye, EyeOff, ChevronLeft, ChevronRight, Copy, Share2, ArrowLeft } from "lucide-react"
 
-import { cardCategories } from '@/lib/cardData';
+import { categoryGroups, cardCategories, type CategoryType, type SubcategoryType } from '@/lib/cardData';
 
 function CloudDecoration({ className = "" }: { className?: string }) {
   return (
@@ -95,6 +95,7 @@ export default function GreetingCardsApp() {
   const [stripeProducts, setStripeProducts] = useState<Record<string, { productId: string; priceId: string; unitAmount: number; currency: string }>>({})
   const [isProcessingPayment, setIsProcessingPayment] = useState(false)
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null)
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null)
 
   const cardsPerPage = 8
 
@@ -189,8 +190,17 @@ export default function GreetingCardsApp() {
 
   const handleCategorySelect = (categoryKey: string) => {
     setSelectedCategory(categoryKey)
+    setSelectedSubcategory(null)
     setCurrentPage(0)
     setCurrentScreen("library")
+  }
+
+  const findCategoryInfo = (categoryId: string) => {
+    for (const group of categoryGroups) {
+      const cat = group.categories.find(c => c.id === categoryId)
+      if (cat) return { category: cat, group }
+    }
+    return null
   }
 
   const handleCardSelect = (card: any) => {
@@ -314,15 +324,35 @@ export default function GreetingCardsApp() {
 
   const getCurrentPageCards = () => {
     if (!selectedCategory || !cardCategories[selectedCategory]) return []
-    const cards = cardCategories[selectedCategory].cards
+    let cards = cardCategories[selectedCategory].cards
+    if (selectedSubcategory) {
+      for (const group of categoryGroups) {
+        const cat = group.categories.find(c => c.id === selectedCategory)
+        if (cat) {
+          const sub = cat.subcategories.find(s => s.id === selectedSubcategory)
+          if (sub) cards = sub.cards
+          break
+        }
+      }
+    }
     const startIndex = currentPage * cardsPerPage
-    const endIndex = startIndex + cardsPerPage
-    return cards.slice(startIndex, endIndex)
+    return cards.slice(startIndex, startIndex + cardsPerPage)
   }
 
   const getTotalPages = () => {
     if (!selectedCategory || !cardCategories[selectedCategory]) return 0
-    return Math.ceil(cardCategories[selectedCategory].cards.length / cardsPerPage)
+    let cards = cardCategories[selectedCategory].cards
+    if (selectedSubcategory) {
+      for (const group of categoryGroups) {
+        const cat = group.categories.find(c => c.id === selectedCategory)
+        if (cat) {
+          const sub = cat.subcategories.find(s => s.id === selectedSubcategory)
+          if (sub) cards = sub.cards
+          break
+        }
+      }
+    }
+    return Math.ceil(cards.length / cardsPerPage)
   }
 
   const handleNextPage = () => {
@@ -561,28 +591,21 @@ export default function GreetingCardsApp() {
           </h1>
 
           <div className="max-w-4xl mx-auto space-y-6">
-            {(() => {
-              const groups: Record<string, [string, typeof cardCategories[string]][]> = {}
-              Object.entries(cardCategories).forEach(([key, cat]) => {
-                const group = cat.group || "Other"
-                if (!groups[group]) groups[group] = []
-                groups[group].push([key, cat])
-              })
-              const groupOrder = ["Popular Holidays", "National Holidays", "Religious & Cultural", "Celebrations", "Life Events", "Support & Sympathy", "Appreciation", "Feelings", "Other"]
-              const sortedGroups = groupOrder.filter(g => groups[g]).map(g => [g, groups[g]] as const)
-              return sortedGroups.map(([groupName, cats]) => (
-                <div key={groupName}>
-                  <h2
-                    className="text-xl font-bold text-amber-100 mb-3 px-1 drop-shadow"
-                    style={{ fontFamily: "Georgia, serif", textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}
-                  >
-                    {groupName}
-                  </h2>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {cats.map(([categoryKey, category]) => (
+            {categoryGroups.map((group) => (
+              <div key={group.id}>
+                <h2
+                  className="text-xl font-bold text-amber-100 mb-3 px-1 drop-shadow"
+                  style={{ fontFamily: "Georgia, serif", textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}
+                >
+                  {group.emoji} {group.name}
+                </h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {group.categories.map((category) => {
+                    const totalCards = category.subcategories.reduce((sum, sub) => sum + sub.cards.length, 0)
+                    return (
                       <button
-                        key={categoryKey}
-                        onClick={() => handleCategorySelect(categoryKey)}
+                        key={category.id}
+                        onClick={() => handleCategorySelect(category.id)}
                         className="group transform hover:scale-105 transition-all duration-300"
                       >
                         <div
@@ -594,17 +617,17 @@ export default function GreetingCardsApp() {
                           }}
                         >
                           <div className="w-10 h-10 bg-[#4EAAA2] rounded-full flex items-center justify-center mx-auto mb-2">
-                            <span className="text-white text-sm font-bold">{category.cards.length}</span>
+                            <span className="text-white text-sm font-bold">{totalCards}</span>
                           </div>
                           <h3 className="text-sm font-bold text-gray-800 mb-0.5 leading-tight" style={{ fontFamily: "Georgia, serif" }}>{category.name}</h3>
-                          <p className="text-gray-600 text-xs">{category.cards.length} {category.cards.length === 1 ? 'card' : 'cards'}</p>
+                          <p className="text-gray-600 text-xs">{totalCards} {totalCards === 1 ? 'card' : 'cards'}</p>
                         </div>
                       </button>
-                    ))}
-                  </div>
+                    )
+                  })}
                 </div>
-              ))
-            })()}
+              </div>
+            ))}
           </div>
 
           <CloudDecoration className="bottom-0 left-0 -mb-4 -ml-8" />
@@ -617,6 +640,7 @@ export default function GreetingCardsApp() {
     const currentCards = getCurrentPageCards()
     const totalPages = getTotalPages()
     const category = selectedCategory ? cardCategories[selectedCategory] : null
+    const categoryInfo = selectedCategory ? findCategoryInfo(selectedCategory) : null
 
     if (!category) {
       return <div>Category not found</div>
@@ -637,7 +661,7 @@ export default function GreetingCardsApp() {
               Categories
             </button>
             <h1 className="text-lg font-bold" style={{ fontFamily: "Georgia, serif" }}>
-              {category.name} Cards
+              {categoryInfo ? categoryInfo.category.name : category.name} Cards
             </h1>
             <button
               onClick={() => setShowInstructions(!showInstructions)}
@@ -646,6 +670,35 @@ export default function GreetingCardsApp() {
               {showInstructions ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
             </button>
           </div>
+
+          {categoryInfo && categoryInfo.category.subcategories.filter(s => s.cards.length > 0).length > 0 && (
+            <div className="px-4 py-2" style={{ background: 'rgba(120, 100, 70, 0.3)' }}>
+              <select
+                value={selectedSubcategory || ""}
+                onChange={(e) => {
+                  setSelectedSubcategory(e.target.value || null)
+                  setCurrentPage(0)
+                }}
+                className="w-full px-3 py-2 rounded text-sm font-medium"
+                style={{
+                  background: 'linear-gradient(180deg, #f5ecd0, #ede0b8)',
+                  border: '1px solid #b8a060',
+                  color: '#4a3728',
+                  fontFamily: 'Georgia, serif',
+                }}
+              >
+                <option value="">All Cards</option>
+                {categoryInfo.category.subcategories
+                  .filter(sub => sub.cards.length > 0)
+                  .map(sub => (
+                    <option key={sub.id} value={sub.id}>
+                      {sub.name} ({sub.cards.length})
+                    </option>
+                  ))
+                }
+              </select>
+            </div>
+          )}
 
           <div className="flex-1 relative">
             <div className="px-4 pt-6">
@@ -820,9 +873,11 @@ export default function GreetingCardsApp() {
                     style={{ border: '1px solid #ddd' }}
                   >
                     <h2 className="text-2xl font-bold text-center mb-5 text-gray-800" style={{ fontFamily: "Georgia, serif" }}>
-                      {selectedCategory && cardCategories[selectedCategory]
-                        ? `${cardCategories[selectedCategory].name} Greeting Card`
-                        : "Greeting Card"}
+                      {selectedCategory && findCategoryInfo(selectedCategory)
+                        ? `${findCategoryInfo(selectedCategory)!.category.name} Greeting Card`
+                        : selectedCategory && cardCategories[selectedCategory]
+                          ? `${cardCategories[selectedCategory].name} Greeting Card`
+                          : "Greeting Card"}
                     </h2>
 
                     <div className="space-y-4 mb-5">
