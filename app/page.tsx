@@ -577,29 +577,51 @@ export default function GreetingCardsApp() {
             GreetMe - Choose a Category
           </h1>
 
-          <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-4">
-            {Object.entries(cardCategories).map(([categoryKey, category]) => (
-              <button
-                key={categoryKey}
-                onClick={() => handleCategorySelect(categoryKey)}
-                className="group transform hover:scale-105 transition-all duration-300"
-              >
-                <div
-                  className="rounded-lg p-5 text-center"
-                  style={{
-                    background: 'linear-gradient(180deg, #f5ecd0 0%, #ede0b8 100%)',
-                    border: '2px solid #b8a060',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-                  }}
-                >
-                  <div className="w-12 h-12 bg-[#4EAAA2] rounded-full flex items-center justify-center mx-auto mb-3">
-                    <span className="text-white text-lg font-bold">{category.cards.length}</span>
+          <div className="max-w-4xl mx-auto space-y-6">
+            {(() => {
+              const groups: Record<string, [string, typeof cardCategories[string]][]> = {}
+              Object.entries(cardCategories).forEach(([key, cat]) => {
+                const group = cat.group || "Other"
+                if (!groups[group]) groups[group] = []
+                groups[group].push([key, cat])
+              })
+              const groupOrder = ["Popular Holidays", "National Holidays", "Religious & Cultural", "Celebrations", "Life Events", "Support & Sympathy", "Appreciation", "Feelings", "Other"]
+              const sortedGroups = groupOrder.filter(g => groups[g]).map(g => [g, groups[g]] as const)
+              return sortedGroups.map(([groupName, cats]) => (
+                <div key={groupName}>
+                  <h2
+                    className="text-xl font-bold text-amber-100 mb-3 px-1 drop-shadow"
+                    style={{ fontFamily: "Georgia, serif", textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}
+                  >
+                    {groupName}
+                  </h2>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {cats.map(([categoryKey, category]) => (
+                      <button
+                        key={categoryKey}
+                        onClick={() => handleCategorySelect(categoryKey)}
+                        className="group transform hover:scale-105 transition-all duration-300"
+                      >
+                        <div
+                          className="rounded-lg p-4 text-center"
+                          style={{
+                            background: 'linear-gradient(180deg, #f5ecd0 0%, #ede0b8 100%)',
+                            border: '2px solid #b8a060',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                          }}
+                        >
+                          <div className="w-10 h-10 bg-[#4EAAA2] rounded-full flex items-center justify-center mx-auto mb-2">
+                            <span className="text-white text-sm font-bold">{category.cards.length}</span>
+                          </div>
+                          <h3 className="text-sm font-bold text-gray-800 mb-0.5 leading-tight" style={{ fontFamily: "Georgia, serif" }}>{category.name}</h3>
+                          <p className="text-gray-600 text-xs">{category.cards.length} {category.cards.length === 1 ? 'card' : 'cards'}</p>
+                        </div>
+                      </button>
+                    ))}
                   </div>
-                  <h3 className="text-lg font-bold text-gray-800 mb-1" style={{ fontFamily: "Georgia, serif" }}>{category.name}</h3>
-                  <p className="text-gray-600 text-xs">{category.cards.length} cards</p>
                 </div>
-              </button>
-            ))}
+              ))
+            })()}
           </div>
 
           <CloudDecoration className="bottom-0 left-0 -mb-4 -ml-8" />

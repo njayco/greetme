@@ -1,7 +1,7 @@
 # GreetMe - Greeting Cards App
 
 ## Overview
-A Next.js greeting card application that lets users browse, customize, and share digital greeting cards across various categories (Father's Day, Birthday, Get Well, Graduation, Juneteenth, Fourth of July, Valentine's Day). Features a vintage bookshelf aesthetic with wooden textures and warm colors.
+A Next.js greeting card application that lets users browse, customize, and share digital greeting cards across 30+ categories organized into groups (Popular Holidays, National Holidays, Religious & Cultural, Celebrations, Life Events, Support & Sympathy, Appreciation, Feelings). Features a vintage bookshelf aesthetic with wooden textures and warm colors.
 
 ## Project Architecture
 - **Framework**: Next.js 15 with App Router
@@ -23,7 +23,7 @@ app/api/stripe/webhook/      - Stripe webhook handler
 app/c/[id]/                  - Dynamic share page with OG metadata
 components/                  - UI components (shadcn/ui)
 lib/                         - Utility functions
-lib/cardData.ts              - Shared card data definitions
+lib/cardData.ts              - Shared card data definitions (categories, groups, tags)
 lib/resendClient.ts          - Resend email client (via Replit connector)
 lib/stripeClient.ts          - Stripe client and StripeSync initialization
 lib/initStripe.ts            - Stripe schema migration and webhook setup
@@ -45,6 +45,34 @@ styles/                      - Global CSS
 - `app/api/send-confirmation/route.ts` - Sends purchase confirmation email with card link
 - `next.config.mjs` - Next.js configuration
 - `tailwind.config.ts` - Tailwind CSS configuration
+
+## Card Categories & Groups
+
+### Category Data Model
+```typescript
+CardType: { id, title, cover, centerfold, back, price?, tags? }
+CategoryType: { name, color, group?, cards[] }
+```
+
+### Groups & Categories (92 total cards, 30 categories)
+- **Popular Holidays**: Valentine's Day (33), Mother's Day (1), Father's Day (12), Halloween (1), St. Patrick's Day (1), Black History Month (1), Women's History Month (1), Pride Month (1)
+- **National Holidays**: Fourth of July (3), New Year's Day (1), MLK Day (1), Memorial Day (1), Labor Day (1), Veterans Day (1), Thanksgiving (1), Juneteenth (2)
+- **Religious & Cultural**: Christmas (1), Hanukkah (1), Kwanzaa (1), Easter (1), Diwali (1)
+- **Celebrations**: Birthday (4), Graduation (3), Congratulations (1)
+- **Life Events**: Wedding (1), Anniversary (1), New Baby (1), Retirement (1), New Job (1), New Home (1)
+- **Support & Sympathy**: Get Well Soon (3), Sympathy (1), Thinking of You (1), Encouragement (1)
+- **Appreciation**: Thank You (1)
+- **Feelings**: Love & Romance (1), Miss You (1), Friendship (1), I'm Sorry (1)
+
+### Card ID Ranges
+- IDs 1-12: Father's Day
+- IDs 13-16: Birthday
+- IDs 17-19: Get Well Soon
+- IDs 20-22: Graduation
+- IDs 23-24: Juneteenth
+- IDs 25-27: Fourth of July
+- IDs 28-60: Valentine's Day (paid via Stripe)
+- IDs 61-92: New expanded categories (1 card each)
 
 ## Valentine's Day Cards (Paid via Stripe)
 - **33 total cards** (IDs 28-60): 7 original + 26 new
@@ -87,6 +115,7 @@ styles/                      - Global CSS
 - Teal action buttons (#4EAAA2), coral/pink send buttons
 - Loading screen with retro progress bar
 - Wooden shelf card display in library view
+- Categories organized by group with section headers
 
 ## Running
 - Dev: `npx next dev -H 0.0.0.0 -p 5000`

@@ -5,11 +5,13 @@ export type CardType = {
   centerfold: string;
   back: string;
   price?: number;
+  tags?: string[];
 };
 
 export type CategoryType = {
   name: string;
   color: string;
+  group?: string;
   cards: CardType[];
 };
 
@@ -17,6 +19,7 @@ export const cardCategories: Record<string, CategoryType> = {
   "valentines-day": {
     name: "Valentine's Day",
     color: "red",
+    group: "Popular Holidays",
     cards: [
       {
         id: 28,
@@ -315,9 +318,26 @@ export const cardCategories: Record<string, CategoryType> = {
       },
     ],
   },
+  "mothers-day": {
+    name: "Mother's Day",
+    color: "pink",
+    group: "Popular Holidays",
+    cards: [
+      {
+        id: 61,
+        title: "World's Best Mom",
+        cover: "/images/mothers-day-bouquet.png",
+        centerfold:
+          "Mom, you are the heart and soul of our family. Your love is the foundation that holds us all together, and your warmth is the light that guides us through every storm. Thank you for every sacrifice, every hug, and every moment of unconditional love. You truly are the world's best mom!",
+        back: "With all my love, forever and always!",
+        tags: ["family", "warm", "elegant"],
+      },
+    ],
+  },
   "fathers-day": {
     name: "Father's Day",
     color: "yellow",
+    group: "Popular Holidays",
     cards: [
       {
         id: 1,
@@ -417,9 +437,90 @@ export const cardCategories: Record<string, CategoryType> = {
       },
     ],
   },
+  "halloween": {
+    name: "Halloween",
+    color: "orange",
+    group: "Popular Holidays",
+    cards: [
+      {
+        id: 62,
+        title: "Spooky Greetings",
+        cover: "/images/halloween-spooky.png",
+        centerfold:
+          "Have a fang-tastic Halloween! May your night be filled with just the right amount of spookiness, tons of treats, and zero tricks. Whether you're trick-or-treating, carving pumpkins, or watching scary movies, have a hauntingly good time!",
+        back: "Have a boo-tiful Halloween!",
+        tags: ["playful", "funny", "seasonal"],
+      },
+    ],
+  },
+  "st-patricks-day": {
+    name: "St. Patrick's Day",
+    color: "green",
+    group: "Popular Holidays",
+    cards: [
+      {
+        id: 63,
+        title: "Feelin' Lucky",
+        cover: "/images/st-patricks-lucky.png",
+        centerfold:
+          "May the luck of the Irish be with you today and always! Wishing you a pot of gold at the end of every rainbow, a four-leaf clover in every field, and a heart full of joy on this St. Patrick's Day. Slainte!",
+        back: "Lucky to have you in my life!",
+        tags: ["cheerful", "festive", "casual"],
+      },
+    ],
+  },
+  "black-history-month": {
+    name: "Black History Month",
+    color: "red",
+    group: "Popular Holidays",
+    cards: [
+      {
+        id: 64,
+        title: "Heritage & Power",
+        cover: "/images/black-history-power.png",
+        centerfold:
+          "This Black History Month, we celebrate the resilience, brilliance, and beauty of Black culture and heritage. From trailblazers who changed the world to everyday heroes in our communities, we honor the legacy of strength and perseverance that continues to inspire generations. Our history is rich, our future is bright.",
+        back: "Celebrating excellence, honoring legacy!",
+        tags: ["empowering", "educational", "inspirational"],
+      },
+    ],
+  },
+  "womens-history-month": {
+    name: "Women's History Month",
+    color: "purple",
+    group: "Popular Holidays",
+    cards: [
+      {
+        id: 65,
+        title: "Women Who Lead",
+        cover: "/images/womens-history.png",
+        centerfold:
+          "This Women's History Month, we honor the trailblazing women who shattered ceilings, broke barriers, and paved the way for future generations. From scientists to activists, artists to leaders, women have shaped every corner of our world. Here's to celebrating the strength, courage, and brilliance of women everywhere.",
+        back: "Empowered women empower the world!",
+        tags: ["empowering", "inspirational", "bold"],
+      },
+    ],
+  },
+  "pride-month": {
+    name: "Pride Month",
+    color: "rainbow",
+    group: "Popular Holidays",
+    cards: [
+      {
+        id: 66,
+        title: "Love is Love",
+        cover: "/images/pride-love.png",
+        centerfold:
+          "Happy Pride! Love is love, and every color of the rainbow deserves to shine bright. This month and every month, we celebrate authenticity, acceptance, and the beautiful diversity of the human heart. Be proud of who you are — the world is better because you're in it.",
+        back: "Proud, loud, and full of love!",
+        tags: ["bold", "inclusive", "celebratory"],
+      },
+    ],
+  },
   birthday: {
     name: "Birthday",
     color: "pink",
+    group: "Celebrations",
     cards: [
       {
         id: 13,
@@ -458,66 +559,75 @@ export const cardCategories: Record<string, CategoryType> = {
   "get-well": {
     name: "Get Well Soon",
     color: "green",
+    group: "Support & Sympathy",
     cards: [
       {
         id: 17,
         title: "Healing Thoughts",
-        cover: "/placeholder.svg?height=300&width=240&text=Get+Well+Flowers",
+        cover: "/images/get-well-sunflowers.png",
         centerfold:
           "Sending you healing thoughts and warm wishes for a speedy recovery. Take care of yourself and know that you're in our thoughts.",
         back: "Get well soon!",
+        tags: ["warm", "gentle"],
       },
       {
         id: 18,
         title: "Feel Better Soon",
-        cover: "/placeholder.svg?height=300&width=240&text=Feel+Better+Sun",
+        cover: "/images/get-well-teddy.png",
         centerfold:
           "Hope you're feeling better with each passing day. Rest up, take it easy, and know that brighter days are ahead.",
         back: "Thinking of you and wishing you well!",
+        tags: ["cute", "comforting"],
       },
       {
         id: 19,
         title: "Speedy Recovery",
-        cover: "/placeholder.svg?height=300&width=240&text=Recovery+Heart",
+        cover: "/images/get-well-rainbow.png",
         centerfold:
           "Wishing you strength, comfort, and a very speedy recovery. You're stronger than you know, and we're all rooting for you!",
         back: "Sending love and healing vibes your way!",
+        tags: ["hopeful", "encouraging"],
       },
     ],
   },
   graduation: {
     name: "Graduation",
     color: "blue",
+    group: "Celebrations",
     cards: [
       {
         id: 20,
         title: "Congratulations Graduate",
-        cover: "/placeholder.svg?height=300&width=240&text=Graduation+Cap",
+        cover: "/images/graduation-cap.png",
         centerfold:
           "Congratulations on your graduation! Your hard work, dedication, and perseverance have paid off. The future is bright, and we can't wait to see what you accomplish next!",
         back: "So proud of you, graduate!",
+        tags: ["formal", "proud"],
       },
       {
         id: 21,
         title: "Future is Bright",
-        cover: "/placeholder.svg?height=300&width=240&text=Bright+Future",
+        cover: "/images/graduation-future.png",
         centerfold:
           "As you graduate and move forward, remember that this is just the beginning of an amazing journey. Your potential is limitless!",
         back: "The world is waiting for your brilliance!",
+        tags: ["inspirational", "hopeful"],
       },
       {
         id: 22,
         title: "Achievement Unlocked",
-        cover: "/placeholder.svg?height=300&width=240&text=Achievement+Trophy",
+        cover: "/images/graduation-trophy.png",
         centerfold:
           "You did it! This graduation is a testament to your hard work and determination. Celebrate this amazing achievement - you've earned it!",
         back: "Achievement unlocked: Graduate!",
+        tags: ["casual", "fun"],
       },
     ],
   },
   juneteenth: {
     name: "Juneteenth",
     color: "red",
+    group: "National Holidays",
     cards: [
       {
         id: 23,
@@ -540,30 +650,450 @@ export const cardCategories: Record<string, CategoryType> = {
   "fourth-of-july": {
     name: "Fourth of July",
     color: "red",
+    group: "National Holidays",
     cards: [
       {
         id: 25,
         title: "Independence Day",
-        cover: "/placeholder.svg?height=300&width=240&text=July+4th+Flag",
+        cover: "/images/fourth-july-liberty.png",
         centerfold:
           "Happy Fourth of July! Let's celebrate the land of the free and the home of the brave with fireworks, family, and freedom!",
         back: "Happy Independence Day!",
+        tags: ["patriotic", "festive"],
       },
       {
         id: 26,
         title: "Stars and Stripes",
-        cover: "/placeholder.svg?height=300&width=240&text=Stars+Stripes",
+        cover: "/images/fourth-july-fireworks.png",
         centerfold:
           "Celebrating America's independence with pride, patriotism, and gratitude for the freedoms we enjoy. Happy Fourth of July!",
         back: "Proud to be American!",
+        tags: ["patriotic", "formal"],
       },
       {
         id: 27,
         title: "Fireworks Celebration",
-        cover: "/placeholder.svg?height=300&width=240&text=Fireworks+USA",
+        cover: "/images/fourth-july-fireworks.png",
         centerfold:
           "Let freedom ring! Wishing you a spectacular Fourth of July filled with fireworks, fun, and the spirit of independence.",
         back: "Let freedom ring!",
+        tags: ["festive", "casual"],
+      },
+    ],
+  },
+  "new-years": {
+    name: "New Year's Day",
+    color: "gold",
+    group: "National Holidays",
+    cards: [
+      {
+        id: 67,
+        title: "Cheers to a New Year",
+        cover: "/images/new-years-cheers.png",
+        centerfold:
+          "Here's to new beginnings, fresh starts, and a year filled with endless possibilities! May this New Year bring you joy, success, and all the happiness your heart can hold. Cheers to leaving the old behind and embracing the beautiful journey ahead!",
+        back: "Happy New Year! Make it amazing!",
+        tags: ["festive", "elegant", "celebratory"],
+      },
+    ],
+  },
+  "mlk-day": {
+    name: "Martin Luther King Jr. Day",
+    color: "gold",
+    group: "National Holidays",
+    cards: [
+      {
+        id: 68,
+        title: "The Dream Lives On",
+        cover: "/images/mlk-dream.png",
+        centerfold:
+          "On this day, we honor the life and legacy of Dr. Martin Luther King Jr. His dream of equality, justice, and unity continues to guide and inspire us. Let us recommit to building a world where every person is judged by the content of their character. The dream lives on in each of us.",
+        back: "Keep the dream alive!",
+        tags: ["inspirational", "educational", "formal"],
+      },
+    ],
+  },
+  "memorial-day": {
+    name: "Memorial Day",
+    color: "red",
+    group: "National Holidays",
+    cards: [
+      {
+        id: 69,
+        title: "In Honor & Remembrance",
+        cover: "/images/memorial-day-tribute.png",
+        centerfold:
+          "Today we pause to honor and remember those who made the ultimate sacrifice for our freedom. Their bravery, courage, and selflessness will never be forgotten. We are forever grateful for the men and women who gave everything so that we may live in liberty.",
+        back: "Forever grateful for their sacrifice!",
+        tags: ["patriotic", "formal", "solemn"],
+      },
+    ],
+  },
+  "labor-day": {
+    name: "Labor Day",
+    color: "blue",
+    group: "National Holidays",
+    cards: [
+      {
+        id: 70,
+        title: "Celebrating Hard Work",
+        cover: "/images/labor-day-workers.png",
+        centerfold:
+          "Happy Labor Day! Today we celebrate the hardworking men and women who build, create, and sustain our communities. Your dedication and perseverance are the backbone of our nation. Take this day to rest, recharge, and know that your contributions make a real difference.",
+        back: "Here's to the workers who keep the world turning!",
+        tags: ["patriotic", "appreciative", "casual"],
+      },
+    ],
+  },
+  "veterans-day": {
+    name: "Veterans Day",
+    color: "navy",
+    group: "National Holidays",
+    cards: [
+      {
+        id: 71,
+        title: "Honoring Our Heroes",
+        cover: "/images/veterans-day-honor.png",
+        centerfold:
+          "Thank you for your service! On this Veterans Day, we honor the brave men and women who have served and continue to serve our country. Your courage, sacrifice, and unwavering dedication to protecting our freedom are deeply appreciated. We owe you a debt of gratitude that can never be fully repaid.",
+        back: "With gratitude and respect for your service!",
+        tags: ["patriotic", "formal", "respectful"],
+      },
+    ],
+  },
+  thanksgiving: {
+    name: "Thanksgiving",
+    color: "orange",
+    group: "National Holidays",
+    cards: [
+      {
+        id: 72,
+        title: "Grateful Heart",
+        cover: "/images/thanksgiving-harvest.png",
+        centerfold:
+          "Happy Thanksgiving! In this season of gratitude, I want you to know how thankful I am to have you in my life. Like a bountiful harvest, our blessings overflow when shared with the ones we love. May your table be full, your heart be warm, and your day be filled with the laughter of loved ones.",
+        back: "Grateful for you today and every day!",
+        tags: ["warm", "family", "traditional"],
+      },
+    ],
+  },
+  christmas: {
+    name: "Christmas",
+    color: "red",
+    group: "Religious & Cultural",
+    cards: [
+      {
+        id: 73,
+        title: "Season's Greetings",
+        cover: "/images/christmas-tree.png",
+        centerfold:
+          "Merry Christmas! May the magic of the season fill your home with warmth, your heart with love, and your days with joy. Like the lights on a Christmas tree, may your life sparkle with happiness and wonder. Wishing you and yours a blessed and beautiful holiday season.",
+        back: "Merry Christmas and Happy New Year!",
+        tags: ["traditional", "family", "festive"],
+      },
+    ],
+  },
+  hanukkah: {
+    name: "Hanukkah",
+    color: "blue",
+    group: "Religious & Cultural",
+    cards: [
+      {
+        id: 74,
+        title: "Festival of Lights",
+        cover: "/images/hanukkah-menorah.png",
+        centerfold:
+          "Happy Hanukkah! May the glow of the menorah light up your home and your heart for all eight nights. This Festival of Lights reminds us of the miracle of perseverance and the power of faith. Wishing you and your family a season filled with joy, love, and delicious latkes!",
+        back: "Chag Sameach! Happy Hanukkah!",
+        tags: ["traditional", "faith-based", "warm"],
+      },
+    ],
+  },
+  kwanzaa: {
+    name: "Kwanzaa",
+    color: "green",
+    group: "Religious & Cultural",
+    cards: [
+      {
+        id: 75,
+        title: "Joyous Kwanzaa",
+        cover: "/images/kwanzaa-kinara.png",
+        centerfold:
+          "Habari Gani! Wishing you a joyous Kwanzaa filled with unity, self-determination, and purpose. As we light each candle of the kinara, may we be reminded of the values that strengthen our community and celebrate the rich cultural heritage that binds us together. May this season bring you peace and prosperity.",
+        back: "Happy Kwanzaa! Harambee!",
+        tags: ["cultural", "traditional", "community"],
+      },
+    ],
+  },
+  easter: {
+    name: "Easter",
+    color: "pastel",
+    group: "Religious & Cultural",
+    cards: [
+      {
+        id: 76,
+        title: "Easter Blessings",
+        cover: "/images/easter-spring.png",
+        centerfold:
+          "Happy Easter! May this beautiful season of renewal fill your heart with hope and your life with new beginnings. Like the flowers that bloom in spring, may your days be bright and colorful. Wishing you a day of joy, faith, and the sweetest celebrations with those you love.",
+        back: "He is risen! Happy Easter!",
+        tags: ["faith-based", "spring", "family"],
+      },
+    ],
+  },
+  diwali: {
+    name: "Diwali",
+    color: "gold",
+    group: "Religious & Cultural",
+    cards: [
+      {
+        id: 77,
+        title: "Festival of Lights",
+        cover: "/images/diwali-lights.png",
+        centerfold:
+          "Happy Diwali! May the festival of lights illuminate your path and fill your life with prosperity, happiness, and love. As the diyas glow and the rangoli brightens your home, may every corner of your world be filled with the warmth of family, the sweetness of mithai, and the joy of celebration.",
+        back: "Shubh Diwali! May your light shine bright!",
+        tags: ["cultural", "festive", "elegant"],
+      },
+    ],
+  },
+  wedding: {
+    name: "Wedding",
+    color: "ivory",
+    group: "Life Events",
+    cards: [
+      {
+        id: 78,
+        title: "Happily Ever After",
+        cover: "/images/wedding-bells.png",
+        centerfold:
+          "Congratulations on your beautiful wedding! Today marks the beginning of your greatest adventure together. May your love story be written with chapters of laughter, pages of joy, and a bond that only grows stronger with time. Here's to a lifetime of love, partnership, and happily ever after!",
+        back: "Wishing you a lifetime of love and happiness!",
+        tags: ["elegant", "romantic", "formal"],
+      },
+    ],
+  },
+  anniversary: {
+    name: "Anniversary",
+    color: "gold",
+    group: "Life Events",
+    cards: [
+      {
+        id: 79,
+        title: "Years of Love",
+        cover: "/images/anniversary-hearts.png",
+        centerfold:
+          "Happy Anniversary! Every year together is a testament to a love that's real, strong, and beautiful. You've built something truly special — a partnership filled with trust, laughter, and endless devotion. Here's to celebrating the years behind you and the many more adventures ahead!",
+        back: "Cheers to your beautiful love story!",
+        tags: ["romantic", "elegant", "warm"],
+      },
+    ],
+  },
+  "new-baby": {
+    name: "New Baby",
+    color: "pastel",
+    group: "Life Events",
+    cards: [
+      {
+        id: 80,
+        title: "Welcome Little One",
+        cover: "/images/new-baby-welcome.png",
+        centerfold:
+          "Welcome to the world, little one! What an incredible blessing and a beautiful new chapter in your family's story. May this tiny bundle of joy fill your home with laughter, your hearts with love, and your lives with a happiness you never knew was possible. Congratulations to the proud parents!",
+        back: "A new star is born! Congratulations!",
+        tags: ["cute", "warm", "family"],
+      },
+    ],
+  },
+  retirement: {
+    name: "Retirement",
+    color: "gold",
+    group: "Life Events",
+    cards: [
+      {
+        id: 81,
+        title: "Happy Retirement",
+        cover: "/images/retirement-sunset.png",
+        centerfold:
+          "Congratulations on your retirement! After years of hard work, dedication, and countless achievements, it's time to kick back and enjoy the good life. You've earned every sunset, every lazy morning, and every adventure that awaits. Here's to the next chapter — may it be your best one yet!",
+        back: "Enjoy every moment of your well-earned retirement!",
+        tags: ["celebratory", "warm", "professional"],
+      },
+    ],
+  },
+  "new-job": {
+    name: "New Job & Promotion",
+    color: "teal",
+    group: "Life Events",
+    cards: [
+      {
+        id: 82,
+        title: "Congratulations on Your New Role",
+        cover: "/images/new-job-key.png",
+        centerfold:
+          "Congratulations on your exciting new opportunity! This is a reflection of your talent, determination, and all the hard work you've put in. The future is yours to shape, and I know you'll bring your unique brilliance to everything you do. Go out there and show them what you're made of!",
+        back: "Onward and upward! You've got this!",
+        tags: ["professional", "inspirational", "formal"],
+      },
+    ],
+  },
+  "new-home": {
+    name: "New Home",
+    color: "brown",
+    group: "Life Events",
+    cards: [
+      {
+        id: 83,
+        title: "Home Sweet Home",
+        cover: "/images/new-home-key.png",
+        centerfold:
+          "Congratulations on your new home! May every room be filled with love, every wall hold beautiful memories, and every corner bring you comfort and joy. A home is where the heart is, and yours is about to overflow with happiness. Welcome home!",
+        back: "Wishing you warmth and happiness in your new home!",
+        tags: ["warm", "celebratory", "casual"],
+      },
+    ],
+  },
+  congratulations: {
+    name: "Congratulations",
+    color: "gold",
+    group: "Life Events",
+    cards: [
+      {
+        id: 84,
+        title: "You Did It!",
+        cover: "/images/congrats-confetti.png",
+        centerfold:
+          "Congratulations! Whatever milestone you've reached, you deserve every bit of celebration coming your way. Your hard work, persistence, and passion have led to this amazing moment. Pop the confetti, raise a glass, and take a moment to be proud of everything you've accomplished!",
+        back: "So proud of you! Celebrate big!",
+        tags: ["celebratory", "bold", "fun"],
+      },
+    ],
+  },
+  "thank-you": {
+    name: "Thank You",
+    color: "teal",
+    group: "Appreciation",
+    cards: [
+      {
+        id: 85,
+        title: "Heartfelt Thanks",
+        cover: "/images/thank-you-flowers.png",
+        centerfold:
+          "Thank you from the bottom of my heart! Your kindness, generosity, and thoughtfulness mean more than words can express. You didn't have to go out of your way, but you did — and it made all the difference. I am truly grateful for you and everything you do.",
+        back: "With deepest gratitude and appreciation!",
+        tags: ["warm", "elegant", "sincere"],
+      },
+    ],
+  },
+  sympathy: {
+    name: "Sympathy & Condolences",
+    color: "lavender",
+    group: "Support & Sympathy",
+    cards: [
+      {
+        id: 86,
+        title: "With Deepest Sympathy",
+        cover: "/images/sympathy-lilies.png",
+        centerfold:
+          "During this difficult time, please know that you are not alone. Words can never fully express the sorrow we feel for your loss, but please know that our hearts are with you. May you find comfort in the beautiful memories shared and strength in the love that surrounds you. We are here for you, today and always.",
+        back: "Holding you close in our thoughts and prayers.",
+        tags: ["gentle", "respectful", "poetic"],
+      },
+    ],
+  },
+  "thinking-of-you": {
+    name: "Thinking of You",
+    color: "amber",
+    group: "Support & Sympathy",
+    cards: [
+      {
+        id: 87,
+        title: "You're On My Mind",
+        cover: "/images/thinking-of-you-tea.png",
+        centerfold:
+          "Just wanted you to know that you've been on my mind today. Sometimes life gets busy and we forget to say it, but you matter to me more than you know. Whether things are going great or you're going through a rough patch, I'm here. Always. Consider this a warm hug from afar.",
+        back: "Sending warmth and love your way!",
+        tags: ["warm", "personal", "gentle"],
+      },
+    ],
+  },
+  encouragement: {
+    name: "Encouragement",
+    color: "orange",
+    group: "Support & Sympathy",
+    cards: [
+      {
+        id: 88,
+        title: "You've Got This",
+        cover: "/images/encouragement-sunrise.png",
+        centerfold:
+          "Hey, I just want you to know — you've got this. Whatever mountain you're climbing right now, you have the strength, the courage, and the heart to make it to the top. Every step forward counts, no matter how small. Keep going. The sunrise is coming, and it's going to be beautiful.",
+        back: "Believe in yourself — I believe in you!",
+        tags: ["motivational", "warm", "bold"],
+      },
+    ],
+  },
+  love: {
+    name: "Love & Romance",
+    color: "red",
+    group: "Feelings",
+    cards: [
+      {
+        id: 89,
+        title: "Endless Love",
+        cover: "/images/love-swans.png",
+        centerfold:
+          "My love for you is as deep as the ocean and as endless as the stars. You are the one my heart has been searching for, and every moment with you feels like a dream I never want to wake up from. You are my today, my tomorrow, and my forever.",
+        back: "Loving you always and forever!",
+        tags: ["romantic", "passionate", "elegant"],
+      },
+    ],
+  },
+  "miss-you": {
+    name: "Miss You",
+    color: "blue",
+    group: "Feelings",
+    cards: [
+      {
+        id: 90,
+        title: "Wish You Were Here",
+        cover: "/images/miss-you-airplane.png",
+        centerfold:
+          "Distance may separate us, but you're never far from my heart. Every time I see something beautiful, hear a song we love, or share a laugh, I think of you. I'm counting down the moments until we're together again. Until then, know that I miss you more than words can say.",
+        back: "Missing you every single day!",
+        tags: ["emotional", "warm", "personal"],
+      },
+    ],
+  },
+  friendship: {
+    name: "Friendship",
+    color: "teal",
+    group: "Feelings",
+    cards: [
+      {
+        id: 91,
+        title: "Best Friends Forever",
+        cover: "/images/friendship-bracelets.png",
+        centerfold:
+          "To my amazing friend — you're one in a million! Through every adventure, every late-night talk, and every moment of laughter and tears, you've been there. True friendship like ours is rare and precious, and I never take it for granted. Here's to us and all the amazing memories still to come!",
+        back: "Grateful for your friendship always!",
+        tags: ["fun", "warm", "personal"],
+      },
+    ],
+  },
+  apology: {
+    name: "I'm Sorry",
+    color: "blue",
+    group: "Feelings",
+    cards: [
+      {
+        id: 92,
+        title: "From the Heart",
+        cover: "/images/apology-hearts.png",
+        centerfold:
+          "I'm truly sorry. I know my words or actions may have hurt you, and that's the last thing I ever wanted. You mean the world to me, and I take responsibility for what happened. I hope you can find it in your heart to forgive me, because I want to make things right. You deserve better, and I promise to do better.",
+        back: "Hoping for your forgiveness and a fresh start.",
+        tags: ["sincere", "emotional", "gentle"],
       },
     ],
   },
