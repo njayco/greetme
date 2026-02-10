@@ -1,0 +1,54 @@
+{
+  "target": {
+    "groupId": "identity-pride-inclusion",
+    "groupName": "Identity, Pride & Inclusion",
+    "categoryId": "pride-lgbtq",
+    "categoryName": "Pride & LGBTQ+",
+    "subcategoryId": "lgbtq-plus-love",
+    "subcategoryName": "LGBTQ+ Love"
+  },
+  "cards": [
+    {
+      "id": 151,
+      "title": "Love is a Rainbow",
+      "cover": "/images/gen-pride-lgbtq-lgbtq-plus-love-funny.png",
+      "centerfold": "You stole my heart like a drag queen steals the show! Let’s celebrate our love that’s more colorful than a Pride parade and sweeter than a unicorn on a sugar rush. Here’s to being fabulously ourselves and loving fiercely—because normal is so last season!",
+      "back": "Keep shining bright, fabulous one!",
+      "tone": "funny",
+      "artistInspiration": "urban neo-expressionist style with raw energy, layered text elements, and vibrant graffiti colors",
+      "tags": [
+        "LGBTQ+",
+        "Pride",
+        "Love"
+      ]
+    },
+    {
+      "id": 152,
+      "title": "Love Knows No Bounds",
+      "cover": "/images/gen-pride-lgbtq-lgbtq-plus-love-heartfelt.png",
+      "centerfold": "In a world that shines with colors as vibrant as your heart, your love is a beautiful testament to the strength of authenticity. Celebrate every moment of your journey together, knowing that your love inspires others to embrace who they are. Let your hearts shine boldly, reminding the world that love is love, and it's meant to be cherished.",
+      "back": "With love always, embrace your truth.",
+      "tone": "heartfelt",
+      "artistInspiration": "bold pop art with thick outlines, dancing figures, and radiant rainbow patterns",
+      "tags": [
+        "Love",
+        "Pride",
+        "Inclusion"
+      ]
+    },
+    {
+      "id": 153,
+      "title": "Love Always Wins",
+      "cover": "/images/gen-pride-lgbtq-lgbtq-plus-love-uplifting.png",
+      "centerfold": "Your love is a beautiful tapestry woven with courage and authenticity. Celebrate who you are and embrace the vibrant colors of your identity. Together, we create a world where love knows no bounds!",
+      "back": "Keep shining your unique light.",
+      "tone": "uplifting",
+      "artistInspiration": "maximalist portrait style with ornate patterns, powerful poses, and rich textile backgrounds",
+      "tags": [
+        "LGBTQ+",
+        "Pride",
+        "Inclusion"
+      ]
+    }
+  ]
+}

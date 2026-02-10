@@ -1,0 +1,54 @@
+{
+  "target": {
+    "groupId": "identity-pride-inclusion",
+    "groupName": "Identity, Pride & Inclusion",
+    "categoryId": "pride-lgbtq",
+    "categoryName": "Pride & LGBTQ+",
+    "subcategoryId": "coming-out",
+    "subcategoryName": "Coming Out"
+  },
+  "cards": [
+    {
+      "id": 148,
+      "title": "Unicorns and Rainbows Unite!",
+      "cover": "/images/gen-pride-lgbtq-coming-out-funny.png",
+      "centerfold": "Congratulations on finally coming out! Just remember, it’s not just a phase—unless you’re talking about fashion choices. Now you can officially blame all your glittery shoes on your fabulous self!",
+      "back": "Shine on, you beautiful star!",
+      "tone": "funny",
+      "artistInspiration": "urban neo-expressionist style with raw energy, layered text elements, and vibrant graffiti colors",
+      "tags": [
+        "Coming Out",
+        "Pride",
+        "LGBTQ+"
+      ]
+    },
+    {
+      "id": 149,
+      "title": "Embrace Your Truth",
+      "cover": "/images/gen-pride-lgbtq-coming-out-heartfelt.png",
+      "centerfold": "Your journey is a beautiful testament to courage and authenticity. Coming out is not just a moment; it’s a celebration of who you truly are. May you find love and acceptance, both from yourself and those around you, as you step into the light with pride.",
+      "back": "With love and support always.",
+      "tone": "heartfelt",
+      "artistInspiration": "bold pop art with thick outlines, dancing figures, and radiant rainbow patterns",
+      "tags": [
+        "Coming Out",
+        "Pride",
+        "Self-Acceptance"
+      ]
+    },
+    {
+      "id": 150,
+      "title": "Be You, Shine Bright",
+      "cover": "/images/gen-pride-lgbtq-coming-out-uplifting.png",
+      "centerfold": "Your truth is a gift to the world! Embrace who you are with pride and let your authentic self shine. Remember, you are loved just as you are, and the journey of self-acceptance is a beautiful one.",
+      "back": "With love and pride, always.",
+      "tone": "uplifting",
+      "artistInspiration": "maximalist portrait style with ornate patterns, powerful poses, and rich textile backgrounds",
+      "tags": [
+        "Coming Out",
+        "Pride",
+        "Self-Acceptance"
+      ]
+    }
+  ]
+}

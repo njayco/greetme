@@ -1,0 +1,54 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "birthday",
+    "categoryName": "Birthday",
+    "subcategoryId": "for-son",
+    "subcategoryName": "For Son"
+  },
+  "cards": [
+    {
+      "id": 124,
+      "title": "Son of a Birthday!",
+      "cover": "/images/gen-birthday-for-son-funny.png",
+      "centerfold": "Happy Birthday to my favorite human alarm clock! You know, I always thought you’d grow up to be a real ‘up-and-comer,’ but I had no idea it would be ‘up-and-ask-for-snacks’! Keep shining bright and remember, you’re not getting older, just more ‘experienced’ in the art of cake consumption!",
+      "back": "Love you more than cake!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Birthday",
+        "Son",
+        "Funny"
+      ]
+    },
+    {
+      "id": 125,
+      "title": "To Our Amazing Son",
+      "cover": "/images/gen-birthday-for-son-heartfelt.png",
+      "centerfold": "Happy Birthday to the one who fills our hearts with joy! Watching you grow into the incredible person you are today has been our greatest gift. May this year bring you as much happiness as you have given us. Always remember, you are loved beyond measure.",
+      "back": "With all our love, always.",
+      "tone": "heartfelt",
+      "artistInspiration": "contemporary Japanese superflat pop art with repeating colorful patterns and playful motifs",
+      "tags": [
+        "Son",
+        "Birthday",
+        "Heartfelt"
+      ]
+    },
+    {
+      "id": 126,
+      "title": "Shine Bright, Son!",
+      "cover": "/images/gen-birthday-for-son-uplifting.png",
+      "centerfold": "Happy Birthday to a shining star! May this year bring you endless opportunities to chase your dreams and fill your heart with joy. Remember, every day is a chance to grow and shine even brighter. We're so proud of the amazing person you are becoming!",
+      "back": "With all our love, always.",
+      "tone": "uplifting",
+      "artistInspiration": "immersive polka-dot infinity style with mesmerizing repeating circles and vivid colors",
+      "tags": [
+        "birthday",
+        "son",
+        "celebration"
+      ]
+    }
+  ]
+}

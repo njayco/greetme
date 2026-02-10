@@ -1,0 +1,54 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "birthday",
+    "categoryName": "Birthday",
+    "subcategoryId": "for-her",
+    "subcategoryName": "For Her"
+  },
+  "cards": [
+    {
+      "id": 118,
+      "title": "Aging Like Fine Wine",
+      "cover": "/images/gen-birthday-for-her-funny.png",
+      "centerfold": "Happy Birthday! They say you're like a fine wine – getting better with age. But let’s be honest, by now you’re basically vinegar with a fun label! Cheers to another year of fermentation, my friend!",
+      "back": "Stay fabulous and slightly fermented!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Birthday",
+        "Funny",
+        "Wine"
+      ]
+    },
+    {
+      "id": 119,
+      "title": "Celebrate You Today",
+      "cover": "/images/gen-birthday-for-her-heartfelt.png",
+      "centerfold": "On this special day, I celebrate the incredible person you are. Your kindness, strength, and unwavering spirit bring so much joy to the lives of those around you. May this year be filled with love, laughter, and every dream you hold dear.",
+      "back": "With all my love, always.",
+      "tone": "heartfelt",
+      "artistInspiration": "contemporary Japanese superflat pop art with repeating colorful patterns and playful motifs",
+      "tags": [
+        "birthday",
+        "celebration",
+        "for her"
+      ]
+    },
+    {
+      "id": 120,
+      "title": "Shine Bright Today!",
+      "cover": "/images/gen-birthday-for-her-uplifting.png",
+      "centerfold": "Happy Birthday! Today is a celebration of you and all the incredible moments yet to come. Embrace this new year with open arms, and remember that the best is always ahead. You are worthy of all the joy and love life has to offer!",
+      "back": "Wishing you a fabulous year ahead!",
+      "tone": "uplifting",
+      "artistInspiration": "immersive polka-dot infinity style with mesmerizing repeating circles and vivid colors",
+      "tags": [
+        "Birthday",
+        "Celebration",
+        "Uplifting"
+      ]
+    }
+  ]
+}

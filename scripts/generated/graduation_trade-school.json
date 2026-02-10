@@ -1,0 +1,54 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "graduation",
+    "categoryName": "Graduation",
+    "subcategoryId": "trade-school",
+    "subcategoryName": "Trade School"
+  },
+  "cards": [
+    {
+      "id": 133,
+      "title": "Degree of Awesome",
+      "cover": "/images/gen-graduation-trade-school-funny.png",
+      "centerfold": "Congrats on your trade school graduation! Now you're officially skilled at doing things with tools that most of us are too scared to touch. Remember, in the world of trades, you're a cut above the rest—just don’t screw it up!",
+      "back": "Wishing you success and laughs in your new journey!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Trade School",
+        "Graduation",
+        "Congrats"
+      ]
+    },
+    {
+      "id": 134,
+      "title": "Crafting Your Future",
+      "cover": "/images/gen-graduation-trade-school-heartfelt.png",
+      "centerfold": "Congratulations on your graduation! Your hard work, dedication, and skill have paved the way for a bright future. As you step into this new chapter, remember that your passion and talent will shape the world around you. Embrace every opportunity that comes your way!",
+      "back": "With pride and best wishes,",
+      "tone": "heartfelt",
+      "artistInspiration": "contemporary Japanese superflat pop art with repeating colorful patterns and playful motifs",
+      "tags": [
+        "Trade School",
+        "Graduation",
+        "New Beginnings"
+      ]
+    },
+    {
+      "id": 135,
+      "title": "Crafting Your Future",
+      "cover": "/images/gen-graduation-trade-school-uplifting.png",
+      "centerfold": "Congratulations on your graduation! You've turned your passion into skills and are ready to make your mark. The world is waiting for your talents—go out there and shine with confidence!",
+      "back": "Wishing you endless success on your journey!",
+      "tone": "uplifting",
+      "artistInspiration": "immersive polka-dot infinity style with mesmerizing repeating circles and vivid colors",
+      "tags": [
+        "Trade School",
+        "Graduation",
+        "New Beginnings"
+      ]
+    }
+  ]
+}

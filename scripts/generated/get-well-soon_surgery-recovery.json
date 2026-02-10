@@ -1,0 +1,54 @@
+{
+  "target": {
+    "groupId": "support-healing-hard-moments",
+    "groupName": "Support, Healing & Hard Moments",
+    "categoryId": "get-well-soon",
+    "categoryName": "Get Well Soon",
+    "subcategoryId": "surgery-recovery",
+    "subcategoryName": "Surgery Recovery"
+  },
+  "cards": [
+    {
+      "id": 139,
+      "title": "Operation: Recovery Humor",
+      "cover": "/images/gen-get-well-soon-surgery-recovery-funny.png",
+      "centerfold": "I hear laughter is the best medicine, so get ready for some giggle therapy! Remember, they didn’t just take out your appendix; they also took your ability to lift anything heavier than a remote! Keep that sense of humor handy—it’s the only thing you can lift right now!",
+      "back": "Wishing you a speedy recovery with lots of laughs!",
+      "tone": "funny",
+      "artistInspiration": "soft impressionist watercolor with gentle light, peaceful water reflections, and calming pastels",
+      "tags": [
+        "Surgery Recovery",
+        "Get Well Soon",
+        "Humor"
+      ]
+    },
+    {
+      "id": 140,
+      "title": "Healing Hearts Together",
+      "cover": "/images/gen-get-well-soon-surgery-recovery-heartfelt.png",
+      "centerfold": "As you embark on this journey of recovery, remember that every day is a step closer to renewed strength and joy. We're holding you in our thoughts, sending you warmth and love to mend both body and spirit. Your courage inspires us all, and we can't wait to see you back on your feet, shining brighter than ever.",
+      "back": "Wishing you a smooth and speedy recovery.",
+      "tone": "heartfelt",
+      "artistInspiration": "large-scale botanical closeup with luminous petals, desert flowers, and meditative simplicity",
+      "tags": [
+        "surgery recovery",
+        "get well soon",
+        "support and healing"
+      ]
+    },
+    {
+      "id": 141,
+      "title": "Stronger Every Day!",
+      "cover": "/images/gen-get-well-soon-surgery-recovery-uplifting.png",
+      "centerfold": "May each day of your recovery bring you closer to renewed strength and brighter moments. You've faced this challenge with courage, and brighter days are just around the corner. Remember, healing takes time, but you’re on the right path to a wonderful comeback!",
+      "back": "Sending you warm wishes for a smooth recovery!",
+      "tone": "uplifting",
+      "artistInspiration": "abstract spiritual art with concentric organic shapes, soft geometry, and healing color gradients",
+      "tags": [
+        "Surgery Recovery",
+        "Get Well Soon",
+        "Support"
+      ]
+    }
+  ]
+}

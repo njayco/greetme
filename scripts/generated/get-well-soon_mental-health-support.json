@@ -1,0 +1,54 @@
+{
+  "target": {
+    "groupId": "support-healing-hard-moments",
+    "groupName": "Support, Healing & Hard Moments",
+    "categoryId": "get-well-soon",
+    "categoryName": "Get Well Soon",
+    "subcategoryId": "mental-health-support",
+    "subcategoryName": "Mental Health Support"
+  },
+  "cards": [
+    {
+      "id": 142,
+      "title": "Mind Over Matter!",
+      "cover": "/images/gen-get-well-soon-mental-health-support-funny.png",
+      "centerfold": "Feeling a little down? Just remember, even the best Wi-Fi signal has its off days! Let your brain buffer for a bit—it's just doing a system update! Hang in there, you're rebooting into greatness!",
+      "back": "Sending you virtual hugs and good vibes!",
+      "tone": "funny",
+      "artistInspiration": "soft impressionist watercolor with gentle light, peaceful water reflections, and calming pastels",
+      "tags": [
+        "MentalHealth",
+        "Support",
+        "GetWellSoon"
+      ]
+    },
+    {
+      "id": 143,
+      "title": "You're Not Alone",
+      "cover": "/images/gen-get-well-soon-mental-health-support-heartfelt.png",
+      "centerfold": "In moments of struggle, remember that it’s okay to seek help and take a breath. You are loved, and brighter days are ahead. Lean on those who care for you, and know that healing is a journey we can walk together.",
+      "back": "With all my love, take care.",
+      "tone": "heartfelt",
+      "artistInspiration": "large-scale botanical closeup with luminous petals, desert flowers, and meditative simplicity",
+      "tags": [
+        "Mental Health",
+        "Support",
+        "Healing"
+      ]
+    },
+    {
+      "id": 144,
+      "title": "You Are Not Alone",
+      "cover": "/images/gen-get-well-soon-mental-health-support-uplifting.png",
+      "centerfold": "Every step you take is a step towards healing. Embrace the journey, and remember that brighter days are ahead. You are stronger than you think, and support is all around you!",
+      "back": "With you every step of the way.",
+      "tone": "uplifting",
+      "artistInspiration": "abstract spiritual art with concentric organic shapes, soft geometry, and healing color gradients",
+      "tags": [
+        "Mental Health",
+        "Support",
+        "Healing"
+      ]
+    }
+  ]
+}

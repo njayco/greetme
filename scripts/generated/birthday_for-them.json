@@ -1,0 +1,54 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "birthday",
+    "categoryName": "Birthday",
+    "subcategoryId": "for-them",
+    "subcategoryName": "For Them"
+  },
+  "cards": [
+    {
+      "id": 121,
+      "title": "Aging Like Fine Cheese",
+      "cover": "/images/gen-birthday-for-them-funny.png",
+      "centerfold": "Happy Birthday! Remember, age is just a number... a really high one in your case! At least you can still party like it's 1999, even if your knees say otherwise!",
+      "back": "Cheers to more cheesy adventures!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Humor",
+        "Birthday",
+        "Celebrations"
+      ]
+    },
+    {
+      "id": 122,
+      "title": "A Year of You",
+      "cover": "/images/gen-birthday-for-them-heartfelt.png",
+      "centerfold": "On this special day, I celebrate the incredible person you are and all the joy you bring into our lives. May your birthday be filled with laughter, love, and the warmth of cherished memories. Here's to another year of your beautiful journey—one that inspires us all.",
+      "back": "With all my love, happy birthday!",
+      "tone": "heartfelt",
+      "artistInspiration": "contemporary Japanese superflat pop art with repeating colorful patterns and playful motifs",
+      "tags": [
+        "Birthday",
+        "Heartfelt",
+        "Celebrations"
+      ]
+    },
+    {
+      "id": 123,
+      "title": "Celebrate You Today!",
+      "cover": "/images/gen-birthday-for-them-uplifting.png",
+      "centerfold": "Happy Birthday! Today is a beautiful reminder of how far you've come and all the incredible journeys ahead. Embrace every moment and let your dreams shine brighter than ever before! You've got this!",
+      "back": "Wishing you all the joy in the world!",
+      "tone": "uplifting",
+      "artistInspiration": "immersive polka-dot infinity style with mesmerizing repeating circles and vivid colors",
+      "tags": [
+        "Birthday",
+        "Celebration",
+        "Inspiration"
+      ]
+    }
+  ]
+}

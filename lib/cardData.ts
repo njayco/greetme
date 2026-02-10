@@ -41,10 +41,162 @@ export const categoryGroups: CategoryGroupType[] = [
         name: "Birthday",
         color: "pink",
         subcategories: [
-          { id: "for-him", name: "For Him", cards: [] },
-          { id: "for-her", name: "For Her", cards: [] },
-          { id: "for-them", name: "For Them", cards: [] },
-          { id: "for-son", name: "For Son", cards: [] },
+          {
+            id: "for-him",
+            name: "For Him",
+            cards: [
+              {
+                id: 100,
+                title: "Aging Like Fine Cheese",
+                cover: "/images/gen-birthday-for-him-funny.png",
+                centerfold:
+                  "Congratulations! You're now at the perfect age where 'getting a bit older' sounds like 'maturing like a fine cheese.' Just remember, with age comes wisdom... and a questionable back! Here’s to more adventures and fewer gray hairs!",
+                back: "Happy Birthday, you legendary cheese!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Birthday", "Humor", "For Him"],
+              },
+              {
+                id: 101,
+                title: "Celebrate You Today",
+                cover: "/images/gen-birthday-for-him-heartfelt.png",
+                centerfold:
+                  "On this special day, I want you to know just how much you mean to me. Your strength, kindness, and laughter light up my world. Here's to more adventures together and a year filled with all the joy you bring to others.",
+                back: "Happy Birthday with all my love.",
+                tone: "heartfelt",
+                artistInspiration: "contemporary Japanese superflat pop art with repeating colorful patterns and playful motifs",
+                tags: ["Birthday", "For Him", "Celebration"],
+              },
+              {
+                id: 102,
+                title: "Cheers to You!",
+                cover: "/images/gen-birthday-for-him-uplifting.png",
+                centerfold:
+                  "Happy Birthday to an incredible guy! Today is a reminder of all the amazing things you’ve accomplished and the adventures yet to come. Embrace this new year with open arms and a heart full of dreams—your best is yet to unfold!",
+                back: "Wishing you joy and success, always.",
+                tone: "uplifting",
+                artistInspiration: "immersive polka-dot infinity style with mesmerizing repeating circles and vivid colors",
+                tags: ["Birthday", "Celebration", "Positivity"],
+              },
+            ],
+          },
+          {
+            id: "for-her",
+            name: "For Her",
+            cards: [
+              {
+                id: 118,
+                title: "Aging Like Fine Wine",
+                cover: "/images/gen-birthday-for-her-funny.png",
+                centerfold:
+                  "Happy Birthday! They say you're like a fine wine – getting better with age. But let’s be honest, by now you’re basically vinegar with a fun label! Cheers to another year of fermentation, my friend!",
+                back: "Stay fabulous and slightly fermented!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Birthday", "Funny", "Wine"],
+              },
+              {
+                id: 119,
+                title: "Celebrate You Today",
+                cover: "/images/gen-birthday-for-her-heartfelt.png",
+                centerfold:
+                  "On this special day, I celebrate the incredible person you are. Your kindness, strength, and unwavering spirit bring so much joy to the lives of those around you. May this year be filled with love, laughter, and every dream you hold dear.",
+                back: "With all my love, always.",
+                tone: "heartfelt",
+                artistInspiration: "contemporary Japanese superflat pop art with repeating colorful patterns and playful motifs",
+                tags: ["birthday", "celebration", "for her"],
+              },
+              {
+                id: 120,
+                title: "Shine Bright Today!",
+                cover: "/images/gen-birthday-for-her-uplifting.png",
+                centerfold:
+                  "Happy Birthday! Today is a celebration of you and all the incredible moments yet to come. Embrace this new year with open arms, and remember that the best is always ahead. You are worthy of all the joy and love life has to offer!",
+                back: "Wishing you a fabulous year ahead!",
+                tone: "uplifting",
+                artistInspiration: "immersive polka-dot infinity style with mesmerizing repeating circles and vivid colors",
+                tags: ["Birthday", "Celebration", "Uplifting"],
+              },
+            ],
+          },
+          {
+            id: "for-them",
+            name: "For Them",
+            cards: [
+              {
+                id: 121,
+                title: "Aging Like Fine Cheese",
+                cover: "/images/gen-birthday-for-them-funny.png",
+                centerfold:
+                  "Happy Birthday! Remember, age is just a number... a really high one in your case! At least you can still party like it's 1999, even if your knees say otherwise!",
+                back: "Cheers to more cheesy adventures!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Humor", "Birthday", "Celebrations"],
+              },
+              {
+                id: 122,
+                title: "A Year of You",
+                cover: "/images/gen-birthday-for-them-heartfelt.png",
+                centerfold:
+                  "On this special day, I celebrate the incredible person you are and all the joy you bring into our lives. May your birthday be filled with laughter, love, and the warmth of cherished memories. Here's to another year of your beautiful journey—one that inspires us all.",
+                back: "With all my love, happy birthday!",
+                tone: "heartfelt",
+                artistInspiration: "contemporary Japanese superflat pop art with repeating colorful patterns and playful motifs",
+                tags: ["Birthday", "Heartfelt", "Celebrations"],
+              },
+              {
+                id: 123,
+                title: "Celebrate You Today!",
+                cover: "/images/gen-birthday-for-them-uplifting.png",
+                centerfold:
+                  "Happy Birthday! Today is a beautiful reminder of how far you've come and all the incredible journeys ahead. Embrace every moment and let your dreams shine brighter than ever before! You've got this!",
+                back: "Wishing you all the joy in the world!",
+                tone: "uplifting",
+                artistInspiration: "immersive polka-dot infinity style with mesmerizing repeating circles and vivid colors",
+                tags: ["Birthday", "Celebration", "Inspiration"],
+              },
+            ],
+          },
+          {
+            id: "for-son",
+            name: "For Son",
+            cards: [
+              {
+                id: 124,
+                title: "Son of a Birthday!",
+                cover: "/images/gen-birthday-for-son-funny.png",
+                centerfold:
+                  "Happy Birthday to my favorite human alarm clock! You know, I always thought you’d grow up to be a real ‘up-and-comer,’ but I had no idea it would be ‘up-and-ask-for-snacks’! Keep shining bright and remember, you’re not getting older, just more ‘experienced’ in the art of cake consumption!",
+                back: "Love you more than cake!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Birthday", "Son", "Funny"],
+              },
+              {
+                id: 125,
+                title: "To Our Amazing Son",
+                cover: "/images/gen-birthday-for-son-heartfelt.png",
+                centerfold:
+                  "Happy Birthday to the one who fills our hearts with joy! Watching you grow into the incredible person you are today has been our greatest gift. May this year bring you as much happiness as you have given us. Always remember, you are loved beyond measure.",
+                back: "With all our love, always.",
+                tone: "heartfelt",
+                artistInspiration: "contemporary Japanese superflat pop art with repeating colorful patterns and playful motifs",
+                tags: ["Son", "Birthday", "Heartfelt"],
+              },
+              {
+                id: 126,
+                title: "Shine Bright, Son!",
+                cover: "/images/gen-birthday-for-son-uplifting.png",
+                centerfold:
+                  "Happy Birthday to a shining star! May this year bring you endless opportunities to chase your dreams and fill your heart with joy. Remember, every day is a chance to grow and shine even brighter. We're so proud of the amazing person you are becoming!",
+                back: "With all our love, always.",
+                tone: "uplifting",
+                artistInspiration: "immersive polka-dot infinity style with mesmerizing repeating circles and vivid colors",
+                tags: ["birthday", "son", "celebration"],
+              },
+            ],
+          },
           { id: "for-daughter", name: "For Daughter", cards: [] },
           { id: "for-child", name: "For Child", cards: [] },
           { id: "for-teen", name: "For Teen", cards: [] },
@@ -108,7 +260,45 @@ export const categoryGroups: CategoryGroupType[] = [
         name: "Graduation",
         color: "blue",
         subcategories: [
-          { id: "high-school", name: "High School", cards: [] },
+          {
+            id: "high-school",
+            name: "High School",
+            cards: [
+              {
+                id: 130,
+                title: "Finally Done, Barely Won!",
+                cover: "/images/gen-graduation-high-school-funny.png",
+                centerfold:
+                  "Congratulations on your graduation! You’ve spent four years mastering the art of pretending to read the assigned books and dodging gym class like a pro. Now it’s time to put those skills to good use in the real world—good luck avoiding adulting!",
+                back: "Cheers to your next adventure!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Graduation", "High School", "Funny"],
+              },
+              {
+                id: 131,
+                title: "A New Chapter Begins",
+                cover: "/images/gen-graduation-high-school-heartfelt.png",
+                centerfold:
+                  "Congratulations on your graduation! This moment marks not just the end of high school, but the beginning of all the incredible adventures that await you. Remember to cherish the memories you've made and embrace the opportunities ahead with an open heart. You've worked so hard, and we couldn't be prouder of you!",
+                back: "With all our love and support,",
+                tone: "heartfelt",
+                artistInspiration: "contemporary Japanese superflat pop art with repeating colorful patterns and playful motifs",
+                tags: ["graduation", "high school", "new beginnings"],
+              },
+              {
+                id: 132,
+                title: "A New Chapter Awaits",
+                cover: "/images/gen-graduation-high-school-uplifting.png",
+                centerfold:
+                  "Congratulations on this incredible achievement! High school is just the beginning of your amazing journey. Embrace the future with open arms and follow your dreams—there's so much waiting for you!",
+                back: "Wishing you all the best!",
+                tone: "uplifting",
+                artistInspiration: "immersive polka-dot infinity style with mesmerizing repeating circles and vivid colors",
+                tags: ["high school graduation", "celebration", "new beginnings"],
+              },
+            ],
+          },
           {
             id: "college-university",
             name: "College/University",
@@ -142,7 +332,45 @@ export const categoryGroups: CategoryGroupType[] = [
               },
             ],
           },
-          { id: "trade-school", name: "Trade School", cards: [] },
+          {
+            id: "trade-school",
+            name: "Trade School",
+            cards: [
+              {
+                id: 133,
+                title: "Degree of Awesome",
+                cover: "/images/gen-graduation-trade-school-funny.png",
+                centerfold:
+                  "Congrats on your trade school graduation! Now you're officially skilled at doing things with tools that most of us are too scared to touch. Remember, in the world of trades, you're a cut above the rest—just don’t screw it up!",
+                back: "Wishing you success and laughs in your new journey!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Trade School", "Graduation", "Congrats"],
+              },
+              {
+                id: 134,
+                title: "Crafting Your Future",
+                cover: "/images/gen-graduation-trade-school-heartfelt.png",
+                centerfold:
+                  "Congratulations on your graduation! Your hard work, dedication, and skill have paved the way for a bright future. As you step into this new chapter, remember that your passion and talent will shape the world around you. Embrace every opportunity that comes your way!",
+                back: "With pride and best wishes,",
+                tone: "heartfelt",
+                artistInspiration: "contemporary Japanese superflat pop art with repeating colorful patterns and playful motifs",
+                tags: ["Trade School", "Graduation", "New Beginnings"],
+              },
+              {
+                id: 135,
+                title: "Crafting Your Future",
+                cover: "/images/gen-graduation-trade-school-uplifting.png",
+                centerfold:
+                  "Congratulations on your graduation! You've turned your passion into skills and are ready to make your mark. The world is waiting for your talents—go out there and shine with confidence!",
+                back: "Wishing you endless success on your journey!",
+                tone: "uplifting",
+                artistInspiration: "immersive polka-dot infinity style with mesmerizing repeating circles and vivid colors",
+                tags: ["Trade School", "Graduation", "New Beginnings"],
+              },
+            ],
+          },
           { id: "grad-school-phd", name: "Grad School/PhD", cards: [] },
           { id: "military", name: "Military", cards: [] },
           { id: "for-son-daughter-child", name: "For Son/Daughter/Child", cards: [] },
@@ -190,9 +418,123 @@ export const categoryGroups: CategoryGroupType[] = [
         name: "Love & Romance",
         color: "red",
         subcategories: [
-          { id: "for-him", name: "For Him", cards: [] },
-          { id: "for-her", name: "For Her", cards: [] },
-          { id: "for-them", name: "For Them", cards: [] },
+          {
+            id: "for-him",
+            name: "For Him",
+            cards: [
+              {
+                id: 100,
+                title: "Aging Like Fine Cheese",
+                cover: "/images/gen-birthday-for-him-funny.png",
+                centerfold:
+                  "Congratulations! You're now at the perfect age where 'getting a bit older' sounds like 'maturing like a fine cheese.' Just remember, with age comes wisdom... and a questionable back! Here’s to more adventures and fewer gray hairs!",
+                back: "Happy Birthday, you legendary cheese!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Birthday", "Humor", "For Him"],
+              },
+              {
+                id: 101,
+                title: "Celebrate You Today",
+                cover: "/images/gen-birthday-for-him-heartfelt.png",
+                centerfold:
+                  "On this special day, I want you to know just how much you mean to me. Your strength, kindness, and laughter light up my world. Here's to more adventures together and a year filled with all the joy you bring to others.",
+                back: "Happy Birthday with all my love.",
+                tone: "heartfelt",
+                artistInspiration: "contemporary Japanese superflat pop art with repeating colorful patterns and playful motifs",
+                tags: ["Birthday", "For Him", "Celebration"],
+              },
+              {
+                id: 102,
+                title: "Cheers to You!",
+                cover: "/images/gen-birthday-for-him-uplifting.png",
+                centerfold:
+                  "Happy Birthday to an incredible guy! Today is a reminder of all the amazing things you’ve accomplished and the adventures yet to come. Embrace this new year with open arms and a heart full of dreams—your best is yet to unfold!",
+                back: "Wishing you joy and success, always.",
+                tone: "uplifting",
+                artistInspiration: "immersive polka-dot infinity style with mesmerizing repeating circles and vivid colors",
+                tags: ["Birthday", "Celebration", "Positivity"],
+              },
+            ],
+          },
+          {
+            id: "for-her",
+            name: "For Her",
+            cards: [
+              {
+                id: 118,
+                title: "Aging Like Fine Wine",
+                cover: "/images/gen-birthday-for-her-funny.png",
+                centerfold:
+                  "Happy Birthday! They say you're like a fine wine – getting better with age. But let’s be honest, by now you’re basically vinegar with a fun label! Cheers to another year of fermentation, my friend!",
+                back: "Stay fabulous and slightly fermented!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Birthday", "Funny", "Wine"],
+              },
+              {
+                id: 119,
+                title: "Celebrate You Today",
+                cover: "/images/gen-birthday-for-her-heartfelt.png",
+                centerfold:
+                  "On this special day, I celebrate the incredible person you are. Your kindness, strength, and unwavering spirit bring so much joy to the lives of those around you. May this year be filled with love, laughter, and every dream you hold dear.",
+                back: "With all my love, always.",
+                tone: "heartfelt",
+                artistInspiration: "contemporary Japanese superflat pop art with repeating colorful patterns and playful motifs",
+                tags: ["birthday", "celebration", "for her"],
+              },
+              {
+                id: 120,
+                title: "Shine Bright Today!",
+                cover: "/images/gen-birthday-for-her-uplifting.png",
+                centerfold:
+                  "Happy Birthday! Today is a celebration of you and all the incredible moments yet to come. Embrace this new year with open arms, and remember that the best is always ahead. You are worthy of all the joy and love life has to offer!",
+                back: "Wishing you a fabulous year ahead!",
+                tone: "uplifting",
+                artistInspiration: "immersive polka-dot infinity style with mesmerizing repeating circles and vivid colors",
+                tags: ["Birthday", "Celebration", "Uplifting"],
+              },
+            ],
+          },
+          {
+            id: "for-them",
+            name: "For Them",
+            cards: [
+              {
+                id: 121,
+                title: "Aging Like Fine Cheese",
+                cover: "/images/gen-birthday-for-them-funny.png",
+                centerfold:
+                  "Happy Birthday! Remember, age is just a number... a really high one in your case! At least you can still party like it's 1999, even if your knees say otherwise!",
+                back: "Cheers to more cheesy adventures!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Humor", "Birthday", "Celebrations"],
+              },
+              {
+                id: 122,
+                title: "A Year of You",
+                cover: "/images/gen-birthday-for-them-heartfelt.png",
+                centerfold:
+                  "On this special day, I celebrate the incredible person you are and all the joy you bring into our lives. May your birthday be filled with laughter, love, and the warmth of cherished memories. Here's to another year of your beautiful journey—one that inspires us all.",
+                back: "With all my love, happy birthday!",
+                tone: "heartfelt",
+                artistInspiration: "contemporary Japanese superflat pop art with repeating colorful patterns and playful motifs",
+                tags: ["Birthday", "Heartfelt", "Celebrations"],
+              },
+              {
+                id: 123,
+                title: "Celebrate You Today!",
+                cover: "/images/gen-birthday-for-them-uplifting.png",
+                centerfold:
+                  "Happy Birthday! Today is a beautiful reminder of how far you've come and all the incredible journeys ahead. Embrace every moment and let your dreams shine brighter than ever before! You've got this!",
+                back: "Wishing you all the joy in the world!",
+                tone: "uplifting",
+                artistInspiration: "immersive polka-dot infinity style with mesmerizing repeating circles and vivid colors",
+                tags: ["Birthday", "Celebration", "Inspiration"],
+              },
+            ],
+          },
           { id: "new-love", name: "New Love", cards: [] },
           { id: "long-term-love", name: "Long-Term Love", cards: [] },
           { id: "long-distance", name: "Long Distance", cards: [] },
@@ -812,8 +1154,84 @@ export const categoryGroups: CategoryGroupType[] = [
               },
             ],
           },
-          { id: "surgery-recovery", name: "Surgery Recovery", cards: [] },
-          { id: "mental-health-support", name: "Mental Health Support", cards: [] },
+          {
+            id: "surgery-recovery",
+            name: "Surgery Recovery",
+            cards: [
+              {
+                id: 139,
+                title: "Operation: Recovery Humor",
+                cover: "/images/gen-get-well-soon-surgery-recovery-funny.png",
+                centerfold:
+                  "I hear laughter is the best medicine, so get ready for some giggle therapy! Remember, they didn’t just take out your appendix; they also took your ability to lift anything heavier than a remote! Keep that sense of humor handy—it’s the only thing you can lift right now!",
+                back: "Wishing you a speedy recovery with lots of laughs!",
+                tone: "funny",
+                artistInspiration: "soft impressionist watercolor with gentle light, peaceful water reflections, and calming pastels",
+                tags: ["Surgery Recovery", "Get Well Soon", "Humor"],
+              },
+              {
+                id: 140,
+                title: "Healing Hearts Together",
+                cover: "/images/gen-get-well-soon-surgery-recovery-heartfelt.png",
+                centerfold:
+                  "As you embark on this journey of recovery, remember that every day is a step closer to renewed strength and joy. We're holding you in our thoughts, sending you warmth and love to mend both body and spirit. Your courage inspires us all, and we can't wait to see you back on your feet, shining brighter than ever.",
+                back: "Wishing you a smooth and speedy recovery.",
+                tone: "heartfelt",
+                artistInspiration: "large-scale botanical closeup with luminous petals, desert flowers, and meditative simplicity",
+                tags: ["surgery recovery", "get well soon", "support and healing"],
+              },
+              {
+                id: 141,
+                title: "Stronger Every Day!",
+                cover: "/images/gen-get-well-soon-surgery-recovery-uplifting.png",
+                centerfold:
+                  "May each day of your recovery bring you closer to renewed strength and brighter moments. You've faced this challenge with courage, and brighter days are just around the corner. Remember, healing takes time, but you’re on the right path to a wonderful comeback!",
+                back: "Sending you warm wishes for a smooth recovery!",
+                tone: "uplifting",
+                artistInspiration: "abstract spiritual art with concentric organic shapes, soft geometry, and healing color gradients",
+                tags: ["Surgery Recovery", "Get Well Soon", "Support"],
+              },
+            ],
+          },
+          {
+            id: "mental-health-support",
+            name: "Mental Health Support",
+            cards: [
+              {
+                id: 142,
+                title: "Mind Over Matter!",
+                cover: "/images/gen-get-well-soon-mental-health-support-funny.png",
+                centerfold:
+                  "Feeling a little down? Just remember, even the best Wi-Fi signal has its off days! Let your brain buffer for a bit—it's just doing a system update! Hang in there, you're rebooting into greatness!",
+                back: "Sending you virtual hugs and good vibes!",
+                tone: "funny",
+                artistInspiration: "soft impressionist watercolor with gentle light, peaceful water reflections, and calming pastels",
+                tags: ["MentalHealth", "Support", "GetWellSoon"],
+              },
+              {
+                id: 143,
+                title: "You're Not Alone",
+                cover: "/images/gen-get-well-soon-mental-health-support-heartfelt.png",
+                centerfold:
+                  "In moments of struggle, remember that it’s okay to seek help and take a breath. You are loved, and brighter days are ahead. Lean on those who care for you, and know that healing is a journey we can walk together.",
+                back: "With all my love, take care.",
+                tone: "heartfelt",
+                artistInspiration: "large-scale botanical closeup with luminous petals, desert flowers, and meditative simplicity",
+                tags: ["Mental Health", "Support", "Healing"],
+              },
+              {
+                id: 144,
+                title: "You Are Not Alone",
+                cover: "/images/gen-get-well-soon-mental-health-support-uplifting.png",
+                centerfold:
+                  "Every step you take is a step towards healing. Embrace the journey, and remember that brighter days are ahead. You are stronger than you think, and support is all around you!",
+                back: "With you every step of the way.",
+                tone: "uplifting",
+                artistInspiration: "abstract spiritual art with concentric organic shapes, soft geometry, and healing color gradients",
+                tags: ["Mental Health", "Support", "Healing"],
+              },
+            ],
+          },
           { id: "chronic-illness", name: "Chronic Illness", cards: [] },
           {
             id: "short-sweet",

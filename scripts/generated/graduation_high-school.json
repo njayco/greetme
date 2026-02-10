@@ -1,0 +1,54 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "graduation",
+    "categoryName": "Graduation",
+    "subcategoryId": "high-school",
+    "subcategoryName": "High School"
+  },
+  "cards": [
+    {
+      "id": 130,
+      "title": "Finally Done, Barely Won!",
+      "cover": "/images/gen-graduation-high-school-funny.png",
+      "centerfold": "Congratulations on your graduation! You’ve spent four years mastering the art of pretending to read the assigned books and dodging gym class like a pro. Now it’s time to put those skills to good use in the real world—good luck avoiding adulting!",
+      "back": "Cheers to your next adventure!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Graduation",
+        "High School",
+        "Funny"
+      ]
+    },
+    {
+      "id": 131,
+      "title": "A New Chapter Begins",
+      "cover": "/images/gen-graduation-high-school-heartfelt.png",
+      "centerfold": "Congratulations on your graduation! This moment marks not just the end of high school, but the beginning of all the incredible adventures that await you. Remember to cherish the memories you've made and embrace the opportunities ahead with an open heart. You've worked so hard, and we couldn't be prouder of you!",
+      "back": "With all our love and support,",
+      "tone": "heartfelt",
+      "artistInspiration": "contemporary Japanese superflat pop art with repeating colorful patterns and playful motifs",
+      "tags": [
+        "graduation",
+        "high school",
+        "new beginnings"
+      ]
+    },
+    {
+      "id": 132,
+      "title": "A New Chapter Awaits",
+      "cover": "/images/gen-graduation-high-school-uplifting.png",
+      "centerfold": "Congratulations on this incredible achievement! High school is just the beginning of your amazing journey. Embrace the future with open arms and follow your dreams—there's so much waiting for you!",
+      "back": "Wishing you all the best!",
+      "tone": "uplifting",
+      "artistInspiration": "immersive polka-dot infinity style with mesmerizing repeating circles and vivid colors",
+      "tags": [
+        "high school graduation",
+        "celebration",
+        "new beginnings"
+      ]
+    }
+  ]
+}
