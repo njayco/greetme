@@ -467,15 +467,16 @@ export default function GreetingCardsApp() {
         />
 
         <div className="relative z-10 w-full max-w-md flex flex-col items-center">
-          <div className="mb-6" style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.3))' }}>
+          <div className="mb-8">
             <img
               src="/images/greetme-logo.png"
               alt="GreetMe - Spread Love, Share Joy"
-              className="w-72 h-auto mx-auto"
+              className="w-80 h-auto mx-auto"
+              style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.2))' }}
             />
           </div>
 
-          <div className="w-full max-w-xs mb-6">
+          <div className="w-full max-w-xs mb-4">
             <div className="relative w-full h-7 bg-gray-300 rounded overflow-hidden border border-gray-400">
               <div
                 className="h-full rounded transition-all duration-300"
@@ -485,13 +486,13 @@ export default function GreetingCardsApp() {
                 }}
               />
               <span className="absolute inset-0 flex items-center justify-center text-xs font-medium text-gray-700">
-                Loading {loadingProgress}%...
+                Loading ...
               </span>
             </div>
           </div>
 
           {loadingProgress < 100 && (
-            <p className="text-white/80 text-sm font-medium animate-pulse">Loading..</p>
+            <p className="text-white/70 text-base font-medium animate-pulse" style={{ fontFamily: "Georgia, serif" }}>Loading..</p>
           )}
 
           {loadingProgress >= 100 && (
