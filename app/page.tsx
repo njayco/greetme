@@ -466,80 +466,52 @@ export default function GreetingCardsApp() {
           }}
         />
 
-        <div className="relative z-10 w-full max-w-md">
-          <div
-            className="rounded-xl p-8 text-center relative overflow-hidden"
-            style={{
-              background: 'linear-gradient(180deg, #f5ecd0 0%, #ede0b8 60%, #e8d8a8 100%)',
-              border: '3px solid #b8a060',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.5)',
-            }}
-          >
-            <h1
-              className="text-5xl font-bold text-gray-800 mb-2"
-              style={{ fontFamily: "cursive" }}
-            >
-              GreetMe
-            </h1>
-
-            <div className="mb-4 px-4">
-              <div className="relative w-full h-6 bg-gray-300 rounded overflow-hidden border border-gray-400">
-                <div
-                  className="h-full rounded transition-all duration-300"
-                  style={{
-                    width: `${loadingProgress}%`,
-                    background: 'linear-gradient(90deg, #5BA3D9, #4A90C4)',
-                  }}
-                />
-                <span className="absolute inset-0 flex items-center justify-center text-xs font-medium text-gray-700">
-                  Loading {loadingProgress}%...
-                </span>
-              </div>
-            </div>
-
-            <h2
-              className="text-xl text-gray-700 mb-2"
-              style={{ fontFamily: "cursive" }}
-            >
-              Not Just a Card—An Experience
-            </h2>
-            <p className="text-sm text-gray-600 mb-4 font-medium">No Sign Up. And It's Free.</p>
-
-            <div
-              className="w-full h-3 mb-4"
-              style={{
-                background: `repeating-linear-gradient(
-                  90deg,
-                  #b8860b 0px,
-                  #b8860b 4px,
-                  #c49a3c 4px,
-                  #c49a3c 8px
-                )`,
-                borderRadius: '2px',
-              }}
+        <div className="relative z-10 w-full max-w-md flex flex-col items-center">
+          <div className="mb-6" style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.3))' }}>
+            <img
+              src="/images/greetme-logo.png"
+              alt="GreetMe - Spread Love, Share Joy"
+              className="w-72 h-auto mx-auto"
             />
+          </div>
 
-            <div
-              className="inline-block px-6 py-2 rounded-md relative"
-              style={{
-                background: 'linear-gradient(180deg, #d32f2f, #b71c1c)',
-                boxShadow: '0 3px 6px rgba(0,0,0,0.3)',
-              }}
-            >
-              <span className="text-white text-sm font-bold italic" style={{ fontFamily: "Georgia, serif" }}>by Najee Jeremiah</span>
+          <div className="w-full max-w-xs mb-6">
+            <div className="relative w-full h-7 bg-gray-300 rounded overflow-hidden border border-gray-400">
+              <div
+                className="h-full rounded transition-all duration-300"
+                style={{
+                  width: `${loadingProgress}%`,
+                  background: 'linear-gradient(90deg, #5BA3D9, #4A90C4)',
+                }}
+              />
+              <span className="absolute inset-0 flex items-center justify-center text-xs font-medium text-gray-700">
+                Loading {loadingProgress}%...
+              </span>
             </div>
           </div>
-        </div>
 
-        {loadingProgress >= 100 && (
-          <button
-            onClick={handleEnterApp}
-            className="relative z-10 mt-8 text-3xl font-bold text-white/90 hover:text-white transition-colors cursor-pointer"
-            style={{ fontFamily: "Georgia, serif", textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}
-          >
-            Enter Here
-          </button>
-        )}
+          {loadingProgress < 100 && (
+            <p className="text-white/80 text-sm font-medium animate-pulse">Loading..</p>
+          )}
+
+          {loadingProgress >= 100 && (
+            <button
+              onClick={handleEnterApp}
+              className="mt-2 px-8 py-3 rounded-lg text-white text-lg font-bold transition-all duration-300 hover:scale-105 cursor-pointer"
+              style={{
+                background: 'linear-gradient(180deg, #d32f2f, #b71c1c)',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                fontFamily: "Georgia, serif",
+              }}
+            >
+              Enter Here
+            </button>
+          )}
+
+          <div className="mt-6">
+            <span className="text-white/80 text-sm font-bold italic" style={{ fontFamily: "Georgia, serif", textShadow: '0 1px 3px rgba(0,0,0,0.4)' }}>by Najee Jeremiah</span>
+          </div>
+        </div>
 
         <CloudDecoration className="bottom-0 left-0 -mb-4 -ml-8 z-10" />
       </div>
