@@ -1,0 +1,311 @@
+✅ MASTER PROMPT FOR GREETME.ME (CATEGORIES + CARDS + FILTERING)
+Role:
+You are a senior full-stack engineer and product designer building a scalable digital greeting card platform called GreetMe.
+Objective
+Expand the greeting card system to support:
+Category Groups
+Categories within Groups
+Subcategories within Categories
+Dropdown filtering for subcategories
+Automatic generation of greeting cards
+Exactly 3 unique greeting cards per subcategory
+When a category is selected, a dropdown menu must appear allowing users to filter by subcategory.
+When a subcategory is selected, only the cards belonging to that subcategory should display.
+Data Model Requirements
+Create a structured data model using TypeScript (or JSON-compatible TypeScript) with the following hierarchy:
+CategoryGroup {
+  id: string
+  name: string
+  emoji: string
+  categories: Category[]
+}
+
+Category {
+  id: string
+  name: string
+  subcategories: Subcategory[]
+}
+
+Subcategory {
+  id: string
+  name: string
+  cards: Card[]
+}
+
+Card {
+  id: string
+  title: string
+  coverImage: string
+  tone: string
+  messagePreview: string
+}
+Card Generation Rules
+Generate exactly 3 unique cards per subcategory
+Each card must have:
+A unique title
+A distinct emotional tone (e.g. funny, heartfelt, uplifting)
+A short message preview (1–2 sentences)
+Cards must be specific to the subcategory
+Avoid generic wording across cards
+Total cards per category = number of subcategories × 3
+📌 Example:
+If a category has 4 subcategories → 12 cards total
+UI / UX Requirements
+Category Group → Category → Subcategory (dropdown)
+Subcategory dropdown appears only after category selection
+Default state shows all cards in the category
+Selecting a subcategory filters cards in real time
+Dropdown should be reusable across all categories
+No page reloads (client-side filtering)
+Categories, Subcategories & Structure to Implement
+1. 🎉 Celebrations & Milestones
+Birthday
+For Him
+For Her
+For Them (Gender-Inclusive)
+For Son
+For Daughter
+For Child
+For Teen
+For Mom
+For Dad
+For Parent (Gender-Inclusive)
+For Grandma
+For Grandpa
+For Grandparent
+For Partner / Spouse
+For Friend
+For Best Friend
+For Coworker
+For Boss
+Funny Birthday
+Sentimental Birthday
+Milestone Birthdays
+18
+21
+30 / 40 / 50 / 60 / 70 / 80+
+Graduation
+High School
+College / University
+Trade School
+Grad School / PhD
+Military Graduation
+For Son / Daughter / Child
+For Partner
+For Friend
+Funny
+Proud / Emotional
+Congratulations
+Achievement
+Promotion
+Award
+Personal Win
+Big Life Moment
+2. 💞 Love, Relationships & Romance
+Love & Romance
+For Him
+For Her
+For Them
+New Love
+Long-Term Love
+Long Distance
+Deeply Romantic
+Playful / Flirty
+Sexual / Spicy (18+)
+Anniversary
+For Partner / Spouse
+For Couple
+Milestone Anniversaries (1, 5, 10, 25, 50)
+Funny Anniversary
+Romantic Anniversary
+Wedding
+Engagement
+Wedding Day
+For the Couple
+For Bride
+For Groom
+For Spouses (Gender-Neutral)
+LGBTQ+ Weddings
+Friendship
+Best Friend
+Long-Distance Friend
+Childhood Friend
+Work Friend
+Chosen Family
+3. 👨‍👩‍👧 Family & Parenting
+Mother’s Day
+Mom
+Bonus Mom / Stepmom
+Mother Figure
+Grandma
+New Mom
+Single Mom
+LGBTQ+ Parent
+Father’s Day
+Dad
+Bonus Dad / Stepdad
+Father Figure
+Grandpa
+New Dad
+Single Dad
+LGBTQ+ Parent
+New Baby
+Baby Girl
+Baby Boy
+Baby (Gender-Neutral)
+Twins / Multiples
+Adoption
+Foster Parent
+New Parents
+Baby Shower
+Family Love
+Siblings
+Cousins
+Aunts & Uncles
+Chosen Family
+4. 🕊️ Support, Healing & Hard Moments
+Get Well Soon
+Physical Illness
+Surgery Recovery
+Mental Health Support
+Chronic Illness
+Short & Sweet
+Encouraging & Hopeful
+Sympathy
+Loss of Parent
+Loss of Child
+Loss of Partner
+Loss of Friend
+Loss of Pet
+Celebration of Life
+Religious Sympathy
+Non-Religious Sympathy
+Thinking of You
+Just Because
+Long Distance
+Miss You
+Checking In
+Encouragement
+You’ve Got This
+Hard Times
+New Beginnings
+Self-Love
+Recovery & Growth
+I’m Sorry
+Apology to Partner
+Apology to Friend
+Apology to Family
+Deep / Serious Apology
+Light / Playful Apology
+5. 🙏 Appreciation & Gratitude
+Thank You
+For Friend
+For Family
+For Teacher
+For Mentor
+For Boss
+For Coworker
+For Healthcare Worker
+For Essential Worker
+Deep Gratitude
+Short & Sweet
+Recognition
+Employee Appreciation
+Volunteer Appreciation
+Community Leader
+Coach
+Educator
+6. 🇺🇸 National & Civic Holidays
+U.S. Holidays
+New Year’s Day
+MLK Day
+Presidents’ Day
+Memorial Day
+Fourth of July
+Labor Day
+Veterans Day
+Thanksgiving
+Black American & Cultural Holidays
+Juneteenth
+Black History Month
+Kwanzaa
+Emancipation / Freedom Themes
+7. 🌍 Religious, Spiritual & Cultural Celebrations
+Christian Holidays
+Christmas
+Easter
+Religious / Secular Versions
+Jewish Holidays
+Hanukkah
+Rosh Hashanah
+Yom Kippur
+Passover
+Muslim Holidays
+Ramadan
+Eid al-Fitr
+Eid al-Adha
+Hindu & South Asian Holidays
+Diwali
+Holi
+Navratri
+Asian Cultural Holidays
+Lunar New Year
+Mid-Autumn Festival
+Spiritual (Non-Religious)
+Blessings
+Gratitude
+Mindfulness
+New Beginnings
+8. 🏳️‍🌈 Identity, Pride & Inclusion
+Pride & LGBTQ+
+Pride Month
+Coming Out
+LGBTQ+ Love
+Trans Joy
+Nonbinary / Gender-Expansive
+Chosen Family
+Women’s History
+Women’s History Month
+Empowerment
+Sisterhood
+Black Women
+Mothers & Caregivers
+Cultural Identity
+African American
+Caribbean
+Latino / Hispanic
+Asian American
+Indigenous
+Immigrant Experience
+9. 💼 Work, Career & Life Changes
+New Job
+First Job
+Promotion
+Career Change
+Freelance / Entrepreneur
+Retirement
+Funny Retirement
+Emotional Retirement
+New Chapter
+New Home
+First Home
+Apartment
+Family Move
+Housewarming
+10. 🎃 Seasonal & Fun
+Seasonal
+Halloween
+Fall Vibes
+Winter Cheer
+Spring Renewal
+Summer Fun
+Just Because
+Random Love
+Funny
+Sweet Surprise
+No Reason Needed
+Final Output Requirements
+Output fully structured category data
+Include 3 cards per subcategory
+Ensure IDs are unique and human-readable
+Content should feel inclusive, modern, and emotionally specific
