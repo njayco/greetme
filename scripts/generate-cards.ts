@@ -261,17 +261,18 @@ function getNextCardId(): number {
 async function generateCardsForSubcategory(
   target: SubcategoryTarget,
   startId: number,
+  cardCount: number = 3,
 ): Promise<CardGenResult[]> {
   const cards: CardGenResult[] = [];
   const styleInfo = styleMap[target.groupId] || styleMap["celebrations-milestones"];
 
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < cardCount; i++) {
     const tone = tones[i];
     const cardId = startId + i;
     const artStyle = styleInfo.styles[i % styleInfo.styles.length];
 
     console.log(
-      `  Generating card ${i + 1}/3 (${tone}) for ${target.subcategoryName}...`,
+      `  Generating card ${i + 1}/${cardCount} (${tone}) for ${target.subcategoryName}...`,
     );
 
     const textData = await generateCenterfoldAndTitle(
@@ -337,6 +338,8 @@ async function main() {
   const categoryFilter = args.find((a) => a.startsWith("--category="))?.split("=")[1];
   const limitArg = args.find((a) => a.startsWith("--limit="))?.split("=")[1];
   const limit = limitArg ? parseInt(limitArg) : 3;
+  const countArg = args.find((a) => a.startsWith("--count="))?.split("=")[1];
+  const cardCount = countArg ? Math.min(Math.max(parseInt(countArg), 1), 3) : 3;
   const dryRun = args.includes("--dry-run");
   const textOnly = args.includes("--text-only");
 
@@ -384,8 +387,8 @@ async function main() {
       `\n--- Generating for: ${target.categoryName} > ${target.subcategoryName} ---`,
     );
 
-    const cards = await generateCardsForSubcategory(target, nextId);
-    nextId += 3;
+    const cards = await generateCardsForSubcategory(target, nextId, cardCount);
+    nextId += cardCount;
 
     allGenerated.push({ target, cards });
 
@@ -401,7 +404,7 @@ async function main() {
   }
 
   console.log(`\n=== Generation Complete ===`);
-  console.log(`Generated ${allGenerated.length * 3} cards across ${allGenerated.length} subcategories.`);
+  console.log(`Generated ${allGenerated.length * cardCount} cards across ${allGenerated.length} subcategories.`);
   console.log(`\nRun 'npx tsx scripts/merge-generated-cards.ts' to merge into cardData.ts`);
 }
 
