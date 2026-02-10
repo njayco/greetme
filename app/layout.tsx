@@ -29,6 +29,10 @@ export const metadata: Metadata = {
     description: 'Browse, customize, and share beautiful digital greeting cards for every occasion. Not Just a Card - An Experience!',
     images: ['/images/og-image.png'],
   },
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-icon.png',
+  },
 }
 
 export default function RootLayout({
