@@ -22,7 +22,8 @@ app/api/share/               - Short link creation API
 app/api/send-confirmation/   - Purchase confirmation email API
 app/api/stripe/webhook/      - Stripe webhook handler
 app/artists/                 - Greet Me for Artists card creation studio
-app/api/artists/upload/      - Artist image upload API
+app/api/artists/upload/      - Artist image upload API (uses Replit Object Storage)
+app/api/uploads/serve/       - Serves uploaded images from object storage
 app/api/artists/create/      - Artist card creation API (with Stripe for personal cards)
 app/api/artists/cards/       - Fetch approved public custom cards
 app/api/artists/confirm-payment/ - Confirm Stripe payment for personal cards
