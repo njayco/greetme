@@ -1,0 +1,54 @@
+{
+  "target": {
+    "groupId": "national-civic-holidays",
+    "groupName": "National & Civic Holidays",
+    "categoryId": "black-american-cultural",
+    "categoryName": "Black American & Cultural",
+    "subcategoryId": "emancipation-freedom-themes",
+    "subcategoryName": "Emancipation/Freedom Themes"
+  },
+  "cards": [
+    {
+      "id": 193,
+      "title": "Freedom's Just Desserts!",
+      "cover": "/images/gen-black-american-cultural-emancipation-freedom-themes-funny.png",
+      "centerfold": "Time to celebrate with the sweetest freedom! Who knew emancipation could be this tasty? Let’s have a slice of freedom pie—just don’t forget the whipped cream of joy on top! Get ready to party like it’s 1865—without the balloons that float away!",
+      "back": "Wishing you a day full of joyful freedom!",
+      "tone": "funny",
+      "artistInspiration": "dynamic cubist narrative with bold geometric shapes, earthy palette, and powerful figures",
+      "tags": [
+        "Emancipation",
+        "Freedom",
+        "Humor"
+      ]
+    },
+    {
+      "id": 194,
+      "title": "Celebrating Our Freedom",
+      "cover": "/images/gen-black-american-cultural-emancipation-freedom-themes-heartfelt.png",
+      "centerfold": "Today, we honor the triumph of the human spirit and the relentless journey towards equality. May we cherish our past, embrace our present, and strive for a future where every voice is heard and every dream can flourish. Together, we stand tall in the legacy of those who fought for our freedom.",
+      "back": "With love and unity, we rise.",
+      "tone": "heartfelt",
+      "artistInspiration": "modernist collage with layered textures, bold patterns, and rich cultural imagery",
+      "tags": [
+        "Emancipation",
+        "Freedom",
+        "Cultural Heritage"
+      ]
+    },
+    {
+      "id": 195,
+      "title": "Celebrate Freedom Today!",
+      "cover": "/images/gen-black-american-cultural-emancipation-freedom-themes-uplifting.png",
+      "centerfold": "On this special day, we honor the strength and resilience that paved the way for brighter tomorrows. Let’s unite in gratitude and joy, celebrating the power of freedom and the vibrant culture that enriches our lives. Together, we rise and inspire one another to dream bigger and achieve greater!",
+      "back": "With love and hope, embrace your freedom!",
+      "tone": "uplifting",
+      "artistInspiration": "American regionalist style with rolling landscapes, patriotic palette, and strong composition",
+      "tags": [
+        "Emancipation",
+        "Cultural Celebration",
+        "Unity"
+      ]
+    }
+  ]
+}

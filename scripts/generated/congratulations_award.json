@@ -1,0 +1,54 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "congratulations",
+    "categoryName": "Congratulations",
+    "subcategoryId": "award",
+    "subcategoryName": "Award"
+  },
+  "cards": [
+    {
+      "id": 202,
+      "title": "You Deserve This!",
+      "cover": "/images/gen-congratulations-award-funny.png",
+      "centerfold": "Congratulations on winning that award! Now, don't let it go to your head—it's hard to walk with a trophy that big! Just remember, with great awards come great responsibilities—like making us all feel lazy in comparison.",
+      "back": "Keep shining bright!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Celebration",
+        "Achievement",
+        "Humor"
+      ]
+    },
+    {
+      "id": 203,
+      "title": "Shine On, Star!",
+      "cover": "/images/gen-congratulations-award-heartfelt.png",
+      "centerfold": "Congratulations on your well-deserved award! Your hard work and dedication have inspired everyone around you, and this recognition is a testament to your incredible talent. Keep shining and reaching for the stars—you have so much more to achieve!",
+      "back": "With heartfelt wishes for your journey ahead.",
+      "tone": "heartfelt",
+      "artistInspiration": "contemporary Japanese superflat pop art with repeating colorful patterns and playful motifs",
+      "tags": [
+        "Award",
+        "Congratulations",
+        "Celebrations"
+      ]
+    },
+    {
+      "id": 204,
+      "title": "Cheers to Your Success!",
+      "cover": "/images/gen-congratulations-award-uplifting.png",
+      "centerfold": "Congratulations on this incredible achievement! Your hard work and dedication have truly paid off, and you inspire everyone around you. Keep shining bright and reaching for the stars—there's so much more ahead!",
+      "back": "With warmest wishes, celebrate big!",
+      "tone": "uplifting",
+      "artistInspiration": "immersive polka-dot infinity style with mesmerizing repeating circles and vivid colors",
+      "tags": [
+        "Achievement",
+        "Inspiration",
+        "Celebrate"
+      ]
+    }
+  ]
+}

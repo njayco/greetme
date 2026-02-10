@@ -1,0 +1,54 @@
+{
+  "target": {
+    "groupId": "seasonal-fun",
+    "groupName": "Seasonal & Fun",
+    "categoryId": "seasonal",
+    "categoryName": "Seasonal",
+    "subcategoryId": "winter-cheer",
+    "subcategoryName": "Winter Cheer"
+  },
+  "cards": [
+    {
+      "id": 163,
+      "title": "Ice to Meet You!",
+      "cover": "/images/gen-seasonal-winter-cheer-funny.png",
+      "centerfold": "Winter is snow joke! As the temperatures drop, remember to chill out and let the frost bite. May your hot cocoa be strong, your socks be warm, and your snowman-building skills be legend—wait for it—dairy! Stay frosty!",
+      "back": "Warm wishes and snowy snuggles!",
+      "tone": "funny",
+      "artistInspiration": "bold pop art with bright flat colors, graphic silkscreen effect, and cultural iconography",
+      "tags": [
+        "Winter",
+        "Humor",
+        "Seasonal"
+      ]
+    },
+    {
+      "id": 164,
+      "title": "Warmth in the Cold",
+      "cover": "/images/gen-seasonal-winter-cheer-heartfelt.png",
+      "centerfold": "As the winter chill wraps around us, may the warmth of love and joy fill your heart. Let every snowfall remind you of the beauty in life's simple moments, and may laughter ring through your home like a melody. Together, we can create memories that shine brighter than the stars on a frosty night.",
+      "back": "Sending you cozy hugs and warm wishes,",
+      "tone": "heartfelt",
+      "artistInspiration": "comic book pop art with Ben-Day dots, bold outlines, speech bubbles, and saturated colors",
+      "tags": [
+        "Winter",
+        "Cheer",
+        "Heartfelt"
+      ]
+    },
+    {
+      "id": 165,
+      "title": "Embrace the Season",
+      "cover": "/images/gen-seasonal-winter-cheer-uplifting.png",
+      "centerfold": "As the snow blankets the world in shimmering white, let your heart be filled with warmth and joy. This winter, take a moment to reflect on the beauty around you and the love that surrounds you. Every flake is a reminder that magic is everywhere, just waiting for you to embrace it!",
+      "back": "Wishing you endless winter cheer!",
+      "tone": "uplifting",
+      "artistInspiration": "playful contemporary pop with oversized smiling flowers, candy colors, and kawaii energy",
+      "tags": [
+        "Winter",
+        "Joy",
+        "Magic"
+      ]
+    }
+  ]
+}

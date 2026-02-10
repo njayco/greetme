@@ -1,0 +1,54 @@
+{
+  "target": {
+    "groupId": "national-civic-holidays",
+    "groupName": "National & Civic Holidays",
+    "categoryId": "us-holidays",
+    "categoryName": "U.S. Holidays",
+    "subcategoryId": "presidents-day",
+    "subcategoryName": "Presidents' Day"
+  },
+  "cards": [
+    {
+      "id": 190,
+      "title": "Presidential Puns Ahead!",
+      "cover": "/images/gen-us-holidays-presidents-day-funny.png",
+      "centerfold": "Why did the president bring a ladder to the White House? Because he wanted to reach new heights in his approval ratings! On this Presidents' Day, let's salute our leaders, past and present—after all, they only have to be less popular than the last guy! ",
+      "back": "Keep smiling and keeping it presidential!",
+      "tone": "funny",
+      "artistInspiration": "dynamic cubist narrative with bold geometric shapes, earthy palette, and powerful figures",
+      "tags": [
+        "Presidents' Day",
+        "Humor",
+        "U.S. Holidays"
+      ]
+    },
+    {
+      "id": 191,
+      "title": "Honoring Our Leaders",
+      "cover": "/images/gen-us-holidays-presidents-day-heartfelt.png",
+      "centerfold": "On this Presidents' Day, let us reflect on the courage and vision of those who have shaped our nation. May we be inspired by their unwavering dedication to liberty and justice for all. Together, let's carry their legacy forward with kindness and unity in our hearts.",
+      "back": "With gratitude and hope, always.",
+      "tone": "heartfelt",
+      "artistInspiration": "modernist collage with layered textures, bold patterns, and rich cultural imagery",
+      "tags": [
+        "Presidents' Day",
+        "National Holidays",
+        "Civic Pride"
+      ]
+    },
+    {
+      "id": 192,
+      "title": "Honoring Leadership Today",
+      "cover": "/images/gen-us-holidays-presidents-day-uplifting.png",
+      "centerfold": "On this Presidents' Day, let’s celebrate the spirit of unity and progress that our leaders have inspired. Together, we can carry their legacy forward, embracing hope and change for a brighter tomorrow. Remember, your voice matters and your actions can make a difference!",
+      "back": "Warm wishes to you this Presidents' Day!",
+      "tone": "uplifting",
+      "artistInspiration": "American regionalist style with rolling landscapes, patriotic palette, and strong composition",
+      "tags": [
+        "Presidents' Day",
+        "U.S. Holidays",
+        "celebration"
+      ]
+    }
+  ]
+}

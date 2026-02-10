@@ -1,0 +1,54 @@
+{
+  "target": {
+    "groupId": "religious-spiritual-cultural",
+    "groupName": "Religious, Spiritual & Cultural",
+    "categoryId": "jewish-holidays",
+    "categoryName": "Jewish Holidays",
+    "subcategoryId": "rosh-hashanah",
+    "subcategoryName": "Rosh Hashanah"
+  },
+  "cards": [
+    {
+      "id": 169,
+      "title": "Shana Tova-licious!",
+      "cover": "/images/gen-jewish-holidays-rosh-hashanah-funny.png",
+      "centerfold": "As we dip apples in honey, let’s remember: it's not just for the sweetness! It’s also to prevent the brisket from being too dry! Wishing you a year filled with plenty of sweet surprises and no sour notes – unless it’s a really good pickle!",
+      "back": "Wishing you a year as bright as your challah!",
+      "tone": "funny",
+      "artistInspiration": "abstract expressionist spiritual art with radiating colors, sacred geometry, and luminous energy",
+      "tags": [
+        "Rosh Hashanah",
+        "Humor",
+        "Jewish Holidays"
+      ]
+    },
+    {
+      "id": 170,
+      "title": "A Sweet New Year",
+      "cover": "/images/gen-jewish-holidays-rosh-hashanah-heartfelt.png",
+      "centerfold": "As the shofar sounds, may your heart awaken to the beauty of new beginnings. This Rosh Hashanah, may your life be filled with sweetness, joy, and cherished moments with loved ones. Here’s to a year of health, happiness, and peace for you and your family.",
+      "back": "Wishing you a year full of blessings.",
+      "tone": "heartfelt",
+      "artistInspiration": "color field meditation with large blocks of glowing color, serene depth, and contemplative mood",
+      "tags": [
+        "Rosh Hashanah",
+        "New Year",
+        "Jewish Holidays"
+      ]
+    },
+    {
+      "id": 171,
+      "title": "New Beginnings Ahead",
+      "cover": "/images/gen-jewish-holidays-rosh-hashanah-uplifting.png",
+      "centerfold": "As we gather to welcome a fresh year, may your heart be filled with hope and your days shine with joy. Embrace the blessings that come your way and let this year be a canvas for new adventures. L’shana tovah – here’s to a sweet and fulfilling year ahead!",
+      "back": "Wishing you peace and happiness this year.",
+      "tone": "uplifting",
+      "artistInspiration": "mosaic-like abstract with radiant concentric circles, stained glass colors, and spiritual warmth",
+      "tags": [
+        "Rosh Hashanah",
+        "New Year",
+        "Jewish Holidays"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "target": {
+    "groupId": "religious-spiritual-cultural",
+    "groupName": "Religious, Spiritual & Cultural",
+    "categoryId": "jewish-holidays",
+    "categoryName": "Jewish Holidays",
+    "subcategoryId": "yom-kippur",
+    "subcategoryName": "Yom Kippur"
+  },
+  "cards": [
+    {
+      "id": 172,
+      "title": "Fast Times at Yom Kippur",
+      "cover": "/images/gen-jewish-holidays-yom-kippur-funny.png",
+      "centerfold": "Why did the rabbi bring a ladder to Yom Kippur? Because he wanted to reach new heights of repentance! Remember, it's all about the 'fast' track to forgiveness—just don’t speed too much on the way to the break fast!",
+      "back": "Wishing you an easy fast and a joyous break!",
+      "tone": "funny",
+      "artistInspiration": "abstract expressionist spiritual art with radiating colors, sacred geometry, and luminous energy",
+      "tags": [
+        "Yom Kippur",
+        "Jewish Holidays",
+        "Humor"
+      ]
+    },
+    {
+      "id": 173,
+      "title": "A Day of Reflection",
+      "cover": "/images/gen-jewish-holidays-yom-kippur-heartfelt.png",
+      "centerfold": "On this sacred day of Yom Kippur, may your heart find peace and your spirit embrace forgiveness. As we come together to reflect, let us release our burdens and seek reconciliation with ourselves and others. May the promise of a new beginning fill you with hope and strength.",
+      "back": "Wishing you a meaningful fast and a year of blessings.",
+      "tone": "heartfelt",
+      "artistInspiration": "color field meditation with large blocks of glowing color, serene depth, and contemplative mood",
+      "tags": [
+        "Yom Kippur",
+        "Forgiveness",
+        "Reflection"
+      ]
+    },
+    {
+      "id": 174,
+      "title": "A Day of Reflection",
+      "cover": "/images/gen-jewish-holidays-yom-kippur-uplifting.png",
+      "centerfold": "As we gather to reflect and renew, may this Yom Kippur bring you peace and clarity. Embrace the opportunity to forgive and be forgiven, lifting your spirit towards new beginnings. Let your heart be filled with hope and your soul with light as you embark on this sacred journey.",
+      "back": "Wishing you a meaningful Yom Kippur.",
+      "tone": "uplifting",
+      "artistInspiration": "mosaic-like abstract with radiant concentric circles, stained glass colors, and spiritual warmth",
+      "tags": [
+        "Yom Kippur",
+        "Reflection",
+        "Forgiveness"
+      ]
+    }
+  ]
+}

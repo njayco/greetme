@@ -1,7 +1,7 @@
 # GreetMe - Greeting Cards App
 
 ## Overview
-A Next.js greeting card application that lets users browse, customize, and share digital greeting cards across 30+ categories organized into groups (Popular Holidays, National Holidays, Religious & Cultural, Celebrations, Life Events, Support & Sympathy, Appreciation, Feelings). Features a vintage bookshelf aesthetic with wooden textures and warm colors.
+A Next.js greeting card application that lets users browse, customize, and share digital greeting cards across 39+ categories organized into 10 groups. Features AI-generated card covers with unique art styles and clever centerfold messages. Vintage bookshelf aesthetic with wooden textures and warm colors.
 
 ## Project Architecture
 - **Framework**: Next.js 15 with App Router
@@ -11,6 +11,7 @@ A Next.js greeting card application that lets users browse, customize, and share
 - **Port**: 5000 (dev server)
 - **Database**: PostgreSQL (Neon-backed via Replit)
 - **Payments**: Stripe integration via stripe-replit-sync
+- **AI Generation**: OpenAI (gpt-image-1 for covers, gpt-4o-mini for text)
 
 ## Project Structure
 ```
@@ -27,8 +28,11 @@ lib/cardData.ts              - Shared card data definitions (categories, groups,
 lib/resendClient.ts          - Resend email client (via Replit connector)
 lib/stripeClient.ts          - Stripe client and StripeSync initialization
 lib/initStripe.ts            - Stripe schema migration and webhook setup
-public/images/               - Card images and assets
-scripts/                     - Seed scripts (seed-valentines-products.ts)
+public/images/               - Card images and assets (incl. gen-* AI images)
+scripts/                     - Generation and seed scripts
+scripts/generate-cards.ts    - AI card generation script (covers + text)
+scripts/merge-generated-cards.ts - Merges generated cards into cardData.ts
+scripts/generated/           - JSON output from card generation
 styles/                      - Global CSS
 ```
 
@@ -43,8 +47,21 @@ styles/                      - Global CSS
 - `app/api/checkout/route.ts` - Creates Stripe checkout sessions for paid cards
 - `app/api/products/route.ts` - Returns Stripe products mapped by card ID
 - `app/api/send-confirmation/route.ts` - Sends purchase confirmation email with card link
+- `scripts/generate-cards.ts` - AI card generation (OpenAI gpt-image-1 + gpt-4o-mini)
+- `scripts/merge-generated-cards.ts` - Merges generated JSON into cardData.ts
 - `next.config.mjs` - Next.js configuration
 - `tailwind.config.ts` - Tailwind CSS configuration
+
+## AI Card Generation System
+- **Script**: `npx tsx scripts/generate-cards.ts --group=GROUP_ID --category=CATEGORY --limit=N`
+- **Merge**: `npx tsx scripts/merge-generated-cards.ts`
+- **Models**: gpt-image-1 (1024x1024 covers), gpt-4o-mini (titles + centerfold text)
+- **Art Styles**: 10 style sets mapped by group (e.g., neo-expressionist, superflat pop art, infinity dot style)
+- **Tones**: Each subcategory gets 3 cards: funny, heartfelt, uplifting
+- **Speed**: ~40 sec/image, ~2 min/subcategory
+- **Resume**: Skips existing images automatically
+- **Output**: JSON files in scripts/generated/, images in public/images/gen-*
+- **Status**: 61 AI images generated, 20 subcategories completed, 136 remaining
 
 ## Card Categories & Groups
 
@@ -54,15 +71,17 @@ CardType: { id, title, cover, centerfold, back, price?, tags? }
 CategoryType: { name, color, group?, cards[] }
 ```
 
-### Groups & Categories (92 total cards, 30 categories)
+### 10 Category Groups (152 total cards, 39+ categories)
 - **Popular Holidays**: Valentine's Day (33), Mother's Day (1), Father's Day (12), Halloween (1), St. Patrick's Day (1), Black History Month (1), Women's History Month (1), Pride Month (1)
-- **National Holidays**: Fourth of July (3), New Year's Day (1), MLK Day (1), Memorial Day (1), Labor Day (1), Veterans Day (1), Thanksgiving (1), Juneteenth (2)
-- **Religious & Cultural**: Christmas (1), Hanukkah (1), Kwanzaa (1), Easter (1), Diwali (1)
-- **Celebrations**: Birthday (4), Graduation (3), Congratulations (1)
-- **Life Events**: Wedding (1), Anniversary (1), New Baby (1), Retirement (1), New Job (1), New Home (1)
-- **Support & Sympathy**: Get Well Soon (3), Sympathy (1), Thinking of You (1), Encouragement (1)
+- **National Holidays**: Fourth of July (3), New Year's Day (1), MLK Day (1), Memorial Day (1), Labor Day (1), Veterans Day (1), Thanksgiving (1), Juneteenth (2), Presidents' Day (3)
+- **Religious & Cultural**: Christmas (1), Hanukkah (1), Kwanzaa (1), Easter (1), Diwali (1), Rosh Hashanah (3), Yom Kippur (3)
+- **Celebrations & Milestones**: Birthday (7+), Graduation (6+), Congratulations (7+)
+- **Life Events**: Wedding (1), Anniversary (1), New Baby (1), Retirement (1), New Job (1), New Home (1), Career Change (3), First Job (3)
+- **Support & Sympathy**: Get Well Soon (6+), Sympathy (1), Thinking of You (1), Encouragement (1), Mental Health (3), Surgery Recovery (3)
 - **Appreciation**: Thank You (1)
 - **Feelings**: Love & Romance (1), Miss You (1), Friendship (1), I'm Sorry (1)
+- **Pride & LGBTQ+**: Coming Out (3), LGBTQ+ Love (3)
+- **Seasonal**: Fall Vibes (3), Winter Cheer (3)
 
 ### Card ID Ranges
 - IDs 1-12: Father's Day
@@ -72,7 +91,8 @@ CategoryType: { name, color, group?, cards[] }
 - IDs 23-24: Juneteenth
 - IDs 25-27: Fourth of July
 - IDs 28-60: Valentine's Day (paid via Stripe)
-- IDs 61-92: New expanded categories (1 card each)
+- IDs 61-92: Original expanded categories (1 card each)
+- IDs 93+: AI-generated cards (3 per subcategory)
 
 ## Valentine's Day Cards (Paid via Stripe)
 - **33 total cards** (IDs 28-60): 7 original + 26 new
@@ -121,3 +141,8 @@ CategoryType: { name, color, group?, cards[] }
 - Dev: `npx next dev -H 0.0.0.0 -p 5000`
 - Build: `npx next build`
 - Start: `npx next start -H 0.0.0.0 -p 5000`
+
+## AI Generation Commands
+- Generate cards: `npx tsx scripts/generate-cards.ts --group=GROUP_ID --limit=N`
+- Merge into app: `npx tsx scripts/merge-generated-cards.ts`
+- Dry run: `npx tsx scripts/generate-cards.ts --dry-run --limit=999`

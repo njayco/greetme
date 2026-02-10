@@ -1,0 +1,54 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "congratulations",
+    "categoryName": "Congratulations",
+    "subcategoryId": "promotion",
+    "subcategoryName": "Promotion"
+  },
+  "cards": [
+    {
+      "id": 199,
+      "title": "Climbing the Ladder!",
+      "cover": "/images/gen-congratulations-promotion-funny.png",
+      "centerfold": "Congratulations on your promotion! Now you can finally afford to buy all the fancy coffee you’ll need to survive the extra responsibilities. Just remember – with great power comes great coffee breaks!",
+      "back": "Cheers to your success!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Promotion",
+        "Congratulations",
+        "Work Humor"
+      ]
+    },
+    {
+      "id": 200,
+      "title": "Cheers to Your Success!",
+      "cover": "/images/gen-congratulations-promotion-heartfelt.png",
+      "centerfold": "Your hard work and dedication have truly paid off, and this promotion is a testament to your incredible talents. May this next chapter be filled with joy, growth, and endless opportunities. You deserve every ounce of this success and more!",
+      "back": "With warmest congratulations,",
+      "tone": "heartfelt",
+      "artistInspiration": "contemporary Japanese superflat pop art with repeating colorful patterns and playful motifs",
+      "tags": [
+        "Promotion",
+        "Success",
+        "Milestone"
+      ]
+    },
+    {
+      "id": 201,
+      "title": "Cheers to Your Success!",
+      "cover": "/images/gen-congratulations-promotion-uplifting.png",
+      "centerfold": "Congratulations on your well-deserved promotion! Your hard work and determination have truly paid off, and this is just the beginning of even greater things to come. Keep shining and inspiring those around you!",
+      "back": "With warmest wishes for your bright future!",
+      "tone": "uplifting",
+      "artistInspiration": "immersive polka-dot infinity style with mesmerizing repeating circles and vivid colors",
+      "tags": [
+        "Promotion",
+        "Success",
+        "Celebration"
+      ]
+    }
+  ]
+}

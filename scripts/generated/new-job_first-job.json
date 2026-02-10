@@ -1,0 +1,54 @@
+{
+  "target": {
+    "groupId": "work-career-life-changes",
+    "groupName": "Work, Career & Life Changes",
+    "categoryId": "new-job",
+    "categoryName": "New Job",
+    "subcategoryId": "first-job",
+    "subcategoryName": "First Job"
+  },
+  "cards": [
+    {
+      "id": 181,
+      "title": "Welcome to the Grind!",
+      "cover": "/images/gen-new-job-first-job-funny.png",
+      "centerfold": "Congratulations on your first job! Remember, coffee is your new best friend and deadlines are just suggestions. Don’t worry if you feel a little lost; it's just part of the fun of adulting! You’ve got this – just don’t forget to pretend to look busy!",
+      "back": "Cheers to a fantastic start!",
+      "tone": "funny",
+      "artistInspiration": "geometric abstraction with clean primary color grids, balanced composition, and modern elegance",
+      "tags": [
+        "First Job",
+        "New Beginnings",
+        "Work Humor"
+      ]
+    },
+    {
+      "id": 182,
+      "title": "A Dream Begins Here",
+      "cover": "/images/gen-new-job-first-job-heartfelt.png",
+      "centerfold": "Congratulations on landing your first job! This is the beginning of an exciting journey full of growth, challenges, and opportunities to shine. Embrace each moment and remember, you're capable of achieving amazing things.",
+      "back": "Wishing you all the best on this new adventure!",
+      "tone": "heartfelt",
+      "artistInspiration": "kinetic art style with dynamic circular forms, rhythmic color patterns, and forward motion",
+      "tags": [
+        "First Job",
+        "Congratulations",
+        "New Beginnings"
+      ]
+    },
+    {
+      "id": 183,
+      "title": "Cheers to New Beginnings!",
+      "cover": "/images/gen-new-job-first-job-uplifting.png",
+      "centerfold": "Congratulations on landing your first job! This is just the beginning of an incredible journey filled with growth, learning, and endless opportunities. Embrace every challenge, and remember, your potential is limitless!",
+      "back": "Wishing you all the success ahead!",
+      "tone": "uplifting",
+      "artistInspiration": "op art with mesmerizing geometric patterns, optical movement, and energizing contrasts",
+      "tags": [
+        "First Job",
+        "New Beginnings",
+        "Career Growth"
+      ]
+    }
+  ]
+}

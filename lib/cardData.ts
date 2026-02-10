@@ -400,8 +400,84 @@ export const categoryGroups: CategoryGroupType[] = [
               },
             ],
           },
-          { id: "promotion", name: "Promotion", cards: [] },
-          { id: "award", name: "Award", cards: [] },
+          {
+            id: "promotion",
+            name: "Promotion",
+            cards: [
+              {
+                id: 199,
+                title: "Climbing the Ladder!",
+                cover: "/images/gen-congratulations-promotion-funny.png",
+                centerfold:
+                  "Congratulations on your promotion! Now you can finally afford to buy all the fancy coffee you’ll need to survive the extra responsibilities. Just remember – with great power comes great coffee breaks!",
+                back: "Cheers to your success!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Promotion", "Congratulations", "Work Humor"],
+              },
+              {
+                id: 200,
+                title: "Cheers to Your Success!",
+                cover: "/images/gen-congratulations-promotion-heartfelt.png",
+                centerfold:
+                  "Your hard work and dedication have truly paid off, and this promotion is a testament to your incredible talents. May this next chapter be filled with joy, growth, and endless opportunities. You deserve every ounce of this success and more!",
+                back: "With warmest congratulations,",
+                tone: "heartfelt",
+                artistInspiration: "contemporary Japanese superflat pop art with repeating colorful patterns and playful motifs",
+                tags: ["Promotion", "Success", "Milestone"],
+              },
+              {
+                id: 201,
+                title: "Cheers to Your Success!",
+                cover: "/images/gen-congratulations-promotion-uplifting.png",
+                centerfold:
+                  "Congratulations on your well-deserved promotion! Your hard work and determination have truly paid off, and this is just the beginning of even greater things to come. Keep shining and inspiring those around you!",
+                back: "With warmest wishes for your bright future!",
+                tone: "uplifting",
+                artistInspiration: "immersive polka-dot infinity style with mesmerizing repeating circles and vivid colors",
+                tags: ["Promotion", "Success", "Celebration"],
+              },
+            ],
+          },
+          {
+            id: "award",
+            name: "Award",
+            cards: [
+              {
+                id: 202,
+                title: "You Deserve This!",
+                cover: "/images/gen-congratulations-award-funny.png",
+                centerfold:
+                  "Congratulations on winning that award! Now, don't let it go to your head—it's hard to walk with a trophy that big! Just remember, with great awards come great responsibilities—like making us all feel lazy in comparison.",
+                back: "Keep shining bright!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Celebration", "Achievement", "Humor"],
+              },
+              {
+                id: 203,
+                title: "Shine On, Star!",
+                cover: "/images/gen-congratulations-award-heartfelt.png",
+                centerfold:
+                  "Congratulations on your well-deserved award! Your hard work and dedication have inspired everyone around you, and this recognition is a testament to your incredible talent. Keep shining and reaching for the stars—you have so much more to achieve!",
+                back: "With heartfelt wishes for your journey ahead.",
+                tone: "heartfelt",
+                artistInspiration: "contemporary Japanese superflat pop art with repeating colorful patterns and playful motifs",
+                tags: ["Award", "Congratulations", "Celebrations"],
+              },
+              {
+                id: 204,
+                title: "Cheers to Your Success!",
+                cover: "/images/gen-congratulations-award-uplifting.png",
+                centerfold:
+                  "Congratulations on this incredible achievement! Your hard work and dedication have truly paid off, and you inspire everyone around you. Keep shining bright and reaching for the stars—there's so much more ahead!",
+                back: "With warmest wishes, celebrate big!",
+                tone: "uplifting",
+                artistInspiration: "immersive polka-dot infinity style with mesmerizing repeating circles and vivid colors",
+                tags: ["Achievement", "Inspiration", "Celebrate"],
+              },
+            ],
+          },
           { id: "personal-win", name: "Personal Win", cards: [] },
           { id: "big-life-moment", name: "Big Life Moment", cards: [] },
         ],
@@ -1477,7 +1553,45 @@ export const categoryGroups: CategoryGroupType[] = [
               },
             ],
           },
-          { id: "presidents-day", name: "Presidents' Day", cards: [] },
+          {
+            id: "presidents-day",
+            name: "Presidents' Day",
+            cards: [
+              {
+                id: 190,
+                title: "Presidential Puns Ahead!",
+                cover: "/images/gen-us-holidays-presidents-day-funny.png",
+                centerfold:
+                  "Why did the president bring a ladder to the White House? Because he wanted to reach new heights in his approval ratings! On this Presidents' Day, let's salute our leaders, past and present—after all, they only have to be less popular than the last guy! ",
+                back: "Keep smiling and keeping it presidential!",
+                tone: "funny",
+                artistInspiration: "dynamic cubist narrative with bold geometric shapes, earthy palette, and powerful figures",
+                tags: ["Presidents' Day", "Humor", "U.S. Holidays"],
+              },
+              {
+                id: 191,
+                title: "Honoring Our Leaders",
+                cover: "/images/gen-us-holidays-presidents-day-heartfelt.png",
+                centerfold:
+                  "On this Presidents' Day, let us reflect on the courage and vision of those who have shaped our nation. May we be inspired by their unwavering dedication to liberty and justice for all. Together, let's carry their legacy forward with kindness and unity in our hearts.",
+                back: "With gratitude and hope, always.",
+                tone: "heartfelt",
+                artistInspiration: "modernist collage with layered textures, bold patterns, and rich cultural imagery",
+                tags: ["Presidents' Day", "National Holidays", "Civic Pride"],
+              },
+              {
+                id: 192,
+                title: "Honoring Leadership Today",
+                cover: "/images/gen-us-holidays-presidents-day-uplifting.png",
+                centerfold:
+                  "On this Presidents' Day, let’s celebrate the spirit of unity and progress that our leaders have inspired. Together, we can carry their legacy forward, embracing hope and change for a brighter tomorrow. Remember, your voice matters and your actions can make a difference!",
+                back: "Warm wishes to you this Presidents' Day!",
+                tone: "uplifting",
+                artistInspiration: "American regionalist style with rolling landscapes, patriotic palette, and strong composition",
+                tags: ["Presidents' Day", "U.S. Holidays", "celebration"],
+              },
+            ],
+          },
           {
             id: "memorial-day",
             name: "Memorial Day",
@@ -1630,7 +1744,45 @@ export const categoryGroups: CategoryGroupType[] = [
               },
             ],
           },
-          { id: "emancipation-freedom-themes", name: "Emancipation/Freedom Themes", cards: [] },
+          {
+            id: "emancipation-freedom-themes",
+            name: "Emancipation/Freedom Themes",
+            cards: [
+              {
+                id: 193,
+                title: "Freedom's Just Desserts!",
+                cover: "/images/gen-black-american-cultural-emancipation-freedom-themes-funny.png",
+                centerfold:
+                  "Time to celebrate with the sweetest freedom! Who knew emancipation could be this tasty? Let’s have a slice of freedom pie—just don’t forget the whipped cream of joy on top! Get ready to party like it’s 1865—without the balloons that float away!",
+                back: "Wishing you a day full of joyful freedom!",
+                tone: "funny",
+                artistInspiration: "dynamic cubist narrative with bold geometric shapes, earthy palette, and powerful figures",
+                tags: ["Emancipation", "Freedom", "Humor"],
+              },
+              {
+                id: 194,
+                title: "Celebrating Our Freedom",
+                cover: "/images/gen-black-american-cultural-emancipation-freedom-themes-heartfelt.png",
+                centerfold:
+                  "Today, we honor the triumph of the human spirit and the relentless journey towards equality. May we cherish our past, embrace our present, and strive for a future where every voice is heard and every dream can flourish. Together, we stand tall in the legacy of those who fought for our freedom.",
+                back: "With love and unity, we rise.",
+                tone: "heartfelt",
+                artistInspiration: "modernist collage with layered textures, bold patterns, and rich cultural imagery",
+                tags: ["Emancipation", "Freedom", "Cultural Heritage"],
+              },
+              {
+                id: 195,
+                title: "Celebrate Freedom Today!",
+                cover: "/images/gen-black-american-cultural-emancipation-freedom-themes-uplifting.png",
+                centerfold:
+                  "On this special day, we honor the strength and resilience that paved the way for brighter tomorrows. Let’s unite in gratitude and joy, celebrating the power of freedom and the vibrant culture that enriches our lives. Together, we rise and inspire one another to dream bigger and achieve greater!",
+                back: "With love and hope, embrace your freedom!",
+                tone: "uplifting",
+                artistInspiration: "American regionalist style with rolling landscapes, patriotic palette, and strong composition",
+                tags: ["Emancipation", "Cultural Celebration", "Unity"],
+              },
+            ],
+          },
         ],
       },
     ],
@@ -1697,8 +1849,84 @@ export const categoryGroups: CategoryGroupType[] = [
               },
             ],
           },
-          { id: "rosh-hashanah", name: "Rosh Hashanah", cards: [] },
-          { id: "yom-kippur", name: "Yom Kippur", cards: [] },
+          {
+            id: "rosh-hashanah",
+            name: "Rosh Hashanah",
+            cards: [
+              {
+                id: 169,
+                title: "Shana Tova-licious!",
+                cover: "/images/gen-jewish-holidays-rosh-hashanah-funny.png",
+                centerfold:
+                  "As we dip apples in honey, let’s remember: it's not just for the sweetness! It’s also to prevent the brisket from being too dry! Wishing you a year filled with plenty of sweet surprises and no sour notes – unless it’s a really good pickle!",
+                back: "Wishing you a year as bright as your challah!",
+                tone: "funny",
+                artistInspiration: "abstract expressionist spiritual art with radiating colors, sacred geometry, and luminous energy",
+                tags: ["Rosh Hashanah", "Humor", "Jewish Holidays"],
+              },
+              {
+                id: 170,
+                title: "A Sweet New Year",
+                cover: "/images/gen-jewish-holidays-rosh-hashanah-heartfelt.png",
+                centerfold:
+                  "As the shofar sounds, may your heart awaken to the beauty of new beginnings. This Rosh Hashanah, may your life be filled with sweetness, joy, and cherished moments with loved ones. Here’s to a year of health, happiness, and peace for you and your family.",
+                back: "Wishing you a year full of blessings.",
+                tone: "heartfelt",
+                artistInspiration: "color field meditation with large blocks of glowing color, serene depth, and contemplative mood",
+                tags: ["Rosh Hashanah", "New Year", "Jewish Holidays"],
+              },
+              {
+                id: 171,
+                title: "New Beginnings Ahead",
+                cover: "/images/gen-jewish-holidays-rosh-hashanah-uplifting.png",
+                centerfold:
+                  "As we gather to welcome a fresh year, may your heart be filled with hope and your days shine with joy. Embrace the blessings that come your way and let this year be a canvas for new adventures. L’shana tovah – here’s to a sweet and fulfilling year ahead!",
+                back: "Wishing you peace and happiness this year.",
+                tone: "uplifting",
+                artistInspiration: "mosaic-like abstract with radiant concentric circles, stained glass colors, and spiritual warmth",
+                tags: ["Rosh Hashanah", "New Year", "Jewish Holidays"],
+              },
+            ],
+          },
+          {
+            id: "yom-kippur",
+            name: "Yom Kippur",
+            cards: [
+              {
+                id: 172,
+                title: "Fast Times at Yom Kippur",
+                cover: "/images/gen-jewish-holidays-yom-kippur-funny.png",
+                centerfold:
+                  "Why did the rabbi bring a ladder to Yom Kippur? Because he wanted to reach new heights of repentance! Remember, it's all about the 'fast' track to forgiveness—just don’t speed too much on the way to the break fast!",
+                back: "Wishing you an easy fast and a joyous break!",
+                tone: "funny",
+                artistInspiration: "abstract expressionist spiritual art with radiating colors, sacred geometry, and luminous energy",
+                tags: ["Yom Kippur", "Jewish Holidays", "Humor"],
+              },
+              {
+                id: 173,
+                title: "A Day of Reflection",
+                cover: "/images/gen-jewish-holidays-yom-kippur-heartfelt.png",
+                centerfold:
+                  "On this sacred day of Yom Kippur, may your heart find peace and your spirit embrace forgiveness. As we come together to reflect, let us release our burdens and seek reconciliation with ourselves and others. May the promise of a new beginning fill you with hope and strength.",
+                back: "Wishing you a meaningful fast and a year of blessings.",
+                tone: "heartfelt",
+                artistInspiration: "color field meditation with large blocks of glowing color, serene depth, and contemplative mood",
+                tags: ["Yom Kippur", "Forgiveness", "Reflection"],
+              },
+              {
+                id: 174,
+                title: "A Day of Reflection",
+                cover: "/images/gen-jewish-holidays-yom-kippur-uplifting.png",
+                centerfold:
+                  "As we gather to reflect and renew, may this Yom Kippur bring you peace and clarity. Embrace the opportunity to forgive and be forgiven, lifting your spirit towards new beginnings. Let your heart be filled with hope and your soul with light as you embark on this sacred journey.",
+                back: "Wishing you a meaningful Yom Kippur.",
+                tone: "uplifting",
+                artistInspiration: "mosaic-like abstract with radiant concentric circles, stained glass colors, and spiritual warmth",
+                tags: ["Yom Kippur", "Reflection", "Forgiveness"],
+              },
+            ],
+          },
           { id: "passover", name: "Passover", cards: [] },
         ],
       },
@@ -1783,8 +2011,84 @@ export const categoryGroups: CategoryGroupType[] = [
               },
             ],
           },
-          { id: "coming-out", name: "Coming Out", cards: [] },
-          { id: "lgbtq-plus-love", name: "LGBTQ+ Love", cards: [] },
+          {
+            id: "coming-out",
+            name: "Coming Out",
+            cards: [
+              {
+                id: 148,
+                title: "Unicorns and Rainbows Unite!",
+                cover: "/images/gen-pride-lgbtq-coming-out-funny.png",
+                centerfold:
+                  "Congratulations on finally coming out! Just remember, it’s not just a phase—unless you’re talking about fashion choices. Now you can officially blame all your glittery shoes on your fabulous self!",
+                back: "Shine on, you beautiful star!",
+                tone: "funny",
+                artistInspiration: "urban neo-expressionist style with raw energy, layered text elements, and vibrant graffiti colors",
+                tags: ["Coming Out", "Pride", "LGBTQ+"],
+              },
+              {
+                id: 149,
+                title: "Embrace Your Truth",
+                cover: "/images/gen-pride-lgbtq-coming-out-heartfelt.png",
+                centerfold:
+                  "Your journey is a beautiful testament to courage and authenticity. Coming out is not just a moment; it’s a celebration of who you truly are. May you find love and acceptance, both from yourself and those around you, as you step into the light with pride.",
+                back: "With love and support always.",
+                tone: "heartfelt",
+                artistInspiration: "bold pop art with thick outlines, dancing figures, and radiant rainbow patterns",
+                tags: ["Coming Out", "Pride", "Self-Acceptance"],
+              },
+              {
+                id: 150,
+                title: "Be You, Shine Bright",
+                cover: "/images/gen-pride-lgbtq-coming-out-uplifting.png",
+                centerfold:
+                  "Your truth is a gift to the world! Embrace who you are with pride and let your authentic self shine. Remember, you are loved just as you are, and the journey of self-acceptance is a beautiful one.",
+                back: "With love and pride, always.",
+                tone: "uplifting",
+                artistInspiration: "maximalist portrait style with ornate patterns, powerful poses, and rich textile backgrounds",
+                tags: ["Coming Out", "Pride", "Self-Acceptance"],
+              },
+            ],
+          },
+          {
+            id: "lgbtq-plus-love",
+            name: "LGBTQ+ Love",
+            cards: [
+              {
+                id: 151,
+                title: "Love is a Rainbow",
+                cover: "/images/gen-pride-lgbtq-lgbtq-plus-love-funny.png",
+                centerfold:
+                  "You stole my heart like a drag queen steals the show! Let’s celebrate our love that’s more colorful than a Pride parade and sweeter than a unicorn on a sugar rush. Here’s to being fabulously ourselves and loving fiercely—because normal is so last season!",
+                back: "Keep shining bright, fabulous one!",
+                tone: "funny",
+                artistInspiration: "urban neo-expressionist style with raw energy, layered text elements, and vibrant graffiti colors",
+                tags: ["LGBTQ+", "Pride", "Love"],
+              },
+              {
+                id: 152,
+                title: "Love Knows No Bounds",
+                cover: "/images/gen-pride-lgbtq-lgbtq-plus-love-heartfelt.png",
+                centerfold:
+                  "In a world that shines with colors as vibrant as your heart, your love is a beautiful testament to the strength of authenticity. Celebrate every moment of your journey together, knowing that your love inspires others to embrace who they are. Let your hearts shine boldly, reminding the world that love is love, and it's meant to be cherished.",
+                back: "With love always, embrace your truth.",
+                tone: "heartfelt",
+                artistInspiration: "bold pop art with thick outlines, dancing figures, and radiant rainbow patterns",
+                tags: ["Love", "Pride", "Inclusion"],
+              },
+              {
+                id: 153,
+                title: "Love Always Wins",
+                cover: "/images/gen-pride-lgbtq-lgbtq-plus-love-uplifting.png",
+                centerfold:
+                  "Your love is a beautiful tapestry woven with courage and authenticity. Celebrate who you are and embrace the vibrant colors of your identity. Together, we create a world where love knows no bounds!",
+                back: "Keep shining your unique light.",
+                tone: "uplifting",
+                artistInspiration: "maximalist portrait style with ornate patterns, powerful poses, and rich textile backgrounds",
+                tags: ["LGBTQ+", "Pride", "Inclusion"],
+              },
+            ],
+          },
           { id: "trans-joy", name: "Trans Joy", cards: [] },
           { id: "nonbinary-gender-expansive", name: "Nonbinary/Gender-Expansive", cards: [] },
           { id: "chosen-family", name: "Chosen Family", cards: [] },
@@ -1841,7 +2145,45 @@ export const categoryGroups: CategoryGroupType[] = [
         name: "New Job",
         color: "teal",
         subcategories: [
-          { id: "first-job", name: "First Job", cards: [] },
+          {
+            id: "first-job",
+            name: "First Job",
+            cards: [
+              {
+                id: 181,
+                title: "Welcome to the Grind!",
+                cover: "/images/gen-new-job-first-job-funny.png",
+                centerfold:
+                  "Congratulations on your first job! Remember, coffee is your new best friend and deadlines are just suggestions. Don’t worry if you feel a little lost; it's just part of the fun of adulting! You’ve got this – just don’t forget to pretend to look busy!",
+                back: "Cheers to a fantastic start!",
+                tone: "funny",
+                artistInspiration: "geometric abstraction with clean primary color grids, balanced composition, and modern elegance",
+                tags: ["First Job", "New Beginnings", "Work Humor"],
+              },
+              {
+                id: 182,
+                title: "A Dream Begins Here",
+                cover: "/images/gen-new-job-first-job-heartfelt.png",
+                centerfold:
+                  "Congratulations on landing your first job! This is the beginning of an exciting journey full of growth, challenges, and opportunities to shine. Embrace each moment and remember, you're capable of achieving amazing things.",
+                back: "Wishing you all the best on this new adventure!",
+                tone: "heartfelt",
+                artistInspiration: "kinetic art style with dynamic circular forms, rhythmic color patterns, and forward motion",
+                tags: ["First Job", "Congratulations", "New Beginnings"],
+              },
+              {
+                id: 183,
+                title: "Cheers to New Beginnings!",
+                cover: "/images/gen-new-job-first-job-uplifting.png",
+                centerfold:
+                  "Congratulations on landing your first job! This is just the beginning of an incredible journey filled with growth, learning, and endless opportunities. Embrace every challenge, and remember, your potential is limitless!",
+                back: "Wishing you all the success ahead!",
+                tone: "uplifting",
+                artistInspiration: "op art with mesmerizing geometric patterns, optical movement, and energizing contrasts",
+                tags: ["First Job", "New Beginnings", "Career Growth"],
+              },
+            ],
+          },
           {
             id: "promotion",
             name: "Promotion",
@@ -1857,7 +2199,45 @@ export const categoryGroups: CategoryGroupType[] = [
               },
             ],
           },
-          { id: "career-change", name: "Career Change", cards: [] },
+          {
+            id: "career-change",
+            name: "Career Change",
+            cards: [
+              {
+                id: 184,
+                title: "From Cubicle to Adventure!",
+                cover: "/images/gen-new-job-career-change-funny.png",
+                centerfold:
+                  "Congratulations on your career change! Remember, it’s not about finding the right job, it’s about finding the one that doesn’t have a dress code! Here’s to trading in spreadsheets for daydreams and coffee breaks for spontaneous dance parties!",
+                back: "Cheers to new beginnings!",
+                tone: "funny",
+                artistInspiration: "geometric abstraction with clean primary color grids, balanced composition, and modern elegance",
+                tags: ["Career Change", "Funny", "New Job"],
+              },
+              {
+                id: 185,
+                title: "A New Path Awaits",
+                cover: "/images/gen-new-job-career-change-heartfelt.png",
+                centerfold:
+                  "Embracing change takes courage, and today you take a bold step toward a brighter future. May this new adventure bring you joy, fulfillment, and the chance to shine in ways you've always dreamed. Remember, every ending is a new beginning, and I believe in you wholeheartedly.",
+                back: "With all my love and support.",
+                tone: "heartfelt",
+                artistInspiration: "kinetic art style with dynamic circular forms, rhythmic color patterns, and forward motion",
+                tags: ["Career Change", "New Beginnings", "Support"],
+              },
+              {
+                id: 186,
+                title: "New Horizons Await",
+                cover: "/images/gen-new-job-career-change-uplifting.png",
+                centerfold:
+                  "Embracing change is the first step toward new adventures! Your courage to pursue a fresh career path is inspiring. Remember, every twist and turn leads to growth and new opportunities. Keep shining bright and follow your dreams!",
+                back: "Wishing you endless success!",
+                tone: "uplifting",
+                artistInspiration: "op art with mesmerizing geometric patterns, optical movement, and energizing contrasts",
+                tags: ["Career Change", "New Beginnings", "Inspiration"],
+              },
+            ],
+          },
           { id: "freelance-entrepreneur", name: "Freelance/Entrepreneur", cards: [] },
         ],
       },
@@ -1937,8 +2317,84 @@ export const categoryGroups: CategoryGroupType[] = [
               },
             ],
           },
-          { id: "fall-vibes", name: "Fall Vibes", cards: [] },
-          { id: "winter-cheer", name: "Winter Cheer", cards: [] },
+          {
+            id: "fall-vibes",
+            name: "Fall Vibes",
+            cards: [
+              {
+                id: 160,
+                title: "Falling for You",
+                cover: "/images/gen-seasonal-fall-vibes-funny.png",
+                centerfold:
+                  "Why did the leaf break up with the tree? It just couldn't handle the pressure of all those branches! Let's fall into sweater weather and pumpkin spice everything together. Hope your season is un-leaf-ably cozy!",
+                back: "Stay warm and enjoy the crunch!",
+                tone: "funny",
+                artistInspiration: "bold pop art with bright flat colors, graphic silkscreen effect, and cultural iconography",
+                tags: ["Fall", "Pumpkin Spice", "Humor"],
+              },
+              {
+                id: 161,
+                title: "Autumn Embrace",
+                cover: "/images/gen-seasonal-fall-vibes-heartfelt.png",
+                centerfold:
+                  "As the leaves turn golden and the air grows crisp, may you find warmth in the simple joys of this beautiful season. Let the vibrant colors of fall remind you of the love and gratitude that surrounds you. Cherish each moment, for it's the little things that weave the fabric of our memories.",
+                back: "Wishing you a cozy fall filled with love.",
+                tone: "heartfelt",
+                artistInspiration: "comic book pop art with Ben-Day dots, bold outlines, speech bubbles, and saturated colors",
+                tags: ["Fall Vibes", "Heartfelt", "Seasonal"],
+              },
+              {
+                id: 162,
+                title: "Embrace the Autumn Glow",
+                cover: "/images/gen-seasonal-fall-vibes-uplifting.png",
+                centerfold:
+                  "As the leaves turn golden and the air grows crisp, let the beauty of fall inspire you. This season is a reminder to let go of the past and embrace new beginnings. Take a moment to savor the warmth of cozy gatherings and the joy of nature’s transformation. You are surrounded by magic—soak it all in!",
+                back: "Wishing you a season full of warmth and wonder,",
+                tone: "uplifting",
+                artistInspiration: "playful contemporary pop with oversized smiling flowers, candy colors, and kawaii energy",
+                tags: ["Fall", "Autumn", "Inspiration"],
+              },
+            ],
+          },
+          {
+            id: "winter-cheer",
+            name: "Winter Cheer",
+            cards: [
+              {
+                id: 163,
+                title: "Ice to Meet You!",
+                cover: "/images/gen-seasonal-winter-cheer-funny.png",
+                centerfold:
+                  "Winter is snow joke! As the temperatures drop, remember to chill out and let the frost bite. May your hot cocoa be strong, your socks be warm, and your snowman-building skills be legend—wait for it—dairy! Stay frosty!",
+                back: "Warm wishes and snowy snuggles!",
+                tone: "funny",
+                artistInspiration: "bold pop art with bright flat colors, graphic silkscreen effect, and cultural iconography",
+                tags: ["Winter", "Humor", "Seasonal"],
+              },
+              {
+                id: 164,
+                title: "Warmth in the Cold",
+                cover: "/images/gen-seasonal-winter-cheer-heartfelt.png",
+                centerfold:
+                  "As the winter chill wraps around us, may the warmth of love and joy fill your heart. Let every snowfall remind you of the beauty in life's simple moments, and may laughter ring through your home like a melody. Together, we can create memories that shine brighter than the stars on a frosty night.",
+                back: "Sending you cozy hugs and warm wishes,",
+                tone: "heartfelt",
+                artistInspiration: "comic book pop art with Ben-Day dots, bold outlines, speech bubbles, and saturated colors",
+                tags: ["Winter", "Cheer", "Heartfelt"],
+              },
+              {
+                id: 165,
+                title: "Embrace the Season",
+                cover: "/images/gen-seasonal-winter-cheer-uplifting.png",
+                centerfold:
+                  "As the snow blankets the world in shimmering white, let your heart be filled with warmth and joy. This winter, take a moment to reflect on the beauty around you and the love that surrounds you. Every flake is a reminder that magic is everywhere, just waiting for you to embrace it!",
+                back: "Wishing you endless winter cheer!",
+                tone: "uplifting",
+                artistInspiration: "playful contemporary pop with oversized smiling flowers, candy colors, and kawaii energy",
+                tags: ["Winter", "Joy", "Magic"],
+              },
+            ],
+          },
           {
             id: "spring-renewal",
             name: "Spring Renewal",

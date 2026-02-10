@@ -1,0 +1,54 @@
+{
+  "target": {
+    "groupId": "seasonal-fun",
+    "groupName": "Seasonal & Fun",
+    "categoryId": "seasonal",
+    "categoryName": "Seasonal",
+    "subcategoryId": "fall-vibes",
+    "subcategoryName": "Fall Vibes"
+  },
+  "cards": [
+    {
+      "id": 160,
+      "title": "Falling for You",
+      "cover": "/images/gen-seasonal-fall-vibes-funny.png",
+      "centerfold": "Why did the leaf break up with the tree? It just couldn't handle the pressure of all those branches! Let's fall into sweater weather and pumpkin spice everything together. Hope your season is un-leaf-ably cozy!",
+      "back": "Stay warm and enjoy the crunch!",
+      "tone": "funny",
+      "artistInspiration": "bold pop art with bright flat colors, graphic silkscreen effect, and cultural iconography",
+      "tags": [
+        "Fall",
+        "Pumpkin Spice",
+        "Humor"
+      ]
+    },
+    {
+      "id": 161,
+      "title": "Autumn Embrace",
+      "cover": "/images/gen-seasonal-fall-vibes-heartfelt.png",
+      "centerfold": "As the leaves turn golden and the air grows crisp, may you find warmth in the simple joys of this beautiful season. Let the vibrant colors of fall remind you of the love and gratitude that surrounds you. Cherish each moment, for it's the little things that weave the fabric of our memories.",
+      "back": "Wishing you a cozy fall filled with love.",
+      "tone": "heartfelt",
+      "artistInspiration": "comic book pop art with Ben-Day dots, bold outlines, speech bubbles, and saturated colors",
+      "tags": [
+        "Fall Vibes",
+        "Heartfelt",
+        "Seasonal"
+      ]
+    },
+    {
+      "id": 162,
+      "title": "Embrace the Autumn Glow",
+      "cover": "/images/gen-seasonal-fall-vibes-uplifting.png",
+      "centerfold": "As the leaves turn golden and the air grows crisp, let the beauty of fall inspire you. This season is a reminder to let go of the past and embrace new beginnings. Take a moment to savor the warmth of cozy gatherings and the joy of nature’s transformation. You are surrounded by magic—soak it all in!",
+      "back": "Wishing you a season full of warmth and wonder,",
+      "tone": "uplifting",
+      "artistInspiration": "playful contemporary pop with oversized smiling flowers, candy colors, and kawaii energy",
+      "tags": [
+        "Fall",
+        "Autumn",
+        "Inspiration"
+      ]
+    }
+  ]
+}

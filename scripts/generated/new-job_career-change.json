@@ -1,0 +1,54 @@
+{
+  "target": {
+    "groupId": "work-career-life-changes",
+    "groupName": "Work, Career & Life Changes",
+    "categoryId": "new-job",
+    "categoryName": "New Job",
+    "subcategoryId": "career-change",
+    "subcategoryName": "Career Change"
+  },
+  "cards": [
+    {
+      "id": 184,
+      "title": "From Cubicle to Adventure!",
+      "cover": "/images/gen-new-job-career-change-funny.png",
+      "centerfold": "Congratulations on your career change! Remember, it’s not about finding the right job, it’s about finding the one that doesn’t have a dress code! Here’s to trading in spreadsheets for daydreams and coffee breaks for spontaneous dance parties!",
+      "back": "Cheers to new beginnings!",
+      "tone": "funny",
+      "artistInspiration": "geometric abstraction with clean primary color grids, balanced composition, and modern elegance",
+      "tags": [
+        "Career Change",
+        "Funny",
+        "New Job"
+      ]
+    },
+    {
+      "id": 185,
+      "title": "A New Path Awaits",
+      "cover": "/images/gen-new-job-career-change-heartfelt.png",
+      "centerfold": "Embracing change takes courage, and today you take a bold step toward a brighter future. May this new adventure bring you joy, fulfillment, and the chance to shine in ways you've always dreamed. Remember, every ending is a new beginning, and I believe in you wholeheartedly.",
+      "back": "With all my love and support.",
+      "tone": "heartfelt",
+      "artistInspiration": "kinetic art style with dynamic circular forms, rhythmic color patterns, and forward motion",
+      "tags": [
+        "Career Change",
+        "New Beginnings",
+        "Support"
+      ]
+    },
+    {
+      "id": 186,
+      "title": "New Horizons Await",
+      "cover": "/images/gen-new-job-career-change-uplifting.png",
+      "centerfold": "Embracing change is the first step toward new adventures! Your courage to pursue a fresh career path is inspiring. Remember, every twist and turn leads to growth and new opportunities. Keep shining bright and follow your dreams!",
+      "back": "Wishing you endless success!",
+      "tone": "uplifting",
+      "artistInspiration": "op art with mesmerizing geometric patterns, optical movement, and energizing contrasts",
+      "tags": [
+        "Career Change",
+        "New Beginnings",
+        "Inspiration"
+      ]
+    }
+  ]
+}
