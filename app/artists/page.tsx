@@ -66,6 +66,14 @@ function StepIndicator({ currentStep, totalSteps }: { currentStep: number; total
   )
 }
 
+function resolveImageUrl(url: string | null): string {
+  if (!url) return ""
+  if (url.startsWith("/objects/")) {
+    return `/api/uploads/serve?path=${encodeURIComponent(url)}`
+  }
+  return url
+}
+
 export default function ArtistsPage() {
   const [step, setStep] = useState(1)
   const [imageFile, setImageFile] = useState<File | null>(null)
@@ -679,7 +687,7 @@ export default function ArtistsPage() {
                   <div className="aspect-[3/4] bg-white rounded-lg shadow-2xl overflow-hidden border border-gray-200">
                     {(uploadedImageUrl || imagePreview) && (
                       <img
-                        src={uploadedImageUrl || imagePreview || ""}
+                        src={uploadedImageUrl ? resolveImageUrl(uploadedImageUrl) : imagePreview || ""}
                         alt="Card cover"
                         className="w-full h-full object-cover"
                       />
