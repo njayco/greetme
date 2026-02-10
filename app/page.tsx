@@ -466,13 +466,20 @@ export default function GreetingCardsApp() {
           }}
         />
 
-        <div className="relative z-10 w-full max-w-md flex flex-col items-center">
-          <div className="mb-8">
+        <div className="relative z-10 w-full max-w-lg flex flex-col items-center" style={{ marginTop: '-40px' }}>
+          <div className="relative mb-8">
+            <div
+              className="absolute inset-0 rounded-full"
+              style={{
+                background: 'radial-gradient(ellipse at center, rgba(218,185,120,0.6) 0%, rgba(196,154,108,0.3) 40%, transparent 70%)',
+                transform: 'scale(1.3)',
+                filter: 'blur(20px)',
+              }}
+            />
             <img
               src="/images/greetme-logo.png"
               alt="GreetMe - Spread Love, Share Joy"
-              className="w-80 h-auto mx-auto"
-              style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.2))' }}
+              className="relative z-10 w-[340px] sm:w-[400px] h-auto mx-auto"
             />
           </div>
 
