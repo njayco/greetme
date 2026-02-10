@@ -1,0 +1,26 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "birthday",
+    "categoryName": "Birthday",
+    "subcategoryId": "for-parent",
+    "subcategoryName": "For Parent"
+  },
+  "cards": [
+    {
+      "id": 212,
+      "title": "Aging Like Fine Wine",
+      "cover": "/images/gen-birthday-for-parent-funny.png",
+      "centerfold": "Happy Birthday, Mom & Dad! Remember, you're not getting older, you're just leveling up in the game of life—complete with extra wrinkles and bonus gray hairs! Let’s celebrate the fact that you’ve mastered the art of ‘forgetting’ where you put your glasses!",
+      "back": "Cheers to many more years of fun! ",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Funny",
+        "Birthday",
+        "Parents"
+      ]
+    }
+  ]
+}

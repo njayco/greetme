@@ -1,0 +1,26 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "birthday",
+    "categoryName": "Birthday",
+    "subcategoryId": "for-dad",
+    "subcategoryName": "For Dad"
+  },
+  "cards": [
+    {
+      "id": 211,
+      "title": "Dad's Day of Rest",
+      "cover": "/images/gen-birthday-for-dad-funny.png",
+      "centerfold": "Happy birthday, Dad! Remember, age is just a number—like your golf score! So swing into this year with confidence, and don’t worry about a little gray hair; it just means you’ve got more wisdom to share (or more dad jokes to tell)!",
+      "back": "Cheers to many more years of fun, Dad!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Funny",
+        "Dad",
+        "Birthday"
+      ]
+    }
+  ]
+}

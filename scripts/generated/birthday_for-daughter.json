@@ -1,0 +1,26 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "birthday",
+    "categoryName": "Birthday",
+    "subcategoryId": "for-daughter",
+    "subcategoryName": "For Daughter"
+  },
+  "cards": [
+    {
+      "id": 207,
+      "title": "Another Year of YOU!",
+      "cover": "/images/gen-birthday-for-daughter-funny.png",
+      "centerfold": "Congratulations on leveling up, my dear! At this age, you're now officially too old for kid's menus but still too young to worry about taxes—enjoy the sweet spot! Remember, calories don't count on your birthday, so eat cake like it’s your job!",
+      "back": "Keep shining, birthday star!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Birthday",
+        "Daughter",
+        "Funny"
+      ]
+    }
+  ]
+}

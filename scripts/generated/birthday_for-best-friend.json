@@ -1,0 +1,26 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "birthday",
+    "categoryName": "Birthday",
+    "subcategoryId": "for-best-friend",
+    "subcategoryName": "For Best Friend"
+  },
+  "cards": [
+    {
+      "id": 218,
+      "title": "Aged to Perfection!",
+      "cover": "/images/gen-birthday-for-best-friend-funny.png",
+      "centerfold": "Happy Birthday, my friend! Remember, age is just a number— a really high one in your case! But don’t worry, with all those candles on your cake, we’ll have enough heat to start a small bonfire!",
+      "back": "Cheers to many more hilarious adventures!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "birthday",
+        "best friend",
+        "funny"
+      ]
+    }
+  ]
+}

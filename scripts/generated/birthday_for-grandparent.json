@@ -1,0 +1,26 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "birthday",
+    "categoryName": "Birthday",
+    "subcategoryId": "for-grandparent",
+    "subcategoryName": "For Grandparent"
+  },
+  "cards": [
+    {
+      "id": 215,
+      "title": "Aging Like Fine Wine",
+      "cover": "/images/gen-birthday-for-grandparent-funny.png",
+      "centerfold": "Happy Birthday! At this age, every birthday candle is like a fire hazard! Don't worry; your secret to staying young is safe with me—just remember, it's all in the cake!",
+      "back": "Cheers to you, Grandma/Grandpa!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Grandparents",
+        "Birthday",
+        "Humor"
+      ]
+    }
+  ]
+}

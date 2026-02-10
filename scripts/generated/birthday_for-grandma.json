@@ -1,0 +1,26 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "birthday",
+    "categoryName": "Birthday",
+    "subcategoryId": "for-grandma",
+    "subcategoryName": "For Grandma"
+  },
+  "cards": [
+    {
+      "id": 213,
+      "title": "Grandma: Vintage & Fabulous!",
+      "cover": "/images/gen-birthday-for-grandma-funny.png",
+      "centerfold": "Happy Birthday to the woman who’s aged like fine wine! Just remember, you’re not getting older—you’re just leveling up in the game of life. I’d say you’re now a legendary character! Let’s make this year as grand as your secret cookie recipe (and twice as sweet)!",
+      "back": "With love and lots of cake!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Grandma",
+        "Birthday Humor",
+        "Celebration"
+      ]
+    }
+  ]
+}

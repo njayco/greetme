@@ -1,0 +1,26 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "birthday",
+    "categoryName": "Birthday",
+    "subcategoryId": "milestone-21",
+    "subcategoryName": "Milestone 21"
+  },
+  "cards": [
+    {
+      "id": 223,
+      "title": "Cheers to 21 Years!",
+      "cover": "/images/gen-birthday-milestone-21-funny.png",
+      "centerfold": "Welcome to the age where 'illegal' and 'irresponsible' just became synonyms! Time to trade in your juice boxes for cocktails and your bedtime for a bar crawl. Just remember, adulting is like folding a fitted sheet—nobody really knows how to do it!",
+      "back": "Stay fabulous and enjoy every sip!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Birthday",
+        "Milestone",
+        "Humor"
+      ]
+    }
+  ]
+}

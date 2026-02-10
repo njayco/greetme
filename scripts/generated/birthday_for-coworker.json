@@ -1,0 +1,26 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "birthday",
+    "categoryName": "Birthday",
+    "subcategoryId": "for-coworker",
+    "subcategoryName": "For Coworker"
+  },
+  "cards": [
+    {
+      "id": 219,
+      "title": "A Colleague Like No Other!",
+      "cover": "/images/gen-birthday-for-coworker-funny.png",
+      "centerfold": "Happy Birthday! Don't worry, I won't tell anyone how old you are... as long as you don’t tell anyone how long I’ve been here! Remember, age is just a number—like the one on your paycheck! Enjoy your day!",
+      "back": "Cheers to another year of office shenanigans!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Birthday",
+        "Coworker",
+        "Humor"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "birthday",
+    "categoryName": "Birthday",
+    "subcategoryId": "for-mom",
+    "subcategoryName": "For Mom"
+  },
+  "cards": [
+    {
+      "id": 210,
+      "title": "Aging Like Fine Wine",
+      "cover": "/images/gen-birthday-for-mom-funny.png",
+      "centerfold": "Happy Birthday, Mom! Remember, age is just a number—and in your case, it's an unlisted one! At this point, you must be part of a vintage collection!",
+      "back": "Cheers to you, my timeless treasure!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Birthday",
+        "Mom",
+        "Funny"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "birthday",
+    "categoryName": "Birthday",
+    "subcategoryId": "milestone-18",
+    "subcategoryName": "Milestone 18"
+  },
+  "cards": [
+    {
+      "id": 222,
+      "title": "Eighteen & Unstoppable!",
+      "cover": "/images/gen-birthday-milestone-18-funny.png",
+      "centerfold": "Congrats on turning 18! You're now officially an adult—meaning you can go to jail and vote, but you still can’t buy a lottery ticket. Just remember, with great power comes great responsibility... and Netflix binge-watching! Enjoy your new level of freedom (and confusion)!",
+      "back": "Cheers to your next adventure!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Birthday",
+        "Milestone",
+        "Funny"
+      ]
+    }
+  ]
+}

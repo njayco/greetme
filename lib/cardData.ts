@@ -197,21 +197,261 @@ export const categoryGroups: CategoryGroupType[] = [
               },
             ],
           },
-          { id: "for-daughter", name: "For Daughter", cards: [] },
-          { id: "for-child", name: "For Child", cards: [] },
-          { id: "for-teen", name: "For Teen", cards: [] },
-          { id: "for-mom", name: "For Mom", cards: [] },
-          { id: "for-dad", name: "For Dad", cards: [] },
-          { id: "for-parent", name: "For Parent", cards: [] },
-          { id: "for-grandma", name: "For Grandma", cards: [] },
-          { id: "for-grandpa", name: "For Grandpa", cards: [] },
-          { id: "for-grandparent", name: "For Grandparent", cards: [] },
-          { id: "for-partner-spouse", name: "For Partner/Spouse", cards: [] },
-          { id: "for-friend", name: "For Friend", cards: [] },
-          { id: "for-best-friend", name: "For Best Friend", cards: [] },
-          { id: "for-coworker", name: "For Coworker", cards: [] },
-          { id: "for-boss", name: "For Boss", cards: [] },
-          { id: "funny-birthday", name: "Funny Birthday", cards: [] },
+          {
+            id: "for-daughter",
+            name: "For Daughter",
+            cards: [
+              {
+                id: 207,
+                title: "Another Year of YOU!",
+                cover: "/images/gen-birthday-for-daughter-funny.png",
+                centerfold:
+                  "Congratulations on leveling up, my dear! At this age, you're now officially too old for kid's menus but still too young to worry about taxes—enjoy the sweet spot! Remember, calories don't count on your birthday, so eat cake like it’s your job!",
+                back: "Keep shining, birthday star!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Birthday", "Daughter", "Funny"],
+              },
+            ],
+          },
+          {
+            id: "for-child",
+            name: "For Child",
+            cards: [
+              {
+                id: 208,
+                title: "Growing Up is Tough!",
+                cover: "/images/gen-birthday-for-child-funny.png",
+                centerfold:
+                  "Happy Birthday! Remember, age is just a number—like the number of times you can eat cake without feeling guilty. So go ahead, celebrate like you just discovered a magical land of unlimited ice cream! Just don’t forget to leave some for the grown-ups… maybe.",
+                back: "Keep shining and laughing!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Birthday", "Child", "Humor"],
+              },
+            ],
+          },
+          {
+            id: "for-teen",
+            name: "For Teen",
+            cards: [
+              {
+                id: 209,
+                title: "You're a Teen Now!",
+                cover: "/images/gen-birthday-for-teen-funny.png",
+                centerfold:
+                  "Congratulations on turning another year older! At this age, remember: if you can’t convince your parents you’re mature, just convince them you’re still a kid in need of cake! May your day be filled with laughter, and your gifts be as epic as your meme collection.",
+                back: "Keep shining bright!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Teen Birthday", "Funny Card", "Celebration"],
+              },
+            ],
+          },
+          {
+            id: "for-mom",
+            name: "For Mom",
+            cards: [
+              {
+                id: 210,
+                title: "Aging Like Fine Wine",
+                cover: "/images/gen-birthday-for-mom-funny.png",
+                centerfold:
+                  "Happy Birthday, Mom! Remember, age is just a number—and in your case, it's an unlisted one! At this point, you must be part of a vintage collection!",
+                back: "Cheers to you, my timeless treasure!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Birthday", "Mom", "Funny"],
+              },
+            ],
+          },
+          {
+            id: "for-dad",
+            name: "For Dad",
+            cards: [
+              {
+                id: 211,
+                title: "Dad's Day of Rest",
+                cover: "/images/gen-birthday-for-dad-funny.png",
+                centerfold:
+                  "Happy birthday, Dad! Remember, age is just a number—like your golf score! So swing into this year with confidence, and don’t worry about a little gray hair; it just means you’ve got more wisdom to share (or more dad jokes to tell)!",
+                back: "Cheers to many more years of fun, Dad!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Funny", "Dad", "Birthday"],
+              },
+            ],
+          },
+          {
+            id: "for-parent",
+            name: "For Parent",
+            cards: [
+              {
+                id: 212,
+                title: "Aging Like Fine Wine",
+                cover: "/images/gen-birthday-for-parent-funny.png",
+                centerfold:
+                  "Happy Birthday, Mom & Dad! Remember, you're not getting older, you're just leveling up in the game of life—complete with extra wrinkles and bonus gray hairs! Let’s celebrate the fact that you’ve mastered the art of ‘forgetting’ where you put your glasses!",
+                back: "Cheers to many more years of fun! ",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Funny", "Birthday", "Parents"],
+              },
+            ],
+          },
+          {
+            id: "for-grandma",
+            name: "For Grandma",
+            cards: [
+              {
+                id: 213,
+                title: "Grandma: Vintage & Fabulous!",
+                cover: "/images/gen-birthday-for-grandma-funny.png",
+                centerfold:
+                  "Happy Birthday to the woman who’s aged like fine wine! Just remember, you’re not getting older—you’re just leveling up in the game of life. I’d say you’re now a legendary character! Let’s make this year as grand as your secret cookie recipe (and twice as sweet)!",
+                back: "With love and lots of cake!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Grandma", "Birthday Humor", "Celebration"],
+              },
+            ],
+          },
+          {
+            id: "for-grandpa",
+            name: "For Grandpa",
+            cards: [
+              {
+                id: 214,
+                title: "Grandpa’s Birthday Bash!",
+                cover: "/images/gen-birthday-for-grandpa-funny.png",
+                centerfold:
+                  "Congrats, Grandpa! You've reached the age where you can still remember what you had for breakfast... but can't quite recall where you left your glasses. Just remember, age is merely the number of years the world has been enjoying you (and keeping your secrets)! So, let’s party like it’s 1949!",
+                back: "Happy birthday, you legend!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Funny", "Birthday", "Grandpa"],
+              },
+            ],
+          },
+          {
+            id: "for-grandparent",
+            name: "For Grandparent",
+            cards: [
+              {
+                id: 215,
+                title: "Aging Like Fine Wine",
+                cover: "/images/gen-birthday-for-grandparent-funny.png",
+                centerfold:
+                  "Happy Birthday! At this age, every birthday candle is like a fire hazard! Don't worry; your secret to staying young is safe with me—just remember, it's all in the cake!",
+                back: "Cheers to you, Grandma/Grandpa!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Grandparents", "Birthday", "Humor"],
+              },
+            ],
+          },
+          {
+            id: "for-partner-spouse",
+            name: "For Partner/Spouse",
+            cards: [
+              {
+                id: 216,
+                title: "Aged to Perfection!",
+                cover: "/images/gen-birthday-for-partner-spouse-funny.png",
+                centerfold:
+                  "Happy Birthday to my favorite vintage! Just like fine wine, you keep getting better with age, but let’s be real, the cork’s about to pop! Here’s to another year of us aging gracefully… or at least pretending to! Cheers to more adventures and fewer gray hairs (for both of us)!",
+                back: "Love you more every day!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Birthday", "Humor", "Love"],
+              },
+            ],
+          },
+          {
+            id: "for-friend",
+            name: "For Friend",
+            cards: [
+              {
+                id: 217,
+                title: "Aging Like Fine Wine",
+                cover: "/images/gen-birthday-for-friend-funny.png",
+                centerfold:
+                  "Congratulations on reaching that magical age where you finally have all the answers! Too bad you can't remember the questions. Let's celebrate your birthday like we’re young enough to recover from it tomorrow! Cheers to another year of questionable decisions!",
+                back: "Happy Birthday, my fabulous friend!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Funny", "Birthday", "Friendship"],
+              },
+            ],
+          },
+          {
+            id: "for-best-friend",
+            name: "For Best Friend",
+            cards: [
+              {
+                id: 218,
+                title: "Aged to Perfection!",
+                cover: "/images/gen-birthday-for-best-friend-funny.png",
+                centerfold:
+                  "Happy Birthday, my friend! Remember, age is just a number— a really high one in your case! But don’t worry, with all those candles on your cake, we’ll have enough heat to start a small bonfire!",
+                back: "Cheers to many more hilarious adventures!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["birthday", "best friend", "funny"],
+              },
+            ],
+          },
+          {
+            id: "for-coworker",
+            name: "For Coworker",
+            cards: [
+              {
+                id: 219,
+                title: "A Colleague Like No Other!",
+                cover: "/images/gen-birthday-for-coworker-funny.png",
+                centerfold:
+                  "Happy Birthday! Don't worry, I won't tell anyone how old you are... as long as you don’t tell anyone how long I’ve been here! Remember, age is just a number—like the one on your paycheck! Enjoy your day!",
+                back: "Cheers to another year of office shenanigans!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Birthday", "Coworker", "Humor"],
+              },
+            ],
+          },
+          {
+            id: "for-boss",
+            name: "For Boss",
+            cards: [
+              {
+                id: 220,
+                title: "Boss-tacular Birthday!",
+                cover: "/images/gen-birthday-for-boss-funny.png",
+                centerfold:
+                  "Happy Birthday! Here’s to another year of you pretending to work while we do all the heavy lifting. Remember, age is just a number—like your ‘open door’ policy when you’re in a meeting! Cheers to another year of ‘leading’ us to cake!",
+                back: "Wishing you a fantastic year ahead!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Birthday", "Boss", "Funny"],
+              },
+            ],
+          },
+          {
+            id: "funny-birthday",
+            name: "Funny Birthday",
+            cards: [
+              {
+                id: 221,
+                title: "Aged to Perfection!",
+                cover: "/images/gen-birthday-funny-birthday-funny.png",
+                centerfold:
+                  "Congratulations on reaching the age where 'getting lucky' means finding your car in the parking lot! Remember, age is merely the number of years the world has been enjoying you. So, let’s party like we’re still in our twenties—just with more frequent bathroom breaks!",
+                back: "Cheers to another fabulous year!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Funny Birthday", "Humor", "Celebration"],
+              },
+            ],
+          },
           {
             id: "sentimental-birthday",
             name: "Sentimental Birthday",
@@ -250,9 +490,57 @@ export const categoryGroups: CategoryGroupType[] = [
               },
             ],
           },
-          { id: "milestone-18", name: "Milestone 18", cards: [] },
-          { id: "milestone-21", name: "Milestone 21", cards: [] },
-          { id: "milestone-30-40-50-60-70-80-plus", name: "Milestone 30-40-50-60-70-80+", cards: [] },
+          {
+            id: "milestone-18",
+            name: "Milestone 18",
+            cards: [
+              {
+                id: 222,
+                title: "Eighteen & Unstoppable!",
+                cover: "/images/gen-birthday-milestone-18-funny.png",
+                centerfold:
+                  "Congrats on turning 18! You're now officially an adult—meaning you can go to jail and vote, but you still can’t buy a lottery ticket. Just remember, with great power comes great responsibility... and Netflix binge-watching! Enjoy your new level of freedom (and confusion)!",
+                back: "Cheers to your next adventure!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Birthday", "Milestone", "Funny"],
+              },
+            ],
+          },
+          {
+            id: "milestone-21",
+            name: "Milestone 21",
+            cards: [
+              {
+                id: 223,
+                title: "Cheers to 21 Years!",
+                cover: "/images/gen-birthday-milestone-21-funny.png",
+                centerfold:
+                  "Welcome to the age where 'illegal' and 'irresponsible' just became synonyms! Time to trade in your juice boxes for cocktails and your bedtime for a bar crawl. Just remember, adulting is like folding a fitted sheet—nobody really knows how to do it!",
+                back: "Stay fabulous and enjoy every sip!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Birthday", "Milestone", "Humor"],
+              },
+            ],
+          },
+          {
+            id: "milestone-30-40-50-60-70-80-plus",
+            name: "Milestone 30-40-50-60-70-80+",
+            cards: [
+              {
+                id: 224,
+                title: "Aging Like Fine Wine",
+                cover: "/images/gen-birthday-milestone-30-40-50-60-70-80-plus-funny.png",
+                centerfold:
+                  "Congratulations on reaching a new decade! At this age, it’s not just the candles that are getting a little too hot to handle. Remember, you’re not getting older, you’re just becoming a classic—like vinyl records and cheese!",
+                back: "Cheers to many more fabulous years!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Milestone Birthday", "Funny", "Aging Gracefully"],
+              },
+            ],
+          },
         ],
       },
       {
@@ -375,7 +663,23 @@ export const categoryGroups: CategoryGroupType[] = [
           { id: "military", name: "Military", cards: [] },
           { id: "for-son-daughter-child", name: "For Son/Daughter/Child", cards: [] },
           { id: "for-partner", name: "For Partner", cards: [] },
-          { id: "for-friend", name: "For Friend", cards: [] },
+          {
+            id: "for-friend",
+            name: "For Friend",
+            cards: [
+              {
+                id: 217,
+                title: "Aging Like Fine Wine",
+                cover: "/images/gen-birthday-for-friend-funny.png",
+                centerfold:
+                  "Congratulations on reaching that magical age where you finally have all the answers! Too bad you can't remember the questions. Let's celebrate your birthday like we’re young enough to recover from it tomorrow! Cheers to another year of questionable decisions!",
+                back: "Happy Birthday, my fabulous friend!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Funny", "Birthday", "Friendship"],
+              },
+            ],
+          },
           { id: "funny", name: "Funny", cards: [] },
           { id: "proud-emotional", name: "Proud/Emotional", cards: [] },
         ],
@@ -1473,12 +1777,60 @@ export const categoryGroups: CategoryGroupType[] = [
         name: "Thank You",
         color: "teal",
         subcategories: [
-          { id: "for-friend", name: "For Friend", cards: [] },
+          {
+            id: "for-friend",
+            name: "For Friend",
+            cards: [
+              {
+                id: 217,
+                title: "Aging Like Fine Wine",
+                cover: "/images/gen-birthday-for-friend-funny.png",
+                centerfold:
+                  "Congratulations on reaching that magical age where you finally have all the answers! Too bad you can't remember the questions. Let's celebrate your birthday like we’re young enough to recover from it tomorrow! Cheers to another year of questionable decisions!",
+                back: "Happy Birthday, my fabulous friend!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Funny", "Birthday", "Friendship"],
+              },
+            ],
+          },
           { id: "for-family", name: "For Family", cards: [] },
           { id: "for-teacher", name: "For Teacher", cards: [] },
           { id: "for-mentor", name: "For Mentor", cards: [] },
-          { id: "for-boss", name: "For Boss", cards: [] },
-          { id: "for-coworker", name: "For Coworker", cards: [] },
+          {
+            id: "for-boss",
+            name: "For Boss",
+            cards: [
+              {
+                id: 220,
+                title: "Boss-tacular Birthday!",
+                cover: "/images/gen-birthday-for-boss-funny.png",
+                centerfold:
+                  "Happy Birthday! Here’s to another year of you pretending to work while we do all the heavy lifting. Remember, age is just a number—like your ‘open door’ policy when you’re in a meeting! Cheers to another year of ‘leading’ us to cake!",
+                back: "Wishing you a fantastic year ahead!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Birthday", "Boss", "Funny"],
+              },
+            ],
+          },
+          {
+            id: "for-coworker",
+            name: "For Coworker",
+            cards: [
+              {
+                id: 219,
+                title: "A Colleague Like No Other!",
+                cover: "/images/gen-birthday-for-coworker-funny.png",
+                centerfold:
+                  "Happy Birthday! Don't worry, I won't tell anyone how old you are... as long as you don’t tell anyone how long I’ve been here! Remember, age is just a number—like the one on your paycheck! Enjoy your day!",
+                back: "Cheers to another year of office shenanigans!",
+                tone: "funny",
+                artistInspiration: "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+                tags: ["Birthday", "Coworker", "Humor"],
+              },
+            ],
+          },
           { id: "for-healthcare-worker", name: "For Healthcare Worker", cards: [] },
           { id: "for-essential-worker", name: "For Essential Worker", cards: [] },
           {

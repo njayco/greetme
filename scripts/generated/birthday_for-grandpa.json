@@ -1,0 +1,26 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "birthday",
+    "categoryName": "Birthday",
+    "subcategoryId": "for-grandpa",
+    "subcategoryName": "For Grandpa"
+  },
+  "cards": [
+    {
+      "id": 214,
+      "title": "Grandpa’s Birthday Bash!",
+      "cover": "/images/gen-birthday-for-grandpa-funny.png",
+      "centerfold": "Congrats, Grandpa! You've reached the age where you can still remember what you had for breakfast... but can't quite recall where you left your glasses. Just remember, age is merely the number of years the world has been enjoying you (and keeping your secrets)! So, let’s party like it’s 1949!",
+      "back": "Happy birthday, you legend!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Funny",
+        "Birthday",
+        "Grandpa"
+      ]
+    }
+  ]
+}

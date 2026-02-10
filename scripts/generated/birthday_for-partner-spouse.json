@@ -1,0 +1,26 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "birthday",
+    "categoryName": "Birthday",
+    "subcategoryId": "for-partner-spouse",
+    "subcategoryName": "For Partner/Spouse"
+  },
+  "cards": [
+    {
+      "id": 216,
+      "title": "Aged to Perfection!",
+      "cover": "/images/gen-birthday-for-partner-spouse-funny.png",
+      "centerfold": "Happy Birthday to my favorite vintage! Just like fine wine, you keep getting better with age, but let’s be real, the cork’s about to pop! Here’s to another year of us aging gracefully… or at least pretending to! Cheers to more adventures and fewer gray hairs (for both of us)!",
+      "back": "Love you more every day!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Birthday",
+        "Humor",
+        "Love"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "birthday",
+    "categoryName": "Birthday",
+    "subcategoryId": "for-boss",
+    "subcategoryName": "For Boss"
+  },
+  "cards": [
+    {
+      "id": 220,
+      "title": "Boss-tacular Birthday!",
+      "cover": "/images/gen-birthday-for-boss-funny.png",
+      "centerfold": "Happy Birthday! Here’s to another year of you pretending to work while we do all the heavy lifting. Remember, age is just a number—like your ‘open door’ policy when you’re in a meeting! Cheers to another year of ‘leading’ us to cake!",
+      "back": "Wishing you a fantastic year ahead!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Birthday",
+        "Boss",
+        "Funny"
+      ]
+    }
+  ]
+}

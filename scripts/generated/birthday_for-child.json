@@ -1,0 +1,26 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "birthday",
+    "categoryName": "Birthday",
+    "subcategoryId": "for-child",
+    "subcategoryName": "For Child"
+  },
+  "cards": [
+    {
+      "id": 208,
+      "title": "Growing Up is Tough!",
+      "cover": "/images/gen-birthday-for-child-funny.png",
+      "centerfold": "Happy Birthday! Remember, age is just a number—like the number of times you can eat cake without feeling guilty. So go ahead, celebrate like you just discovered a magical land of unlimited ice cream! Just don’t forget to leave some for the grown-ups… maybe.",
+      "back": "Keep shining and laughing!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Birthday",
+        "Child",
+        "Humor"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "birthday",
+    "categoryName": "Birthday",
+    "subcategoryId": "for-friend",
+    "subcategoryName": "For Friend"
+  },
+  "cards": [
+    {
+      "id": 217,
+      "title": "Aging Like Fine Wine",
+      "cover": "/images/gen-birthday-for-friend-funny.png",
+      "centerfold": "Congratulations on reaching that magical age where you finally have all the answers! Too bad you can't remember the questions. Let's celebrate your birthday like we’re young enough to recover from it tomorrow! Cheers to another year of questionable decisions!",
+      "back": "Happy Birthday, my fabulous friend!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Funny",
+        "Birthday",
+        "Friendship"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "birthday",
+    "categoryName": "Birthday",
+    "subcategoryId": "milestone-30-40-50-60-70-80-plus",
+    "subcategoryName": "Milestone 30-40-50-60-70-80+"
+  },
+  "cards": [
+    {
+      "id": 224,
+      "title": "Aging Like Fine Wine",
+      "cover": "/images/gen-birthday-milestone-30-40-50-60-70-80-plus-funny.png",
+      "centerfold": "Congratulations on reaching a new decade! At this age, it’s not just the candles that are getting a little too hot to handle. Remember, you’re not getting older, you’re just becoming a classic—like vinyl records and cheese!",
+      "back": "Cheers to many more fabulous years!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Milestone Birthday",
+        "Funny",
+        "Aging Gracefully"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "target": {
+    "groupId": "celebrations-milestones",
+    "groupName": "Celebrations & Milestones",
+    "categoryId": "birthday",
+    "categoryName": "Birthday",
+    "subcategoryId": "for-teen",
+    "subcategoryName": "For Teen"
+  },
+  "cards": [
+    {
+      "id": 209,
+      "title": "You're a Teen Now!",
+      "cover": "/images/gen-birthday-for-teen-funny.png",
+      "centerfold": "Congratulations on turning another year older! At this age, remember: if you can’t convince your parents you’re mature, just convince them you’re still a kid in need of cake! May your day be filled with laughter, and your gifts be as epic as your meme collection.",
+      "back": "Keep shining bright!",
+      "tone": "funny",
+      "artistInspiration": "vibrant neo-expressionist style with ornate floral backgrounds and bold color fields",
+      "tags": [
+        "Teen Birthday",
+        "Funny Card",
+        "Celebration"
+      ]
+    }
+  ]
+}
