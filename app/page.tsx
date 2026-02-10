@@ -469,17 +469,20 @@ export default function GreetingCardsApp() {
         <div className="relative z-10 w-full max-w-lg flex flex-col items-center" style={{ marginTop: '-40px' }}>
           <div className="relative mb-8">
             <div
-              className="absolute inset-0 rounded-full"
+              className="absolute"
               style={{
-                background: 'radial-gradient(ellipse at center, rgba(218,185,120,0.6) 0%, rgba(196,154,108,0.3) 40%, transparent 70%)',
-                transform: 'scale(1.3)',
-                filter: 'blur(20px)',
+                top: '10%',
+                left: '-15%',
+                right: '-15%',
+                bottom: '-10%',
+                background: 'radial-gradient(ellipse at 50% 60%, rgba(230,200,140,0.7) 0%, rgba(210,175,110,0.4) 35%, rgba(180,140,80,0.15) 55%, transparent 75%)',
+                filter: 'blur(25px)',
               }}
             />
             <img
               src="/images/greetme-logo.png"
               alt="GreetMe - Spread Love, Share Joy"
-              className="relative z-10 w-[340px] sm:w-[400px] h-auto mx-auto"
+              className="relative z-10 w-[300px] sm:w-[400px] h-auto mx-auto"
             />
           </div>
 
