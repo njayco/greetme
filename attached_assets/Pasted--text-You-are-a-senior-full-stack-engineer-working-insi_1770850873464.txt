@@ -1,0 +1,244 @@
+```text
+You are a senior full-stack engineer working inside an existing Next.js 15 (App Router) + TypeScript + Tailwind + shadcn/ui project called “greetme”.
+
+CONTEXT:
+The app already supports: browsing categories, selecting cards, customizing, creating share links stored in Postgres (Neon), and Stripe Checkout for paid cards with Stripe webhooks. There are also custom artist cards and object storage. Share pages are at `/c/[id]` and render via `app/c/[id]/page.tsx` + `ShareCardClient.tsx`.
+
+GOAL:
+Add a new “YouTube Audio Clip” add-on feature:
+- Users can attach a 30-second YouTube clip to any greeting card using ONLY a custom YouTube link (no pre-approved/curated list).
+- The add-on costs $0.99 via Stripe (as an add-on line item).
+- The recipient sees a red “Now Playing Clip” bar UI (like the provided screenshot) on the Centerfold tab.
+- Clicking the red title opens the YouTube video in a new tab.
+- The sender can paste any YouTube link and select the audio duration time slot (e.g., 1:23 - 1:53).
+- The length of the clip can only be 30 seconds (hard enforce).
+- Store the selected video + start/end in the database and persist through the share link. This must work for both:
+  - regular cards (card_id based)
+  - artist/custom cards (custom_card_id based)
+
+IMPORTANT UX NOTE:
+Modern browsers often block autoplay with sound. Implement “attempt autoplay on open” but gracefully fall back to requiring the user to press play. Do NOT hack around policies. Make the UI still look like the screenshot.
+
+IMPORTANT LEGAL/TECH NOTE:
+Do NOT download or extract YouTube audio. Only embed playback using the official YouTube IFrame Player API. (We “play a clip” by starting at a timestamp and stopping after 30 seconds.)
+
+REFERENCE UI:
+Match the look shown in the screenshot provided at: /mnt/data/greetme youtube feature.PNG
+- Red rounded bar
+- Text: `Now Playing Clip "Youtube Video Title" (0:03/0:30)`
+- Right side circular play/pause button icon
+- The title is clickable and opens the YouTube video
+- This bar appears inside the card UI below the message area (in the Centerfold tab)
+- Keep the warm tan/gold vintage vibe consistent
+
+────────────────────────────────────────────────────────
+A) DATA MODEL / DATABASE CHANGES (Postgres / Neon)
+
+1) Add YouTube clip metadata to shared cards so the recipient can play it.
+Update `shared_cards` table to include nullable columns (migration safe):
+- youtube_video_id TEXT NULL
+- youtube_url TEXT NULL
+- youtube_title TEXT NULL
+- youtube_start_seconds INT NULL
+- youtube_end_seconds INT NULL
+- youtube_clip_enabled BOOLEAN NOT NULL DEFAULT FALSE
+- youtube_clip_price_cents INT NOT NULL DEFAULT 99
+
+(We store both url + video_id; url is used for “open on YouTube”, id for the player.)
+
+2) If you already have `custom_cards` table for artist cards, also add optional defaults there (not required but helpful):
+- youtube_video_id TEXT NULL
+- youtube_url TEXT NULL
+- youtube_title TEXT NULL
+- youtube_start_seconds INT NULL
+- youtube_end_seconds INT NULL
+
+But the most important is `shared_cards` because the share link is what the recipient opens.
+
+────────────────────────────────────────────────────────
+B) RESOLVE YOUTUBE VIDEO ID + TITLE (NO API KEYS)
+
+Implement server-side title lookup WITHOUT YouTube Data API keys:
+- Use YouTube oEmbed endpoint to fetch title:
+  GET https://www.youtube.com/oembed?url={ENCODED_URL}&format=json
+
+Add API route: POST `/api/youtube/resolve`
+Body: { url: string }
+Returns: { videoId, title, canonicalUrl }
+
+Validation rules:
+- Accept only youtube.com or youtu.be links.
+- Extract videoId robustly for patterns:
+  - https://www.youtube.com/watch?v=VIDEOID
+  - https://youtu.be/VIDEOID
+  - https://www.youtube.com/shorts/VIDEOID
+- Normalize canonicalUrl to `https://www.youtube.com/watch?v=VIDEOID`
+- Return a clean error if invalid/unresolvable.
+
+────────────────────────────────────────────────────────
+C) STRIPE: $0.99 “YouTube Clip Add-on” LINE ITEM
+
+We need the add-on to be charged as an additional line item ONLY when selected.
+
+Approach:
+- Create a Stripe Product/Price for the add-on (one-time, $0.99).
+- Add a new seed script `scripts/seed-youtube-addon.ts` that creates:
+  Product: "YouTube Clip Add-on (30s)"
+  Price: $0.99 (99 cents)
+
+Store the priceId in an env var:
+- YOUTUBE_ADDON_PRICE_ID=price_...
+
+Checkout flow changes:
+- The app currently uses `/api/checkout` for paid cards.
+- Modify `/api/checkout` to accept:
+  `addYoutubeClip?: boolean`
+- If addYoutubeClip is true:
+  add a second line item to the checkout session for `YOUTUBE_ADDON_PRICE_ID`.
+
+IMPORTANT:
+- This add-on is available for BOTH free and paid cards, but:
+  - If the base card is free and user adds YouTube clip, they must still go through checkout for $0.99.
+  - If the base card is already paid, it becomes base price + $0.99.
+
+Implementation detail:
+- Ensure metadata includes shareId and a flag `youtube_clip=true`.
+- Webhook handler: on successful payment, mark the shared_cards row with youtube_clip_enabled=true (only if add-on was purchased).
+
+────────────────────────────────────────────────────────
+D) SENDER FLOW: ADD YOUTUBE CLIP DURING CUSTOMIZATION
+
+In the Customize screen (where users enter From/To/Personal Note), add an optional section:
+
+“Add YouTube Clip (30 seconds) +$0.99”
+- Toggle switch / checkbox.
+- If enabled:
+  - Input: YouTube URL
+  - Button: “Load Video” (calls /api/youtube/resolve)
+  - Show resolved Title + link preview
+  - Time selection UI:
+    - Start time input (mm:ss)
+    - End time input (mm:ss) but enforce end = start + 30 seconds
+      (If user enters end, validate and correct to start+30. If end-start > 30, show error and force to 30.)
+  - Show preview summary:
+    Title + (start-end)
+
+When the user clicks Send:
+- If youtube clip is enabled:
+  - Save clip info to the share record when calling /api/share (extend /api/share to accept youtube fields).
+  - If the base card is free: route to Stripe checkout for the add-on.
+  - If the base card is paid: include add-on line item in checkout.
+
+IMPORTANT:
+- The share link must only be considered “complete” after payment if youtube clip add-on is selected.
+- For free cards with add-on: create share record first, then checkout, then return success and show link.
+- For paid cards: same as now, but with extra line item.
+
+────────────────────────────────────────────────────────
+E) API CHANGES
+
+1) Update POST `/api/share`
+Add optional fields:
+{
+  youtube: {
+    enabled: boolean,
+    url: string,
+    videoId: string,
+    title: string,
+    startSeconds: number,
+    endSeconds: number
+  } | null
+}
+Validation:
+- enabled implies videoId + startSeconds + title + url
+- endSeconds MUST equal startSeconds + 30 (hard enforce)
+- startSeconds >= 0
+
+Store values in shared_cards row, but set youtube_clip_enabled initially as:
+- false until Stripe confirms payment if add-on is selected
+- true immediately only if you explicitly allow free clip (DO NOT allow; must be paid)
+
+2) Add POST `/api/youtube/resolve`
+Body: { url: string }
+Returns: { videoId, title, canonicalUrl }
+
+3) Update POST `/api/checkout`
+Accept:
+- shareId
+- base price info (existing)
+- addYoutubeClip boolean
+If addYoutubeClip true:
+- include add-on price line item
+- include metadata flag youtube_clip=true
+
+4) Stripe webhook update
+On successful payment:
+- determine if add-on was included (via metadata or line items)
+- set shared_cards.youtube_clip_enabled=true
+- (Optional) store stripe_session_id on shared_cards for audit
+
+────────────────────────────────────────────────────────
+F) SHARE PAGE UI: PLAY THE 30-SECOND CLIP
+
+In `ShareCardClient.tsx`, inside the Centerfold tab, if:
+- shared_cards.youtube_clip_enabled=true AND youtube_video_id exists
+Then render a `YouTubeClipPlayer` component that matches the screenshot UI.
+
+Playback implementation:
+- Use YouTube IFrame Player API (client-only).
+- Create an iframe player for youtube_video_id.
+- On play:
+  - Seek to youtube_start_seconds
+  - Start playing
+  - Stop/pause at youtube_end_seconds (start+30) via timer/polling.
+- UI:
+  - Red rounded bar
+  - Clickable title opens youtube_url in new tab
+  - Progress text: (elapsed/0:30)
+  - Play/pause button on right
+
+Autoplay:
+- Attempt autoplay when the Centerfold tab is opened.
+- If autoplay fails (common), keep UI ready; user must press play.
+
+────────────────────────────────────────────────────────
+G) SECURITY / PERFORMANCE
+
+- Do not store raw IP addresses (unchanged).
+- Do not download/extract audio/video.
+- Only embed YouTube via official player.
+- Enforce 30 seconds server-side and client-side.
+- Add rate limits to /api/youtube/resolve to avoid abuse (basic: 30/min/IP hash if you already have hashing infra; otherwise minimal in-memory).
+
+────────────────────────────────────────────────────────
+H) TEST PLAN
+
+- Free card, no clip → share link works as before.
+- Free card + clip → must go to Stripe, after payment share link shows, recipient can play clip.
+- Paid Valentine card + clip → checkout charges base + add-on, recipient can play clip.
+- Autoplay blocked → UI still works with manual play.
+- Title click opens YouTube.
+- Invalid YouTube URL → shows validation error, no checkout.
+
+────────────────────────────────────────────────────────
+DELIVERABLES
+
+1) DB migrations applied safely (add columns if missing).
+2) New API route `/api/youtube/resolve`.
+3) Updated `/api/share` to store clip info.
+4) Updated `/api/checkout` to optionally include add-on line item.
+5) Updated Stripe webhook handler to mark youtube_clip_enabled after confirmed payment.
+6) Updated Customize UI to let sender paste YouTube link and select start time (end auto = start+30).
+7) Updated Share page UI to show player bar like the screenshot and play only the 30-second clip.
+8) Add seed script for Stripe add-on product and README instructions for YOUTUBE_ADDON_PRICE_ID.
+
+EXECUTE:
+First, inspect the current codebase paths:
+- app/page.tsx (screen logic)
+- app/api/share/route.ts
+- app/api/checkout/route.ts
+- app/api/stripe/webhook/route.ts
+- app/c/[id]/ShareCardClient.tsx
+Then implement changes cleanly using helper libs and components.
+Keep changes scoped and do not break existing flows.
+```
