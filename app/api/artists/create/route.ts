@@ -12,6 +12,15 @@ function generateId(): string {
   return result;
 }
 
+function generateShortId(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+  let result = '';
+  for (let i = 0; i < 7; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -61,9 +70,10 @@ export async function POST(request: NextRequest) {
       [cardId, coverUrl, safeCenterfold, safeCaption, safeBack, categories, safeCreatorName, isPublicBool, isPublicBool, isPublicBool]
     );
 
-    await client.end();
+    const domain = process.env.REPLIT_DOMAINS?.split(',')[0] || request.headers.get('host') || '';
 
     if (!isPublicBool) {
+      await client.end();
       await initStripe();
       const stripe = await getUncachableStripeClient();
       const origin = request.headers.get('origin') || request.nextUrl.origin;
@@ -98,7 +108,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ id: cardId, checkoutUrl: session.url });
     }
 
-    return NextResponse.json({ id: cardId });
+    let shareShortId = generateShortId();
+    let shareAttempts = 0;
+    while (shareAttempts < 5) {
+      const existing = await client.query('SELECT id FROM shared_cards WHERE id = $1', [shareShortId]);
+      if (existing.rows.length === 0) break;
+      shareShortId = generateShortId();
+      shareAttempts++;
+    }
+
+    await client.query(
+      'INSERT INTO shared_cards (id, card_id, sender_name, recipient_name, personal_note, custom_card_id) VALUES ($1, $2, $3, $4, $5, $6)',
+      [shareShortId, null, safeCreatorName, '', '', cardId]
+    );
+
+    await client.end();
+
+    const shareUrl = `https://${domain}/c/${shareShortId}`;
+    return NextResponse.json({ id: cardId, shareUrl });
   } catch (error: any) {
     console.error('Create custom card error:', error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });

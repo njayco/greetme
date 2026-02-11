@@ -96,8 +96,17 @@ export default function GreetingCardsApp() {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false)
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null)
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null)
+  const [customCards, setCustomCards] = useState<any[]>([])
 
   const cardsPerPage = 8
+
+  function resolveImageUrl(url: string | null): string {
+    if (!url) return ''
+    if (url.startsWith('/objects/')) {
+      return `/api/uploads/serve?path=${encodeURIComponent(url)}`
+    }
+    return url
+  }
 
   useEffect(() => {
     fetch('/api/products')
@@ -108,6 +117,27 @@ export default function GreetingCardsApp() {
         }
       })
       .catch(err => console.error('Error loading products:', err))
+  }, [])
+
+  useEffect(() => {
+    fetch('/api/artists/cards')
+      .then(res => res.json())
+      .then(data => {
+        if (data.cards) {
+          const converted = data.cards.map((c: any, index: number) => ({
+            id: 900000 + index,
+            title: c.caption || 'Custom Card',
+            cover: resolveImageUrl(c.coverImageUrl),
+            centerfold: c.centerfoldMessage,
+            back: c.backMessage,
+            isCustomCard: true,
+            customCardId: c.id,
+            categoryIds: c.categoryIds || [],
+          }))
+          setCustomCards(converted)
+        }
+      })
+      .catch(err => console.error('Error loading custom cards:', err))
   }, [])
 
   useEffect(() => {
@@ -211,15 +241,20 @@ export default function GreetingCardsApp() {
 
   const generateShareableLink = async () => {
     try {
+      const shareBody: any = {
+        from: formData.from,
+        to: formData.to,
+        note: formData.personalNote,
+      }
+      if (selectedCard.isCustomCard && selectedCard.customCardId) {
+        shareBody.customCardId = selectedCard.customCardId
+      } else {
+        shareBody.cardId = selectedCard.id
+      }
       const response = await fetch('/api/share', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          cardId: selectedCard.id,
-          from: formData.from,
-          to: formData.to,
-          note: formData.personalNote,
-        }),
+        body: JSON.stringify(shareBody),
       })
       const data = await response.json()
       if (data.url) {
@@ -244,15 +279,20 @@ export default function GreetingCardsApp() {
     if (cardPrice > 0 && stripeProduct?.priceId) {
       setIsProcessingPayment(true)
       try {
+        const paidShareBody: any = {
+          from: formData.from,
+          to: formData.to,
+          note: formData.personalNote,
+        }
+        if (selectedCard.isCustomCard && selectedCard.customCardId) {
+          paidShareBody.customCardId = selectedCard.customCardId
+        } else {
+          paidShareBody.cardId = selectedCard.id
+        }
         const shareResponse = await fetch('/api/share', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            cardId: selectedCard.id,
-            from: formData.from,
-            to: formData.to,
-            note: formData.personalNote,
-          }),
+          body: JSON.stringify(paidShareBody),
         })
         const shareData = await shareResponse.json()
         if (!shareResponse.ok || !shareData.id) {
@@ -322,35 +362,45 @@ export default function GreetingCardsApp() {
     }
   }
 
+  const getCustomCardsForCategory = (categoryId: string) => {
+    return customCards.filter(c => c.categoryIds && c.categoryIds.includes(categoryId))
+  }
+
   const getCurrentPageCards = () => {
     if (!selectedCategory || !cardCategories[selectedCategory]) return []
-    let cards = cardCategories[selectedCategory].cards
+    let cards = [...cardCategories[selectedCategory].cards]
     if (selectedSubcategory) {
       for (const group of categoryGroups) {
         const cat = group.categories.find(c => c.id === selectedCategory)
         if (cat) {
           const sub = cat.subcategories.find(s => s.id === selectedSubcategory)
-          if (sub) cards = sub.cards
+          if (sub) cards = [...sub.cards]
           break
         }
       }
     }
+    const categoryCustomCards = getCustomCardsForCategory(selectedCategory)
+    cards = [...cards, ...categoryCustomCards]
     const startIndex = currentPage * cardsPerPage
     return cards.slice(startIndex, startIndex + cardsPerPage)
   }
 
   const getTotalPages = () => {
     if (!selectedCategory || !cardCategories[selectedCategory]) return 0
-    let cards = cardCategories[selectedCategory].cards
+    let cards = [...cardCategories[selectedCategory].cards]
     if (selectedSubcategory) {
       for (const group of categoryGroups) {
         const cat = group.categories.find(c => c.id === selectedCategory)
         if (cat) {
           const sub = cat.subcategories.find(s => s.id === selectedSubcategory)
-          if (sub) cards = sub.cards
+          if (sub) cards = [...sub.cards]
           break
         }
       }
+    }
+    {
+      const categoryCustomCards = getCustomCardsForCategory(selectedCategory)
+      cards = [...cards, ...categoryCustomCards]
     }
     return Math.ceil(cards.length / cardsPerPage)
   }

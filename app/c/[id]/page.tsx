@@ -7,6 +7,14 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
+function resolveImageUrl(url: string | null): string {
+  if (!url) return '';
+  if (url.startsWith('/objects/')) {
+    return `/api/uploads/serve?path=${encodeURIComponent(url)}`;
+  }
+  return url;
+}
+
 async function getSharedCard(id: string) {
   try {
     const client = new pg.Client({ connectionString: process.env.DATABASE_URL });
@@ -15,11 +23,42 @@ async function getSharedCard(id: string) {
       'SELECT * FROM shared_cards WHERE id = $1',
       [id]
     );
-    await client.end();
 
-    if (result.rows.length === 0) return null;
+    if (result.rows.length === 0) {
+      await client.end();
+      return null;
+    }
 
     const row = result.rows[0];
+
+    if (row.custom_card_id) {
+      const customResult = await client.query(
+        'SELECT * FROM custom_cards WHERE id = $1',
+        [row.custom_card_id]
+      );
+      await client.end();
+
+      if (customResult.rows.length === 0) return null;
+
+      const customCard = customResult.rows[0];
+      return {
+        id: row.id,
+        cardId: null,
+        senderName: row.sender_name,
+        recipientName: row.recipient_name,
+        personalNote: row.personal_note || '',
+        card: {
+          id: 0,
+          title: customCard.caption || 'Custom Card',
+          cover: resolveImageUrl(customCard.cover_image_url),
+          centerfold: customCard.centerfold_message,
+          back: customCard.back_message,
+        },
+        categoryName: 'Custom',
+      };
+    }
+
+    await client.end();
     const cardInfo = findCardById(row.card_id);
 
     return {

@@ -122,9 +122,11 @@ CategoryType: { name, color, group?, cards[] }
 ## Sharing System
 - Short links generated via `/api/share` endpoint, stored in `shared_cards` table
 - Share URLs format: `/c/{7-char-id}` (e.g., `/c/YC632Ax`)
+- Supports both regular cards (card_id INTEGER) and custom artist cards (custom_card_id VARCHAR)
 - OG metadata: "You've received a GreetMe Card from [sender]"
 - Card images use absolute URLs for social media crawlers
 - Falls back to query param links if short link creation fails
+- Artist cards: Public catalog cards get share link on creation; personal cards get share link after payment confirmation
 
 ## Customize Screen
 - **Cover tab**: Shows the card cover image
@@ -142,7 +144,7 @@ CategoryType: { name, color, group?, cards[] }
 - **Payment**: Stripe checkout with session_id tracking, payment confirmed on return
 
 ## Database Tables
-- `shared_cards` - Short link storage (id VARCHAR(8) PK, card_id, sender_name, recipient_name, personal_note, created_at)
+- `shared_cards` - Short link storage (id VARCHAR(8) PK, card_id INTEGER nullable, sender_name, recipient_name, personal_note, custom_card_id VARCHAR(8) nullable, created_at)
 - `custom_cards` - Artist-created cards (id VARCHAR(8) PK, cover_image_url, centerfold_message, caption, back_message, category_ids TEXT[], creator_name, is_public, is_approved, is_paid, stripe_session_id, created_at)
 - `stripe.*` - Stripe sync tables (managed by stripe-replit-sync)
 

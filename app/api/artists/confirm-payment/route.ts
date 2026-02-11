@@ -27,9 +27,36 @@ export async function POST(request: NextRequest) {
       [cardId, sessionId]
     );
 
+    const cardResult = await client.query(
+      'SELECT creator_name FROM custom_cards WHERE id = $1',
+      [cardId]
+    );
+    const creatorName = cardResult.rows[0]?.creator_name || '';
+
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+    let shareShortId = '';
+    for (let i = 0; i < 7; i++) shareShortId += chars.charAt(Math.floor(Math.random() * chars.length));
+
+    let shareAttempts = 0;
+    while (shareAttempts < 5) {
+      const existing = await client.query('SELECT id FROM shared_cards WHERE id = $1', [shareShortId]);
+      if (existing.rows.length === 0) break;
+      shareShortId = '';
+      for (let i = 0; i < 7; i++) shareShortId += chars.charAt(Math.floor(Math.random() * chars.length));
+      shareAttempts++;
+    }
+
+    await client.query(
+      'INSERT INTO shared_cards (id, card_id, sender_name, recipient_name, personal_note, custom_card_id) VALUES ($1, $2, $3, $4, $5, $6)',
+      [shareShortId, null, creatorName, '', '', cardId]
+    );
+
     await client.end();
 
-    return NextResponse.json({ success: true });
+    const domain = process.env.REPLIT_DOMAINS?.split(',')[0] || request.headers.get('host') || '';
+    const shareUrl = `https://${domain}/c/${shareShortId}`;
+
+    return NextResponse.json({ success: true, shareUrl });
   } catch (error: any) {
     console.error('Confirm payment error:', error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });

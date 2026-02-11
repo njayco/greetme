@@ -21,13 +21,17 @@ type Props = {
 export default function ShareCardClient({ cardData, senderName, recipientName, personalNote, categoryName }: Props) {
   const [cardView, setCardView] = useState<'cover' | 'centerfold' | 'back'>('cover');
 
+  const resolvedCover = cardData.cover?.startsWith('/objects/')
+    ? `/api/uploads/serve?path=${encodeURIComponent(cardData.cover)}`
+    : cardData.cover;
+
   const renderCard = () => {
     switch (cardView) {
       case 'cover':
         return (
           <div className="aspect-[3/4] bg-white rounded-lg shadow-2xl flex items-center justify-center p-2 border border-gray-200">
             <img
-              src={cardData.cover || "/placeholder.svg"}
+              src={resolvedCover || "/placeholder.svg"}
               alt={cardData.title}
               className="w-full h-full object-cover rounded"
             />

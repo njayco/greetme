@@ -91,6 +91,7 @@ export default function ArtistsPage() {
   const [submitSuccess, setSubmitSuccess] = useState(false)
   const [createdCardId, setCreatedCardId] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [shareUrl, setShareUrl] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -104,7 +105,14 @@ export default function ArtistsPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ sessionId, cardId }),
-        }).catch((err) => console.error("Payment confirm error:", err))
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.shareUrl) {
+              setShareUrl(data.shareUrl)
+            }
+          })
+          .catch((err) => console.error("Payment confirm error:", err))
       }
       setCreatedCardId(cardId)
       setSubmitSuccess(true)
@@ -198,6 +206,10 @@ export default function ArtistsPage() {
 
       const data = await res.json()
       setCreatedCardId(data.id)
+
+      if (data.shareUrl) {
+        setShareUrl(data.shareUrl)
+      }
 
       if (data.checkoutUrl) {
         window.location.href = data.checkoutUrl
@@ -824,9 +836,66 @@ export default function ArtistsPage() {
                 </p>
               )}
               {createdCardId && (
-                <p className="text-xs mb-6" style={{ color: "#8b7040" }}>
+                <p className="text-xs mb-4" style={{ color: "#8b7040" }}>
                   Card ID: {createdCardId}
                 </p>
+              )}
+              {shareUrl && (
+                <div className="mb-6 space-y-3">
+                  <p
+                    className="text-sm font-bold"
+                    style={{ fontFamily: "Georgia, serif", color: "#5a4020" }}
+                  >
+                    Share your card:
+                  </p>
+                  <div className="p-3 bg-white/80 rounded-lg border border-[#b8a060]">
+                    <p className="text-sm break-all" style={{ color: "#5a4020" }}>
+                      {shareUrl}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(shareUrl).then(() => {
+                          alert("Link copied to clipboard!")
+                        }).catch(() => {
+                          const textArea = document.createElement("textarea")
+                          textArea.value = shareUrl
+                          document.body.appendChild(textArea)
+                          textArea.select()
+                          document.execCommand("copy")
+                          document.body.removeChild(textArea)
+                          alert("Link copied to clipboard!")
+                        })
+                      }}
+                      className="flex-1 px-4 py-2 rounded-lg font-bold text-sm transition-all border-2 border-[#b8a060] bg-white/60"
+                      style={{ fontFamily: "Georgia, serif", color: "#5a4020" }}
+                    >
+                      📋 Copy Link
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (navigator.share) {
+                          navigator.share({
+                            title: "GreetMe Card",
+                            url: shareUrl,
+                          }).catch(() => {})
+                        } else {
+                          navigator.clipboard.writeText(shareUrl).then(() => {
+                            alert("Link copied to clipboard!")
+                          }).catch(() => {})
+                        }
+                      }}
+                      className="flex-1 px-4 py-2 rounded-lg text-white font-bold text-sm transition-all"
+                      style={{
+                        background: "linear-gradient(180deg, #4CD964, #34C759)",
+                        fontFamily: "Georgia, serif",
+                      }}
+                    >
+                      🔗 Share
+                    </button>
+                  </div>
+                </div>
               )}
               <div className="space-y-3">
                 <button
@@ -844,6 +913,7 @@ export default function ArtistsPage() {
                     setSubmitSuccess(false)
                     setCreatedCardId(null)
                     setErrorMessage(null)
+                    setShareUrl(null)
                   }}
                   className="w-full px-6 py-3 rounded-lg text-white font-bold text-sm transition-all hover:scale-105"
                   style={{

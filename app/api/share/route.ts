@@ -13,23 +13,34 @@ function generateShortId(): string {
 
 export async function POST(request: NextRequest) {
   try {
-    const { cardId, from, to, note } = await request.json();
+    const { cardId, customCardId, from, to, note } = await request.json();
 
-    if (!cardId || !from || !to) {
-      return NextResponse.json({ error: 'cardId, from, and to are required' }, { status: 400 });
+    if (!customCardId && !cardId) {
+      return NextResponse.json({ error: 'cardId or customCardId is required' }, { status: 400 });
+    }
+
+    if (!from || !to) {
+      return NextResponse.json({ error: 'from and to are required' }, { status: 400 });
     }
 
     const senderName = String(from).trim().slice(0, 100);
     const recipientName = String(to).trim().slice(0, 100);
     const personalNote = note ? String(note).trim().slice(0, 500) : '';
-    const numericCardId = Number(cardId);
 
     if (!senderName || !recipientName) {
       return NextResponse.json({ error: 'from and to must not be empty' }, { status: 400 });
     }
 
-    if (isNaN(numericCardId) || !findCardById(numericCardId)) {
-      return NextResponse.json({ error: 'Invalid card ID' }, { status: 400 });
+    let numericCardId: number | null = null;
+    let safeCustomCardId: string | null = null;
+
+    if (customCardId) {
+      safeCustomCardId = String(customCardId).trim().slice(0, 8);
+    } else {
+      numericCardId = Number(cardId);
+      if (isNaN(numericCardId) || !findCardById(numericCardId)) {
+        return NextResponse.json({ error: 'Invalid card ID' }, { status: 400 });
+      }
     }
 
     const client = new pg.Client({ connectionString: process.env.DATABASE_URL });
@@ -45,8 +56,8 @@ export async function POST(request: NextRequest) {
     }
 
     await client.query(
-      'INSERT INTO shared_cards (id, card_id, sender_name, recipient_name, personal_note) VALUES ($1, $2, $3, $4, $5)',
-      [shortId, numericCardId, senderName, recipientName, personalNote]
+      'INSERT INTO shared_cards (id, card_id, sender_name, recipient_name, personal_note, custom_card_id) VALUES ($1, $2, $3, $4, $5, $6)',
+      [shortId, numericCardId, senderName, recipientName, personalNote, safeCustomCardId]
     );
 
     await client.end();
