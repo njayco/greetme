@@ -99,6 +99,15 @@ Greet Me for Artists (`/artists`) lets users create custom greeting cards with t
 
 Artist-uploaded images are stored in Replit Object Storage. Images are served via the `/api/uploads/serve` endpoint, ensuring persistence across deployments.
 
+### Data Backup & Recovery
+
+Custom cards are automatically backed up to Replit Object Storage to protect against database rollbacks:
+
+- **Automatic backup**: Every custom card (personal or public) is saved as a JSON file to Object Storage (`card-backups/{cardId}.json`) immediately after creation
+- **Auto-restore**: When the `/api/artists/cards` endpoint is called, it reconciles all backed-up card IDs against the database and restores any missing cards — even if only some cards were lost (partial rollback recovery)
+- **Full protection**: Both personal and public cards are backed up and restored, though only public/approved cards are returned in API responses
+- **Backup utility**: `lib/cardBackup.ts` provides `backupCardToStorage()` and `getAllBackedUpCards()` functions
+
 ---
 
 ## Tech Stack
@@ -152,6 +161,7 @@ greetme/
 │   ├── stripeClient.ts              # Stripe API client setup
 │   ├── initStripe.ts                # Stripe schema migration & webhooks
 │   ├── resendClient.ts              # Resend email client setup
+│   ├── cardBackup.ts               # Object Storage backup/restore for custom cards
 │   ├── webhookHandlers.ts           # Stripe webhook processing
 │   └── utils.ts                     # Utility functions (cn)
 ├── public/images/                    # Card images and assets (incl. gen-* AI images)
