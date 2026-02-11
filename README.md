@@ -12,6 +12,7 @@ Created by **Najee Jeremiah**
 
 - [Features](#features)
 - [How It Works](#how-it-works)
+- [Greet Me Clips](#greet-me-clips)
 - [Greet Me for Artists](#greet-me-for-artists)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
@@ -34,7 +35,8 @@ Created by **Najee Jeremiah**
 - **Vintage bookshelf aesthetic** with warm tan/gold colors and wooden textures
 - **Card customization** with sender name, recipient name, and personal notes
 - **Greet Me for Artists** — create custom cards by uploading artwork, writing messages, and sharing or selling
-- **Stripe payment integration** for premium Valentine's Day cards ($0.99 - $2.99) and personal artist cards ($4.99)
+- **Greet Me Clips** — attach a 30-second YouTube audio clip to any card for $0.99, powered by YouTube
+- **Stripe payment integration** for premium Valentine's Day cards ($0.99 - $2.99), personal artist cards ($4.99), and audio clip add-ons ($0.99)
 - **Shareable short links** that work on social media with OG metadata previews
 - **Email confirmations** sent automatically after purchase via Resend
 - **Responsive design** that works on desktop and mobile
@@ -74,6 +76,56 @@ loading → categories → library → customize → shareLink
 ```
 
 Users can navigate back at any point using back buttons. The `viewCard` screen is used when viewing a shared card via URL parameters.
+
+---
+
+## Greet Me Clips
+
+**Greet Me Clips** lets senders attach a 30-second YouTube audio clip to any greeting card for just $0.99 — turning a simple card into a multimedia experience powered by YouTube.
+
+### How Clips Work
+
+1. **Enable the Clip** - On the Customize screen (or the Artists personalization step), toggle "Add YouTube Clip (30s) +$0.99"
+2. **Paste a YouTube Link** - Enter any YouTube video URL and click **Load** to resolve the video title via YouTube's oEmbed API
+3. **Pick a Start Time** - Choose the 30-second segment you want using a simple `M:SS` time input; the end time is calculated automatically
+4. **Send & Pay** - The $0.99 clip add-on is added as a Stripe line item alongside any card price. Free cards with a clip go through Stripe checkout for just the add-on fee
+5. **Recipient Plays the Clip** - When the recipient opens the shared card, a red "Now Playing Clip" bar appears on the Centerfold tab with play/pause controls, a progress timer, and the video title (which links to YouTube)
+
+### Clip Playback
+
+The clip plays via the **YouTube IFrame Player API** — no downloads, no storage, just seamless streaming. The player is wrapped in a custom `YouTubeClipPlayer` component with:
+
+- A red rounded bar UI with "Now Playing Clip" label
+- Play/pause toggle button
+- Real-time progress display (e.g., "12s / 30s")
+- Clickable title that opens the full video on YouTube
+- Automatic stop at the 30-second mark
+
+### Payment Gating
+
+Clip playback is securely gated behind payment verification:
+
+- YouTube clip data is stored in the `shared_cards` table with `youtube_clip_enabled` set to `false` by default
+- The Stripe webhook (`checkout.session.completed`) verifies that the actual Stripe line items include the YouTube add-on price before setting `youtube_clip_enabled` to `true`
+- The share page only renders the clip player when `youtube_clip_enabled` is `true`
+
+### Clips in Greet Me for Artists
+
+Artists can also add YouTube clips to their custom cards during the personalization step:
+
+- **Catalog cards** (free) with a clip go through Stripe checkout for just the $0.99 add-on
+- **Personal cards** ($4.99) with a clip add the add-on as a second line item, totaling $5.98
+- The submit button dynamically updates to reflect the total cost
+
+### Technical Details
+
+| Component | Details |
+|---|---|
+| **Resolve API** | `POST /api/youtube/resolve` — Uses YouTube oEmbed for title lookup (no API key needed) |
+| **Player Component** | `components/YouTubeClipPlayer.tsx` — YouTube IFrame Player API wrapper |
+| **Stripe Product** | Seeded via `scripts/seed-youtube-addon.ts`, price ID stored in `YOUTUBE_ADDON_PRICE_ID` env var |
+| **Database Columns** | `youtube_video_id`, `youtube_url`, `youtube_title`, `youtube_start_seconds`, `youtube_end_seconds`, `youtube_clip_enabled` on `shared_cards` |
+| **Webhook** | `lib/webhookHandlers.ts` — Server-side Stripe line item verification before enabling clip playback |
 
 ---
 
@@ -144,6 +196,8 @@ greetme/
 │   │   ├── share/route.ts            # Create shareable short links
 │   │   ├── send-confirmation/route.ts # Send purchase confirmation emails
 │   │   ├── stripe/webhook/route.ts   # Stripe webhook handler
+│   │   ├── youtube/
+│   │   │   └── resolve/route.ts     # YouTube URL resolver (oEmbed title lookup)
 │   │   ├── artists/
 │   │   │   ├── upload/route.ts       # Artist image upload (Object Storage)
 │   │   │   ├── create/route.ts       # Artist card creation with Stripe
@@ -155,6 +209,7 @@ greetme/
 │       ├── page.tsx                  # Server component with OG metadata
 │       └── ShareCardClient.tsx       # Client component for card display
 ├── components/                       # shadcn/ui components
+│   ├── YouTubeClipPlayer.tsx        # YouTube clip player with red bar UI
 │   └── ui/                           # Button, Card, Input, etc.
 ├── lib/
 │   ├── cardData.ts                   # All card & category definitions
@@ -385,6 +440,12 @@ The app uses a PostgreSQL database provided by Replit (Neon-backed) for storing 
 | `sender_name` | VARCHAR(100) | Name of the sender |
 | `recipient_name` | VARCHAR(100) | Name of the recipient |
 | `personal_note` | TEXT | Optional personal message (max 500 chars) |
+| `youtube_video_id` | VARCHAR(20) (nullable) | YouTube video ID for audio clip |
+| `youtube_url` | TEXT (nullable) | Full YouTube URL |
+| `youtube_title` | TEXT (nullable) | YouTube video title |
+| `youtube_start_seconds` | INTEGER (nullable) | Clip start time in seconds |
+| `youtube_end_seconds` | INTEGER (nullable) | Clip end time in seconds |
+| `youtube_clip_enabled` | BOOLEAN | Whether clip playback is enabled (set to true after payment verification) |
 | `created_at` | TIMESTAMP | When the link was created |
 
 **`custom_cards`** - Artist-created cards
@@ -536,9 +597,29 @@ Returns all approved public custom cards for display in the main library.
 
 Serves uploaded images from Replit Object Storage.
 
+### `POST /api/youtube/resolve`
+
+Resolves a YouTube URL and returns the video ID, title, and canonical URL using YouTube's oEmbed API. No API key required.
+
+**Request Body:**
+```json
+{
+  "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+}
+```
+
+**Response:**
+```json
+{
+  "videoId": "dQw4w9WgXcQ",
+  "title": "Rick Astley - Never Gonna Give You Up",
+  "canonicalUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+}
+```
+
 ### `POST /api/stripe/webhook`
 
-Receives and processes Stripe webhook events (managed by `stripe-replit-sync`).
+Receives and processes Stripe webhook events (managed by `stripe-replit-sync`). Also handles YouTube clip activation by verifying Stripe line items contain the YouTube add-on price before enabling clip playback.
 
 ---
 
@@ -574,6 +655,7 @@ npx next start -H 0.0.0.0 -p 5000
 
 ```bash
 npx tsx scripts/seed-valentines-products.ts
+npx tsx scripts/seed-youtube-addon.ts
 ```
 
 ### Generate AI Cards
@@ -593,6 +675,7 @@ npx tsx scripts/merge-generated-cards.ts
 | `REPLIT_DOMAINS` | Application domain(s) for absolute URLs |
 | `REPLIT_CONNECTORS_HOSTNAME` | Replit connectors API hostname |
 | `REPL_IDENTITY` | Replit identity token (auto-provided) |
+| `YOUTUBE_ADDON_PRICE_ID` | Stripe Price ID for the YouTube clip add-on ($0.99) |
 
 Stripe and Resend credentials are managed automatically via Replit connectors - no manual API keys required.
 
