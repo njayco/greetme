@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
       toName,
       fromName,
       personalNote,
+      youtube,
     } = body;
 
     if (!coverUrl || !centerfold || !backMessage || !artistName) {
@@ -94,7 +95,11 @@ export async function POST(request: NextRequest) {
 
     const domain = process.env.REPLIT_DOMAINS?.split(',')[0] || request.headers.get('host') || '';
 
-    if (!isPublicBool) {
+    const hasYoutubeClip = youtube && youtube.videoId && youtube.url && youtube.title;
+    const youtubeAddonPriceId = process.env.YOUTUBE_ADDON_PRICE_ID;
+    const needsYoutubePayment = hasYoutubeClip && youtubeAddonPriceId;
+
+    if (!isPublicBool && !needsYoutubePayment) {
       await client.end();
       await initStripe();
       const stripe = await getUncachableStripeClient();
@@ -122,6 +127,81 @@ export async function POST(request: NextRequest) {
           senderName: safeSender,
           recipientName: safeRecipient,
           personalNote: safePersonalNote,
+        },
+      });
+
+      const updateClient = new pg.Client({ connectionString: process.env.DATABASE_URL });
+      await updateClient.connect();
+      await updateClient.query('UPDATE custom_cards SET stripe_session_id = $1 WHERE id = $2', [session.id, cardId]);
+      await updateClient.end();
+
+      return NextResponse.json({ id: cardId, checkoutUrl: session.url });
+    }
+
+    if (needsYoutubePayment) {
+      await client.end();
+      await initStripe();
+      const stripe = await getUncachableStripeClient();
+      const origin = request.headers.get('origin') || request.nextUrl.origin;
+
+      const lineItems: any[] = [];
+
+      if (!isPublicBool) {
+        lineItems.push({
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'Custom Greeting Card',
+              description: `Custom card by ${safeCreatorName}`,
+            },
+            unit_amount: 499,
+          },
+          quantity: 1,
+        });
+      }
+
+      lineItems.push({ price: youtubeAddonPriceId, quantity: 1 });
+
+      let shareShortId = generateShortId();
+      let shareAttempts = 0;
+      const shareClient = new pg.Client({ connectionString: process.env.DATABASE_URL });
+      await shareClient.connect();
+      while (shareAttempts < 5) {
+        const existing = await shareClient.query('SELECT id FROM shared_cards WHERE id = $1', [shareShortId]);
+        if (existing.rows.length === 0) break;
+        shareShortId = generateShortId();
+        shareAttempts++;
+      }
+
+      await shareClient.query(
+        `INSERT INTO shared_cards (id, card_id, sender_name, recipient_name, personal_note, custom_card_id, youtube_video_id, youtube_url, youtube_title, youtube_start_seconds, youtube_end_seconds, youtube_clip_enabled)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+        [
+          shareShortId, null, safeSender, safeRecipient, safePersonalNote, cardId,
+          String(youtube.videoId).slice(0, 20),
+          String(youtube.url).slice(0, 500),
+          String(youtube.title).slice(0, 200),
+          Number(youtube.startSeconds) || 0,
+          Number(youtube.endSeconds) || 30,
+          false,
+        ]
+      );
+      await shareClient.end();
+
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: lineItems,
+        mode: 'payment',
+        success_url: `${origin}/artists?payment=artist_success&cardId=${cardId}&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/artists?payment=artist_cancelled`,
+        metadata: {
+          customCardId: cardId,
+          creatorName: safeCreatorName,
+          senderName: safeSender,
+          recipientName: safeRecipient,
+          personalNote: safePersonalNote,
+          shareId: shareShortId,
+          youtube_clip: 'true',
         },
       });
 

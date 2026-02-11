@@ -95,7 +95,55 @@ export default function ArtistsPage() {
   const [toName, setToName] = useState("")
   const [fromName, setFromName] = useState("")
   const [personalNote, setPersonalNote] = useState("")
+  const [youtubeClipEnabled, setYoutubeClipEnabled] = useState(false)
+  const [youtubeUrl, setYoutubeUrl] = useState("")
+  const [youtubeResolved, setYoutubeResolved] = useState<{ videoId: string; title: string; canonicalUrl: string } | null>(null)
+  const [youtubeLoading, setYoutubeLoading] = useState(false)
+  const [youtubeError, setYoutubeError] = useState("")
+  const [youtubeStartTime, setYoutubeStartTime] = useState("0:00")
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const parseTimeToSeconds = (time: string): number => {
+    const parts = time.split(':').map(Number)
+    if (parts.length === 2) return (parts[0] || 0) * 60 + (parts[1] || 0)
+    if (parts.length === 1) return parts[0] || 0
+    return 0
+  }
+
+  const resolveYoutubeUrl = async () => {
+    if (!youtubeUrl.trim()) return
+    setYoutubeLoading(true)
+    setYoutubeError("")
+    setYoutubeResolved(null)
+    try {
+      const res = await fetch('/api/youtube/resolve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: youtubeUrl.trim() }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setYoutubeError(data.error || 'Invalid YouTube URL')
+      } else {
+        setYoutubeResolved(data)
+      }
+    } catch {
+      setYoutubeError('Failed to load video info')
+    }
+    setYoutubeLoading(false)
+  }
+
+  const getYoutubeData = () => {
+    if (!youtubeClipEnabled || !youtubeResolved) return null
+    const startSeconds = parseTimeToSeconds(youtubeStartTime)
+    return {
+      videoId: youtubeResolved.videoId,
+      url: youtubeResolved.canonicalUrl,
+      title: youtubeResolved.title,
+      startSeconds,
+      endSeconds: startSeconds + 30,
+    }
+  }
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search)
@@ -203,6 +251,7 @@ export default function ArtistsPage() {
           toName: toName.trim(),
           fromName: fromName.trim(),
           personalNote: personalNote.trim(),
+          youtube: getYoutubeData(),
         }),
       })
 
@@ -877,7 +926,88 @@ export default function ArtistsPage() {
                   {personalNote.length}/200
                 </div>
               </div>
+
+              <div className="p-3 rounded-lg border-2 border-[#b8a060] bg-white/50">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="font-bold text-sm" style={{ fontFamily: "Georgia, serif", color: "#5a4020" }}>
+                    Add YouTube Clip (30s) +$0.99
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setYoutubeClipEnabled(!youtubeClipEnabled)
+                      if (youtubeClipEnabled) {
+                        setYoutubeUrl("")
+                        setYoutubeResolved(null)
+                        setYoutubeError("")
+                        setYoutubeStartTime("0:00")
+                      }
+                    }}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${youtubeClipEnabled ? 'bg-red-500' : 'bg-gray-300'}`}
+                  >
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${youtubeClipEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
+                  </button>
+                </div>
+
+                {youtubeClipEnabled && (
+                  <div className="space-y-3 mt-3">
+                    <div className="flex gap-2">
+                      <input
+                        value={youtubeUrl}
+                        onChange={(e) => setYoutubeUrl(e.target.value)}
+                        placeholder="Paste YouTube link..."
+                        className="flex-1 px-3 py-2 rounded-lg border-2 border-[#b8a060] bg-white/80 text-sm focus:outline-none focus:border-[#4EAAA2] transition-colors"
+                        style={{ fontFamily: "Georgia, serif" }}
+                      />
+                      <button
+                        type="button"
+                        onClick={resolveYoutubeUrl}
+                        disabled={youtubeLoading || !youtubeUrl.trim()}
+                        className="px-3 py-2 bg-red-500 text-white text-sm rounded-lg font-bold hover:bg-red-600 disabled:opacity-50 transition-colors"
+                        style={{ fontFamily: "Georgia, serif" }}
+                      >
+                        {youtubeLoading ? '...' : 'Load'}
+                      </button>
+                    </div>
+
+                    {youtubeError && (
+                      <p className="text-red-500 text-xs">{youtubeError}</p>
+                    )}
+
+                    {youtubeResolved && (
+                      <div className="bg-white/60 rounded-lg p-2 border-2 border-[#b8a060]">
+                        <p className="text-sm font-medium truncate" style={{ color: "#5a4020", fontFamily: "Georgia, serif" }}>{youtubeResolved.title}</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <label className="text-xs whitespace-nowrap" style={{ color: "#8b7040" }}>Start at:</label>
+                          <input
+                            value={youtubeStartTime}
+                            onChange={(e) => setYoutubeStartTime(e.target.value)}
+                            placeholder="0:00"
+                            className="w-20 px-2 py-1 rounded border-2 border-[#b8a060] bg-white/80 text-sm text-center focus:outline-none focus:border-[#4EAAA2]"
+                            style={{ fontFamily: "Georgia, serif" }}
+                          />
+                          <span className="text-xs" style={{ color: "#8b7040" }}>
+                            to {(() => {
+                              const s = parseTimeToSeconds(youtubeStartTime) + 30
+                              return `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`
+                            })()}
+                          </span>
+                          <span className="text-xs" style={{ color: "#a09060" }}>(30s clip)</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
+
+            {(youtubeClipEnabled && youtubeResolved) && (
+              <div className="mt-4 text-center">
+                <span className="font-bold text-sm" style={{ fontFamily: "Georgia, serif", color: "#5a4020" }}>
+                  YouTube Clip Add-on: $0.99
+                </span>
+              </div>
+            )}
 
             <div className="flex gap-3 mt-6">
               <button
@@ -906,8 +1036,8 @@ export default function ArtistsPage() {
                 {isSubmitting
                   ? "Submitting..."
                   : addToCatalog
-                  ? "Submit Card"
-                  : "Submit & Pay $4.99"}
+                  ? (youtubeClipEnabled && youtubeResolved ? "Submit Card & Pay $0.99" : "Submit Card")
+                  : (youtubeClipEnabled && youtubeResolved ? "Submit & Pay $5.98" : "Submit & Pay $4.99")}
               </button>
             </div>
           </div>

@@ -27,6 +27,39 @@ export async function POST(request: NextRequest) {
       [cardId, sessionId]
     );
 
+    const shareId = session.metadata?.shareId;
+
+    if (shareId) {
+      const existing = await client.query('SELECT id FROM shared_cards WHERE id = $1', [shareId]);
+      if (existing.rows.length > 0) {
+        const hasYoutubeClip = session.metadata?.youtube_clip === 'true';
+        if (hasYoutubeClip) {
+          const youtubeAddonPriceId = process.env.YOUTUBE_ADDON_PRICE_ID;
+          if (youtubeAddonPriceId) {
+            try {
+              const lineItems = await stripe.checkout.sessions.listLineItems(sessionId);
+              const addonPaid = lineItems.data.some(
+                (item: any) => item.price?.id === youtubeAddonPriceId
+              );
+              if (addonPaid) {
+                await client.query(
+                  'UPDATE shared_cards SET youtube_clip_enabled = true WHERE id = $1',
+                  [shareId]
+                );
+              }
+            } catch (err: any) {
+              console.error('Failed to verify YouTube addon:', err.message);
+            }
+          }
+        }
+
+        await client.end();
+        const domain = process.env.REPLIT_DOMAINS?.split(',')[0] || request.headers.get('host') || '';
+        const shareUrl = `https://${domain}/c/${shareId}`;
+        return NextResponse.json({ success: true, shareUrl });
+      }
+    }
+
     const senderName = session.metadata?.senderName || session.metadata?.creatorName || '';
     const recipientName = session.metadata?.recipientName || '';
     const personalNoteVal = session.metadata?.personalNote || '';

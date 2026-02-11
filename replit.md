@@ -145,11 +145,12 @@ CategoryType: { name, color, group?, cards[] }
 - **Backup**: Custom cards are backed up as JSON to Object Storage (`card-backups/`) to survive database rollbacks; auto-restored on next load if missing from DB
 - **API routes**: `/api/artists/upload`, `/api/artists/create`, `/api/artists/cards`, `/api/artists/confirm-payment`
 - **Payment**: Stripe checkout with session_id tracking, payment confirmed on return
+- **YouTube Clips**: Artists can add a 30-second YouTube clip (+$0.99) during personalization; catalog cards with clips go through Stripe for the addon; personal cards add clip as extra line item ($4.99 + $0.99)
 
 ## Greet Me Clips (YouTube Audio Add-on)
-- **Feature**: Users can add a 30-second YouTube audio clip to any greeting card for $0.99
+- **Feature**: Users can add a 30-second YouTube audio clip to any greeting card for $0.99, including custom artist cards
 - **How it works**: Sender pastes a YouTube URL, selects a 30-second start time, clip plays on the Centerfold tab via YouTube IFrame Player API
-- **Stripe**: $0.99 add-on line item (YOUTUBE_ADDON_PRICE_ID env var), works for both free and paid cards
+- **Stripe**: $0.99 add-on line item (YOUTUBE_ADDON_PRICE_ID env var), works for regular cards, artist personal cards, and artist catalog cards
 - **UI**: Red rounded "Now Playing Clip" bar with play/pause button, progress timer, clickable title opens YouTube
 - **Payment flow**: Free cards with clip go through Stripe checkout; paid cards get clip as extra line item
 - **Webhook**: checkout.session.completed event sets youtube_clip_enabled=true on shared_cards
