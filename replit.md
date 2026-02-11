@@ -139,7 +139,8 @@ CategoryType: { name, color, group?, cards[] }
 - **Features**: Upload cover image, write centerfold/back messages, select categories, preview card
 - **Personal cards**: $4.99 via Stripe checkout
 - **Catalog submissions**: Free (100% discount), cards become part of public library
-- **Flow**: Welcome > Upload Image > Write Messages > Choose Categories > Preview > Submit
+- **Flow**: Welcome > Upload Image > Write Messages > Choose Categories > Preview > Personalize > Submit
+- **Backup**: Custom cards are backed up as JSON to Object Storage (`card-backups/`) to survive database rollbacks; auto-restored on next load if missing from DB
 - **API routes**: `/api/artists/upload`, `/api/artists/create`, `/api/artists/cards`, `/api/artists/confirm-payment`
 - **Payment**: Stripe checkout with session_id tracking, payment confirmed on return
 

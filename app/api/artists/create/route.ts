@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import pg from 'pg';
 import { getUncachableStripeClient } from '@/lib/stripeClient';
 import { initStripe } from '@/lib/initStripe';
+import { backupCardToStorage } from '@/lib/cardBackup';
 
 function generateId(): string {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
@@ -75,6 +76,21 @@ export async function POST(request: NextRequest) {
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
       [cardId, coverUrl, safeCenterfold, safeCaption, safeBack, categories, safeCreatorName, isPublicBool, isPublicBool, isPublicBool]
     );
+
+    backupCardToStorage({
+      id: cardId,
+      cover_image_url: coverUrl,
+      centerfold_message: safeCenterfold,
+      caption: safeCaption,
+      back_message: safeBack,
+      category_ids: categories,
+      creator_name: safeCreatorName,
+      is_public: isPublicBool,
+      is_approved: isPublicBool,
+      is_paid: isPublicBool,
+      stripe_session_id: null,
+      created_at: new Date().toISOString(),
+    }).catch(err => console.error('Backup error:', err));
 
     const domain = process.env.REPLIT_DOMAINS?.split(',')[0] || request.headers.get('host') || '';
 
