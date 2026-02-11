@@ -3,10 +3,14 @@ import { getUncachableStripeClient } from '@/lib/stripeClient';
 import { initStripe } from '@/lib/initStripe';
 
 export async function POST(request: NextRequest) {
+  let body: any = {};
   try {
     await initStripe();
 
-    const { priceId, cardTitle, shareId, senderName, successUrl, cancelUrl, addYoutubeClip } = await request.json();
+    body = await request.json();
+    const { priceId, cardTitle, shareId, senderName, successUrl, cancelUrl, addYoutubeClip } = body;
+
+    console.log('Checkout request:', JSON.stringify({ priceId, cardTitle, shareId, addYoutubeClip }));
 
     const stripe = await getUncachableStripeClient();
     const origin = request.headers.get('origin') || request.nextUrl.origin;
@@ -20,6 +24,7 @@ export async function POST(request: NextRequest) {
     if (addYoutubeClip) {
       const youtubeAddonPriceId = process.env.YOUTUBE_ADDON_PRICE_ID;
       if (!youtubeAddonPriceId) {
+        console.error('YOUTUBE_ADDON_PRICE_ID env var not set');
         return NextResponse.json({ error: 'YouTube add-on not configured' }, { status: 500 });
       }
       lineItems.push({ price: youtubeAddonPriceId, quantity: 1 });
@@ -28,6 +33,8 @@ export async function POST(request: NextRequest) {
     if (lineItems.length === 0) {
       return NextResponse.json({ error: 'No items to checkout' }, { status: 400 });
     }
+
+    console.log('Creating checkout with line_items:', JSON.stringify(lineItems));
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -46,6 +53,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ url: session.url });
   } catch (error: any) {
     console.error('Checkout error:', error.message);
+    console.error('Checkout request body was:', JSON.stringify(body));
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
