@@ -97,6 +97,12 @@ export default function GreetingCardsApp() {
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null)
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null)
   const [customCards, setCustomCards] = useState<any[]>([])
+  const [youtubeClipEnabled, setYoutubeClipEnabled] = useState(false)
+  const [youtubeUrl, setYoutubeUrl] = useState("")
+  const [youtubeResolved, setYoutubeResolved] = useState<{ videoId: string; title: string; canonicalUrl: string } | null>(null)
+  const [youtubeLoading, setYoutubeLoading] = useState(false)
+  const [youtubeError, setYoutubeError] = useState("")
+  const [youtubeStartTime, setYoutubeStartTime] = useState("0:00")
 
   const cardsPerPage = 8
 
@@ -237,6 +243,54 @@ export default function GreetingCardsApp() {
     setSelectedCard(card)
     setCardView("cover")
     setCurrentScreen("customize")
+    setYoutubeClipEnabled(false)
+    setYoutubeUrl("")
+    setYoutubeResolved(null)
+    setYoutubeError("")
+    setYoutubeStartTime("0:00")
+  }
+
+  const parseTimeToSeconds = (time: string): number => {
+    const parts = time.split(':').map(Number)
+    if (parts.length === 2) return (parts[0] || 0) * 60 + (parts[1] || 0)
+    if (parts.length === 1) return parts[0] || 0
+    return 0
+  }
+
+  const resolveYoutubeUrl = async () => {
+    if (!youtubeUrl.trim()) return
+    setYoutubeLoading(true)
+    setYoutubeError("")
+    setYoutubeResolved(null)
+    try {
+      const res = await fetch('/api/youtube/resolve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: youtubeUrl.trim() }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setYoutubeError(data.error || 'Invalid YouTube URL')
+      } else {
+        setYoutubeResolved(data)
+      }
+    } catch {
+      setYoutubeError('Failed to load video info')
+    }
+    setYoutubeLoading(false)
+  }
+
+  const getYoutubeShareData = () => {
+    if (!youtubeClipEnabled || !youtubeResolved) return null
+    const startSeconds = parseTimeToSeconds(youtubeStartTime)
+    return {
+      enabled: true,
+      videoId: youtubeResolved.videoId,
+      url: youtubeResolved.canonicalUrl,
+      title: youtubeResolved.title,
+      startSeconds,
+      endSeconds: startSeconds + 30,
+    }
   }
 
   const generateShareableLink = async () => {
@@ -245,6 +299,7 @@ export default function GreetingCardsApp() {
         from: formData.from,
         to: formData.to,
         note: formData.personalNote,
+        youtube: getYoutubeShareData(),
       }
       if (selectedCard.isCustomCard && selectedCard.customCardId) {
         shareBody.customCardId = selectedCard.customCardId
@@ -273,26 +328,35 @@ export default function GreetingCardsApp() {
   const handleSendCard = async () => {
     if (!selectedCard || !formData.from || !formData.to) return
 
+    if (youtubeClipEnabled && !youtubeResolved) {
+      alert('Please load your YouTube video first.')
+      return
+    }
+
     const cardPrice = selectedCard.price || 0
     const stripeProduct = stripeProducts[selectedCard.id.toString()]
+    const needsClipPayment = youtubeClipEnabled && youtubeResolved
+    const needsCardPayment = cardPrice > 0 && stripeProduct?.priceId
+    const needsCheckout = needsCardPayment || needsClipPayment
 
-    if (cardPrice > 0 && stripeProduct?.priceId) {
+    if (needsCheckout) {
       setIsProcessingPayment(true)
       try {
-        const paidShareBody: any = {
+        const shareBody: any = {
           from: formData.from,
           to: formData.to,
           note: formData.personalNote,
+          youtube: getYoutubeShareData(),
         }
         if (selectedCard.isCustomCard && selectedCard.customCardId) {
-          paidShareBody.customCardId = selectedCard.customCardId
+          shareBody.customCardId = selectedCard.customCardId
         } else {
-          paidShareBody.cardId = selectedCard.id
+          shareBody.cardId = selectedCard.id
         }
         const shareResponse = await fetch('/api/share', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(paidShareBody),
+          body: JSON.stringify(shareBody),
         })
         const shareData = await shareResponse.json()
         if (!shareResponse.ok || !shareData.id) {
@@ -302,17 +366,22 @@ export default function GreetingCardsApp() {
         }
         const shareId = shareData.id
 
+        const checkoutBody: any = {
+          cardTitle: selectedCard.title,
+          shareId,
+          senderName: formData.from,
+          successUrl: `${window.location.origin}/?payment=success&shareId=${shareId}&session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: `${window.location.origin}/?payment=cancelled`,
+          addYoutubeClip: !!needsClipPayment,
+        }
+        if (needsCardPayment) {
+          checkoutBody.priceId = stripeProduct.priceId
+        }
+
         const response = await fetch('/api/checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            priceId: stripeProduct.priceId,
-            cardTitle: selectedCard.title,
-            shareId,
-            senderName: formData.from,
-            successUrl: `${window.location.origin}/?payment=success&shareId=${shareId}&session_id={CHECKOUT_SESSION_ID}`,
-            cancelUrl: `${window.location.origin}/?payment=cancelled`,
-          }),
+          body: JSON.stringify(checkoutBody),
         })
         const data = await response.json()
         if (data.url) {
@@ -1002,9 +1071,79 @@ export default function GreetingCardsApp() {
                       </div>
                     </div>
 
-                    <div className="text-left mb-5">
+                    <div className="mt-4 p-3 rounded-lg border border-gray-200 bg-white/50">
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="font-bold text-gray-800 text-sm" style={{ fontFamily: "Georgia, serif" }}>
+                          Add YouTube Clip (30s) +$0.99
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setYoutubeClipEnabled(!youtubeClipEnabled)
+                            if (youtubeClipEnabled) {
+                              setYoutubeUrl("")
+                              setYoutubeResolved(null)
+                              setYoutubeError("")
+                              setYoutubeStartTime("0:00")
+                            }
+                          }}
+                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${youtubeClipEnabled ? 'bg-red-500' : 'bg-gray-300'}`}
+                        >
+                          <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${youtubeClipEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
+                        </button>
+                      </div>
+
+                      {youtubeClipEnabled && (
+                        <div className="space-y-3 mt-3">
+                          <div className="flex gap-2">
+                            <Input
+                              value={youtubeUrl}
+                              onChange={(e) => setYoutubeUrl(e.target.value)}
+                              placeholder="Paste YouTube link..."
+                              className="flex-1 text-sm"
+                            />
+                            <button
+                              type="button"
+                              onClick={resolveYoutubeUrl}
+                              disabled={youtubeLoading || !youtubeUrl.trim()}
+                              className="px-3 py-1 bg-red-500 text-white text-sm rounded font-bold hover:bg-red-600 disabled:opacity-50 transition-colors"
+                            >
+                              {youtubeLoading ? '...' : 'Load'}
+                            </button>
+                          </div>
+
+                          {youtubeError && (
+                            <p className="text-red-500 text-xs">{youtubeError}</p>
+                          )}
+
+                          {youtubeResolved && (
+                            <div className="bg-gray-50 rounded p-2 border border-gray-200">
+                              <p className="text-sm font-medium text-gray-800 truncate">{youtubeResolved.title}</p>
+                              <div className="flex items-center gap-2 mt-2">
+                                <label className="text-xs text-gray-600 whitespace-nowrap">Start at:</label>
+                                <Input
+                                  value={youtubeStartTime}
+                                  onChange={(e) => setYoutubeStartTime(e.target.value)}
+                                  placeholder="0:00"
+                                  className="w-20 text-sm text-center"
+                                />
+                                <span className="text-xs text-gray-500">
+                                  to {(() => {
+                                    const s = parseTimeToSeconds(youtubeStartTime) + 30
+                                    return `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`
+                                  })()}
+                                </span>
+                                <span className="text-xs text-gray-400">(30s clip)</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="text-left mb-5 mt-4">
                       <span className="font-bold text-gray-800 text-lg" style={{ fontFamily: "Georgia, serif" }}>
-                        Total: ${selectedCard?.price ? selectedCard.price.toFixed(2) : '0.00'}
+                        Total: ${((selectedCard?.price || 0) + (youtubeClipEnabled && youtubeResolved ? 0.99 : 0)).toFixed(2)}
                       </span>
                     </div>
 

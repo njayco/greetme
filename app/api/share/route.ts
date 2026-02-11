@@ -13,7 +13,7 @@ function generateShortId(): string {
 
 export async function POST(request: NextRequest) {
   try {
-    const { cardId, customCardId, from, to, note } = await request.json();
+    const { cardId, customCardId, from, to, note, youtube } = await request.json();
 
     if (!customCardId && !cardId) {
       return NextResponse.json({ error: 'cardId or customCardId is required' }, { status: 400 });
@@ -43,6 +43,24 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    let youtubeVideoId: string | null = null;
+    let youtubeUrl: string | null = null;
+    let youtubeTitle: string | null = null;
+    let youtubeStartSeconds: number | null = null;
+    let youtubeEndSeconds: number | null = null;
+
+    if (youtube && youtube.enabled) {
+      if (!youtube.videoId || !youtube.url || !youtube.title || youtube.startSeconds == null) {
+        return NextResponse.json({ error: 'YouTube clip requires videoId, url, title, and startSeconds' }, { status: 400 });
+      }
+
+      youtubeStartSeconds = Math.max(0, Math.floor(Number(youtube.startSeconds)));
+      youtubeEndSeconds = youtubeStartSeconds + 30;
+      youtubeVideoId = String(youtube.videoId).trim().slice(0, 20);
+      youtubeUrl = String(youtube.url).trim().slice(0, 500);
+      youtubeTitle = String(youtube.title).trim().slice(0, 200);
+    }
+
     const client = new pg.Client({ connectionString: process.env.DATABASE_URL });
     await client.connect();
 
@@ -56,8 +74,9 @@ export async function POST(request: NextRequest) {
     }
 
     await client.query(
-      'INSERT INTO shared_cards (id, card_id, sender_name, recipient_name, personal_note, custom_card_id) VALUES ($1, $2, $3, $4, $5, $6)',
-      [shortId, numericCardId, senderName, recipientName, personalNote, safeCustomCardId]
+      `INSERT INTO shared_cards (id, card_id, sender_name, recipient_name, personal_note, custom_card_id, youtube_video_id, youtube_url, youtube_title, youtube_start_seconds, youtube_end_seconds, youtube_clip_enabled)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+      [shortId, numericCardId, senderName, recipientName, personalNote, safeCustomCardId, youtubeVideoId, youtubeUrl, youtubeTitle, youtubeStartSeconds, youtubeEndSeconds, false]
     );
 
     await client.end();

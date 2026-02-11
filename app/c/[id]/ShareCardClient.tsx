@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import YouTubeClipPlayer from '@/components/YouTubeClipPlayer';
 
 type CardData = {
   id: number;
@@ -10,15 +11,24 @@ type CardData = {
   back: string;
 };
 
+type YouTubeClipData = {
+  videoId: string;
+  url: string;
+  title: string;
+  startSeconds: number;
+  endSeconds: number;
+};
+
 type Props = {
   cardData: CardData;
   senderName: string;
   recipientName: string;
   personalNote: string;
   categoryName: string;
+  youtubeClip?: YouTubeClipData | null;
 };
 
-export default function ShareCardClient({ cardData, senderName, recipientName, personalNote, categoryName }: Props) {
+export default function ShareCardClient({ cardData, senderName, recipientName, personalNote, categoryName, youtubeClip }: Props) {
   const [cardView, setCardView] = useState<'cover' | 'centerfold' | 'back'>('cover');
 
   const resolvedCover = cardData.cover?.startsWith('/objects/')
@@ -39,9 +49,9 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
         );
       case 'centerfold':
         return (
-          <div className="aspect-[3/4] bg-gradient-to-b from-gray-50 to-white rounded-lg shadow-2xl overflow-hidden border border-gray-200">
-            <div className="h-full p-5 overflow-y-auto">
-              <div className="min-h-full flex flex-col">
+          <div className="bg-gradient-to-b from-gray-50 to-white rounded-lg shadow-2xl overflow-hidden border border-gray-200">
+            <div className="p-5">
+              <div className="min-h-[300px] flex flex-col">
                 <h3 className="text-xl font-bold mb-4 text-center text-gray-800" style={{ fontFamily: "Georgia, serif" }}>Special Greeting!</h3>
                 <div className="flex-1 flex flex-col justify-center">
                   <p
@@ -60,6 +70,16 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
                   )}
                 </div>
               </div>
+
+              {youtubeClip && (
+                <YouTubeClipPlayer
+                  videoId={youtubeClip.videoId}
+                  title={youtubeClip.title}
+                  url={youtubeClip.url}
+                  startSeconds={youtubeClip.startSeconds}
+                  endSeconds={youtubeClip.endSeconds}
+                />
+              )}
             </div>
           </div>
         );

@@ -27,8 +27,10 @@ app/api/uploads/serve/       - Serves uploaded images from object storage
 app/api/artists/create/      - Artist card creation API (with Stripe for personal cards)
 app/api/artists/cards/       - Fetch approved public custom cards
 app/api/artists/confirm-payment/ - Confirm Stripe payment for personal cards
+app/api/youtube/resolve/     - YouTube URL resolver (oEmbed title lookup)
 app/c/[id]/                  - Dynamic share page with OG metadata
 components/                  - UI components (shadcn/ui)
+components/YouTubeClipPlayer.tsx - YouTube clip player with red bar UI
 lib/                         - Utility functions
 lib/cardData.ts              - Shared card data definitions (categories, groups, tags)
 lib/resendClient.ts          - Resend email client (via Replit connector)
@@ -144,8 +146,19 @@ CategoryType: { name, color, group?, cards[] }
 - **API routes**: `/api/artists/upload`, `/api/artists/create`, `/api/artists/cards`, `/api/artists/confirm-payment`
 - **Payment**: Stripe checkout with session_id tracking, payment confirmed on return
 
+## Greet Me Clips (YouTube Audio Add-on)
+- **Feature**: Users can add a 30-second YouTube audio clip to any greeting card for $0.99
+- **How it works**: Sender pastes a YouTube URL, selects a 30-second start time, clip plays on the Centerfold tab via YouTube IFrame Player API
+- **Stripe**: $0.99 add-on line item (YOUTUBE_ADDON_PRICE_ID env var), works for both free and paid cards
+- **UI**: Red rounded "Now Playing Clip" bar with play/pause button, progress timer, clickable title opens YouTube
+- **Payment flow**: Free cards with clip go through Stripe checkout; paid cards get clip as extra line item
+- **Webhook**: checkout.session.completed event sets youtube_clip_enabled=true on shared_cards
+- **API**: POST /api/youtube/resolve (oEmbed title lookup, no API key needed)
+- **Component**: components/YouTubeClipPlayer.tsx
+- **Seed script**: scripts/seed-youtube-addon.ts
+
 ## Database Tables
-- `shared_cards` - Short link storage (id VARCHAR(8) PK, card_id INTEGER nullable, sender_name, recipient_name, personal_note, custom_card_id VARCHAR(8) nullable, created_at)
+- `shared_cards` - Short link storage (id VARCHAR(8) PK, card_id INTEGER nullable, sender_name, recipient_name, personal_note, custom_card_id VARCHAR(8) nullable, youtube_video_id, youtube_url, youtube_title, youtube_start_seconds, youtube_end_seconds, youtube_clip_enabled BOOLEAN, created_at)
 - `custom_cards` - Artist-created cards (id VARCHAR(8) PK, cover_image_url, centerfold_message, caption, back_message, category_ids TEXT[], creator_name, is_public, is_approved, is_paid, stripe_session_id, created_at)
 - `stripe.*` - Stripe sync tables (managed by stripe-replit-sync)
 
