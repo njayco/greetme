@@ -2,7 +2,7 @@
 
 **Not Just a Card - An Experience!**
 
-GreetMe is a digital greeting card application where users can browse, customize, and share beautiful greeting cards for every occasion. With 92 cards across 30+ categories, a vintage bookshelf design, and built-in payment processing, GreetMe makes sending heartfelt messages easy and memorable.
+GreetMe is a digital greeting card application where users can browse, customize, and share beautiful greeting cards for every occasion. With 152+ cards across 39+ categories organized into 10 groups, AI-generated card covers, a vintage bookshelf design, and built-in payment processing, GreetMe makes sending heartfelt messages easy and memorable.
 
 Created by **Najee Jeremiah**
 
@@ -12,9 +12,11 @@ Created by **Najee Jeremiah**
 
 - [Features](#features)
 - [How It Works](#how-it-works)
+- [Greet Me for Artists](#greet-me-for-artists)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Card Categories](#card-categories)
+- [AI Card Generation](#ai-card-generation)
 - [Payment System](#payment-system)
 - [Sharing System](#sharing-system)
 - [Email Confirmations](#email-confirmations)
@@ -27,10 +29,12 @@ Created by **Najee Jeremiah**
 
 ## Features
 
-- **92 greeting cards** across 30+ categories organized into 8 thematic groups
+- **152+ greeting cards** across 39+ categories organized into 10 thematic groups
+- **AI-generated card covers** using OpenAI gpt-image-1 with unique art styles per group
 - **Vintage bookshelf aesthetic** with warm tan/gold colors and wooden textures
 - **Card customization** with sender name, recipient name, and personal notes
-- **Stripe payment integration** for premium Valentine's Day cards ($0.99 - $2.99)
+- **Greet Me for Artists** — create custom cards by uploading artwork, writing messages, and sharing or selling
+- **Stripe payment integration** for premium Valentine's Day cards ($0.99 - $2.99) and personal artist cards ($4.99)
 - **Shareable short links** that work on social media with OG metadata previews
 - **Email confirmations** sent automatically after purchase via Resend
 - **Responsive design** that works on desktop and mobile
@@ -44,7 +48,7 @@ Created by **Najee Jeremiah**
 
 1. **Loading Screen** - The app opens with a branded loading screen featuring the GreetMe logo, an animated progress bar, and an "Enter Here" button that appears once loading completes.
 
-2. **Category Browser** - Users see all 30+ card categories organized into 8 groups (Popular Holidays, National Holidays, Religious & Cultural, etc.). Each group has a header and categories are displayed as colored buttons.
+2. **Category Browser** - Users see all 39+ card categories organized into 10 groups (Popular Holidays, National Holidays, Religious & Cultural, etc.). Each group has a header and categories are displayed as colored buttons.
 
 3. **Card Library** - After selecting a category, users see the available cards displayed on a virtual wooden bookshelf. Cards are paginated with 6 cards per page and can be browsed with navigation arrows.
 
@@ -73,6 +77,30 @@ Users can navigate back at any point using back buttons. The `viewCard` screen i
 
 ---
 
+## Greet Me for Artists
+
+Greet Me for Artists (`/artists`) lets users create custom greeting cards with their own artwork and messages.
+
+### Artist Card Creation Flow (6 Steps)
+
+1. **Welcome** - Introduction screen with overview of the creation process
+2. **Upload Cover Image** - Upload a JPG, PNG, or WebP image (max 5MB) for the card cover
+3. **Write Messages** - Enter the centerfold message (max 250 chars), back message (max 100 chars), optional caption, and artist name
+4. **Choose Categories** - Select one or more categories for the card, and choose between public catalog or personal use
+5. **Preview** - Review the card with Cover, Centerfold, and Back tabs before proceeding
+6. **Personalize** - Add "To:", "From:", and an optional personal note before submitting
+
+### Card Types
+
+- **Public Catalog Cards** (Free) - Submitted to the GreetMe catalog for everyone to send. Cards appear in their selected categories once approved. A share link is generated immediately on submission.
+- **Personal Cards** ($4.99) - Private cards for personal use. Payment is processed via Stripe Checkout, and a share link is generated after successful payment.
+
+### Image Storage
+
+Artist-uploaded images are stored in Replit Object Storage. Images are served via the `/api/uploads/serve` endpoint, ensuring persistence across deployments.
+
+---
+
 ## Tech Stack
 
 | Technology | Purpose |
@@ -81,10 +109,12 @@ Users can navigate back at any point using back buttons. The `viewCard` screen i
 | **TypeScript** | Type-safe JavaScript |
 | **Tailwind CSS** | Utility-first CSS styling |
 | **shadcn/ui** | Pre-built accessible UI components |
-| **PostgreSQL** | Database for shared card links (Neon-backed) |
-| **Stripe** | Payment processing for premium cards |
+| **PostgreSQL** | Database for shared card links and custom cards (Neon-backed) |
+| **Stripe** | Payment processing for premium and artist cards |
 | **stripe-replit-sync** | Stripe data synchronization and webhook management |
 | **Resend** | Transactional email delivery |
+| **OpenAI** | AI card generation (gpt-image-1 for covers, gpt-4o-mini for text) |
+| **Replit Object Storage** | Persistent image storage for artist uploads |
 | **React 19** | Latest React with concurrent features |
 
 ---
@@ -97,12 +127,21 @@ greetme/
 │   ├── layout.tsx                    # Root layout with metadata
 │   ├── page.tsx                      # Main application (all screens & logic)
 │   ├── globals.css                   # Global styles
+│   ├── artists/
+│   │   └── page.tsx                  # Greet Me for Artists card creation studio
 │   ├── api/
 │   │   ├── checkout/route.ts         # Stripe checkout session creation
 │   │   ├── products/route.ts         # Fetch Stripe products & prices
 │   │   ├── share/route.ts            # Create shareable short links
 │   │   ├── send-confirmation/route.ts # Send purchase confirmation emails
-│   │   └── stripe/webhook/route.ts   # Stripe webhook handler
+│   │   ├── stripe/webhook/route.ts   # Stripe webhook handler
+│   │   ├── artists/
+│   │   │   ├── upload/route.ts       # Artist image upload (Object Storage)
+│   │   │   ├── create/route.ts       # Artist card creation with Stripe
+│   │   │   ├── cards/route.ts        # Fetch approved public custom cards
+│   │   │   └── confirm-payment/route.ts # Confirm Stripe payment for personal cards
+│   │   └── uploads/
+│   │       └── serve/route.ts        # Serve images from Object Storage
 │   └── c/[id]/                       # Dynamic share page
 │       ├── page.tsx                  # Server component with OG metadata
 │       └── ShareCardClient.tsx       # Client component for card display
@@ -115,9 +154,12 @@ greetme/
 │   ├── resendClient.ts              # Resend email client setup
 │   ├── webhookHandlers.ts           # Stripe webhook processing
 │   └── utils.ts                     # Utility functions (cn)
-├── public/images/                    # 97 card images and assets
+├── public/images/                    # Card images and assets (incl. gen-* AI images)
 ├── scripts/
-│   └── seed-valentines-products.ts   # Stripe product seeding script
+│   ├── generate-cards.ts            # AI card generation script
+│   ├── merge-generated-cards.ts     # Merge generated cards into cardData.ts
+│   ├── seed-valentines-products.ts  # Stripe product seeding script
+│   └── generated/                   # JSON output from card generation
 ├── styles/                           # Additional CSS
 ├── next.config.mjs                  # Next.js configuration
 ├── tailwind.config.ts               # Tailwind CSS configuration
@@ -156,18 +198,20 @@ CategoryType = {
 }
 ```
 
-### Groups and Categories (92 cards total)
+### 10 Category Groups (152+ cards, 39+ categories)
 
 | Group | Categories | Card Count |
 |---|---|---|
-| **Popular Holidays** | Valentine's Day, Mother's Day, Father's Day, Halloween, St. Patrick's Day, Black History Month, Women's History Month, Pride Month | 50 |
-| **National Holidays** | Fourth of July, New Year's Day, MLK Day, Memorial Day, Labor Day, Veterans Day, Thanksgiving, Juneteenth | 10 |
-| **Religious & Cultural** | Christmas, Hanukkah, Kwanzaa, Easter, Diwali | 5 |
-| **Celebrations** | Birthday, Graduation, Congratulations | 8 |
-| **Life Events** | Wedding, Anniversary, New Baby, Retirement, New Job, New Home | 6 |
-| **Support & Sympathy** | Get Well Soon, Sympathy, Thinking of You, Encouragement | 6 |
+| **Popular Holidays** | Valentine's Day, Mother's Day, Father's Day, Halloween, St. Patrick's Day, Black History Month, Women's History Month, Pride Month | 50+ |
+| **National Holidays** | Fourth of July, New Year's Day, MLK Day, Memorial Day, Labor Day, Veterans Day, Thanksgiving, Juneteenth, Presidents' Day | 13 |
+| **Religious & Cultural** | Christmas, Hanukkah, Kwanzaa, Easter, Diwali, Rosh Hashanah, Yom Kippur, Muslim Holidays | 14 |
+| **Celebrations & Milestones** | Birthday, Graduation, Congratulations | 20+ |
+| **Life Events** | Wedding, Anniversary, New Baby, Retirement, New Job, New Home, Career Change, First Job | 12 |
+| **Support & Sympathy** | Get Well Soon, Sympathy, Thinking of You, Encouragement, Mental Health, Surgery Recovery | 15+ |
 | **Appreciation** | Thank You | 1 |
 | **Feelings** | Love & Romance, Miss You, Friendship, I'm Sorry | 4 |
+| **Pride & LGBTQ+** | Coming Out, LGBTQ+ Love | 6 |
+| **Seasonal** | Fall Vibes, Winter Cheer | 6 |
 
 ### Card ID Ranges
 
@@ -179,6 +223,40 @@ CategoryType = {
 - **25-27**: Fourth of July cards
 - **28-60**: Valentine's Day cards (paid via Stripe)
 - **61-92**: Expanded category cards (1 per new category)
+- **93+**: AI-generated cards (3 per subcategory)
+- **900000+**: Custom artist-created cards (dynamic from database)
+
+---
+
+## AI Card Generation
+
+GreetMe uses OpenAI to generate unique card covers and messages for each subcategory.
+
+### Generation Pipeline
+
+1. **Art Styles**: Each of the 10 category groups has a unique set of art styles (e.g., neo-expressionist, superflat pop art, infinity dot style)
+2. **Tones**: Each subcategory gets 3 cards with different tones: funny, heartfelt, and uplifting
+3. **Covers**: Generated with `gpt-image-1` at 1024x1024 resolution
+4. **Text**: Titles and centerfold messages generated with `gpt-4o-mini`
+
+### Commands
+
+```bash
+# Generate cards for a specific group
+npx tsx scripts/generate-cards.ts --group=GROUP_ID --limit=N
+
+# Dry run to see what would be generated
+npx tsx scripts/generate-cards.ts --dry-run --limit=999
+
+# Merge generated cards into the app
+npx tsx scripts/merge-generated-cards.ts
+```
+
+### Generation Stats
+
+- ~40 seconds per image
+- ~2 minutes per subcategory (3 cards)
+- Automatically skips existing images (resume-safe)
 
 ---
 
@@ -186,9 +264,9 @@ CategoryType = {
 
 ### How Payments Work
 
-The app uses **Stripe Checkout** for processing card purchases. Only Valentine's Day cards (IDs 28-60) have prices; all other cards are free.
+The app uses **Stripe Checkout** for processing card purchases.
 
-**Payment Flow:**
+**Standard Card Payment Flow:**
 
 1. User fills in card details (From, To, Personal Note) and clicks **Send**
 2. The app creates a share link in the database via `/api/share`
@@ -197,7 +275,14 @@ The app uses **Stripe Checkout** for processing card purchases. Only Valentine's
 5. After successful payment, Stripe redirects to `/?payment=success&shareId=XXX&session_id=YYY`
 6. The app displays the shareable link and sends a confirmation email
 
-**Price Tiers:**
+**Artist Personal Card Payment Flow:**
+
+1. Artist creates card and fills personalization (To, From, Personal Note)
+2. Stripe Checkout session is created with personalization in metadata
+3. After payment, `/api/artists/confirm-payment` verifies payment, creates share link with personalization data
+4. Share link is displayed on the success screen
+
+**Price Tiers (Valentine's Day):**
 
 | Price | Card IDs |
 |---|---|
@@ -208,6 +293,8 @@ The app uses **Stripe Checkout** for processing card purchases. Only Valentine's
 | $2.14 | 60 |
 | $2.49 | 38, 44, 52, 54 |
 | $2.99 | 42, 47, 50, 55, 58 |
+
+**Artist Personal Cards:** $4.99 flat fee
 
 ### Stripe Integration
 
@@ -229,6 +316,12 @@ The app uses **Stripe Checkout** for processing card purchases. Only Valentine's
 4. A short URL is returned: `https://domain.com/c/{7-char-id}`
 
 **Fallback**: If short link creation fails, the app falls back to a query parameter URL with the card details encoded directly.
+
+### Dual Card Type Support
+
+The sharing system supports both regular cards and custom artist cards:
+- **Regular cards**: Stored with `card_id` (INTEGER) referencing cards in `cardData.ts`
+- **Custom artist cards**: Stored with `custom_card_id` (VARCHAR) referencing the `custom_cards` table
 
 ### Share Page
 
@@ -268,7 +361,7 @@ The Resend client (`lib/resendClient.ts`) authenticates via Replit connectors, w
 
 ### PostgreSQL (Neon-backed)
 
-The app uses a PostgreSQL database provided by Replit (Neon-backed) for storing shared card data and Stripe sync information.
+The app uses a PostgreSQL database provided by Replit (Neon-backed) for storing shared card data, custom artist cards, and Stripe sync information.
 
 ### Tables
 
@@ -277,11 +370,29 @@ The app uses a PostgreSQL database provided by Replit (Neon-backed) for storing 
 | Column | Type | Description |
 |---|---|---|
 | `id` | VARCHAR(8) | Primary key - 7-character short ID |
-| `card_id` | INTEGER | References the card in `cardData.ts` |
+| `card_id` | INTEGER (nullable) | References the card in `cardData.ts` |
+| `custom_card_id` | VARCHAR(8) (nullable) | References a custom artist card |
 | `sender_name` | VARCHAR(100) | Name of the sender |
 | `recipient_name` | VARCHAR(100) | Name of the recipient |
 | `personal_note` | TEXT | Optional personal message (max 500 chars) |
 | `created_at` | TIMESTAMP | When the link was created |
+
+**`custom_cards`** - Artist-created cards
+
+| Column | Type | Description |
+|---|---|---|
+| `id` | VARCHAR(8) | Primary key - 7-character short ID |
+| `cover_image_url` | TEXT | Path to cover image in Object Storage |
+| `centerfold_message` | TEXT | Inside greeting message (max 250 chars) |
+| `caption` | TEXT (nullable) | Preview caption |
+| `back_message` | TEXT | Back of card message (max 100 chars) |
+| `category_ids` | TEXT[] | Array of selected category IDs |
+| `creator_name` | VARCHAR(100) | Artist/creator name |
+| `is_public` | BOOLEAN | Whether submitted to public catalog |
+| `is_approved` | BOOLEAN | Whether approved for public display |
+| `is_paid` | BOOLEAN | Whether payment has been completed |
+| `stripe_session_id` | TEXT (nullable) | Stripe checkout session ID |
+| `created_at` | TIMESTAMP | When the card was created |
 
 **`stripe.*`** - Managed by `stripe-replit-sync` for Stripe data synchronization (products, prices, customers, checkout sessions, etc.)
 
@@ -362,6 +473,59 @@ Sends a purchase confirmation email with the card's shareable link.
 }
 ```
 
+### `POST /api/artists/upload`
+
+Uploads a cover image to Replit Object Storage.
+
+**Request**: `multipart/form-data` with `image` field
+
+**Response:**
+```json
+{
+  "url": "/objects/artist-cards/abc123.jpg"
+}
+```
+
+### `POST /api/artists/create`
+
+Creates a custom artist card with optional personalization.
+
+**Request Body:**
+```json
+{
+  "coverUrl": "/objects/artist-cards/abc123.jpg",
+  "centerfold": "Happy Birthday!",
+  "backMessage": "Made with love",
+  "caption": "A special card",
+  "artistName": "Jane",
+  "categories": ["birthday"],
+  "addToCatalog": true,
+  "toName": "Bob",
+  "fromName": "Jane",
+  "personalNote": "Have a great day!"
+}
+```
+
+### `POST /api/artists/confirm-payment`
+
+Confirms Stripe payment for personal artist cards and generates a share link.
+
+**Request Body:**
+```json
+{
+  "sessionId": "cs_xxx",
+  "cardId": "abc1234"
+}
+```
+
+### `GET /api/artists/cards`
+
+Returns all approved public custom cards for display in the main library.
+
+### `GET /api/uploads/serve?path=/objects/...`
+
+Serves uploaded images from Replit Object Storage.
+
 ### `POST /api/stripe/webhook`
 
 Receives and processes Stripe webhook events (managed by `stripe-replit-sync`).
@@ -400,6 +564,13 @@ npx next start -H 0.0.0.0 -p 5000
 
 ```bash
 npx tsx scripts/seed-valentines-products.ts
+```
+
+### Generate AI Cards
+
+```bash
+npx tsx scripts/generate-cards.ts --group=GROUP_ID --limit=N
+npx tsx scripts/merge-generated-cards.ts
 ```
 
 ---
