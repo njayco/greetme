@@ -27,11 +27,9 @@ export async function POST(request: NextRequest) {
       [cardId, sessionId]
     );
 
-    const cardResult = await client.query(
-      'SELECT creator_name FROM custom_cards WHERE id = $1',
-      [cardId]
-    );
-    const creatorName = cardResult.rows[0]?.creator_name || '';
+    const senderName = session.metadata?.senderName || session.metadata?.creatorName || '';
+    const recipientName = session.metadata?.recipientName || '';
+    const personalNoteVal = session.metadata?.personalNote || '';
 
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
     let shareShortId = '';
@@ -48,7 +46,7 @@ export async function POST(request: NextRequest) {
 
     await client.query(
       'INSERT INTO shared_cards (id, card_id, sender_name, recipient_name, personal_note, custom_card_id) VALUES ($1, $2, $3, $4, $5, $6)',
-      [shareShortId, null, creatorName, '', '', cardId]
+      [shareShortId, null, senderName, recipientName, personalNoteVal, cardId]
     );
 
     await client.end();

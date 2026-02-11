@@ -32,6 +32,9 @@ export async function POST(request: NextRequest) {
       categories,
       artistName,
       addToCatalog,
+      toName,
+      fromName,
+      personalNote,
     } = body;
 
     if (!coverUrl || !centerfold || !backMessage || !artistName) {
@@ -63,6 +66,9 @@ export async function POST(request: NextRequest) {
     const safeCaption = caption ? String(caption).trim().slice(0, 100) : null;
     const safeBack = String(backMessage).trim().slice(0, 100);
     const isPublicBool = Boolean(addToCatalog);
+    const safeSender = fromName ? String(fromName).trim().slice(0, 50) : safeCreatorName;
+    const safeRecipient = toName ? String(toName).trim().slice(0, 50) : '';
+    const safePersonalNote = personalNote ? String(personalNote).trim().slice(0, 200) : '';
 
     await client.query(
       `INSERT INTO custom_cards (id, cover_image_url, centerfold_message, caption, back_message, category_ids, creator_name, is_public, is_approved, is_paid)
@@ -97,6 +103,9 @@ export async function POST(request: NextRequest) {
         metadata: {
           customCardId: cardId,
           creatorName: safeCreatorName,
+          senderName: safeSender,
+          recipientName: safeRecipient,
+          personalNote: safePersonalNote,
         },
       });
 
@@ -119,7 +128,7 @@ export async function POST(request: NextRequest) {
 
     await client.query(
       'INSERT INTO shared_cards (id, card_id, sender_name, recipient_name, personal_note, custom_card_id) VALUES ($1, $2, $3, $4, $5, $6)',
-      [shareShortId, null, safeCreatorName, '', '', cardId]
+      [shareShortId, null, safeSender, safeRecipient, safePersonalNote, cardId]
     );
 
     await client.end();

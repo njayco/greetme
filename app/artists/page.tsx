@@ -92,6 +92,9 @@ export default function ArtistsPage() {
   const [createdCardId, setCreatedCardId] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [shareUrl, setShareUrl] = useState<string | null>(null)
+  const [toName, setToName] = useState("")
+  const [fromName, setFromName] = useState("")
+  const [personalNote, setPersonalNote] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -116,7 +119,7 @@ export default function ArtistsPage() {
       }
       setCreatedCardId(cardId)
       setSubmitSuccess(true)
-      setStep(6)
+      setStep(7)
       window.history.replaceState({}, document.title, window.location.pathname)
     }
   }, [])
@@ -197,6 +200,9 @@ export default function ArtistsPage() {
           artistName,
           categories: selectedCategories,
           addToCatalog,
+          toName: toName.trim(),
+          fromName: fromName.trim(),
+          personalNote: personalNote.trim(),
         }),
       })
 
@@ -217,7 +223,7 @@ export default function ArtistsPage() {
       }
 
       setSubmitSuccess(true)
-      setStep(6)
+      setStep(7)
     } catch {
       setErrorMessage("Failed to submit card. Please try again.")
     } finally {
@@ -264,7 +270,7 @@ export default function ArtistsPage() {
       </div>
 
       <div className="relative z-10 p-4 md:p-6 max-w-2xl mx-auto">
-        {step > 1 && step < 6 && <StepIndicator currentStep={step - 1} totalSteps={5} />}
+        {step > 1 && step < 7 && <StepIndicator currentStep={step - 1} totalSteps={6} />}
 
         {errorMessage && (
           <div className="mb-4 p-3 rounded-lg bg-red-100 border border-red-400 text-red-800 text-center text-sm">
@@ -311,7 +317,7 @@ export default function ArtistsPage() {
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="text-[#4EAAA2] font-bold text-lg">3.</span>
-                  <span className="text-sm" style={{ color: "#6b5030" }}>Choose categories & submit</span>
+                  <span className="text-sm" style={{ color: "#6b5030" }}>Choose categories & personalize</span>
                 </div>
               </div>
               <button
@@ -779,6 +785,113 @@ export default function ArtistsPage() {
                 Back
               </button>
               <button
+                onClick={() => setStep(6)}
+                className="flex-1 px-4 py-3 rounded-lg text-white font-bold text-sm transition-all"
+                style={{
+                  background: "linear-gradient(180deg, #4EAAA2, #3d918a)",
+                  fontFamily: "Georgia, serif",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                }}
+              >
+                Personalize
+              </button>
+            </div>
+          </div>
+        )}
+
+        {step === 6 && (
+          <div
+            className="rounded-2xl p-6 md:p-8"
+            style={{
+              ...parchmentStyle,
+              boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+            }}
+          >
+            <h2
+              className="text-2xl font-bold mb-2 text-center"
+              style={{ fontFamily: "Georgia, serif", color: "#5a4020" }}
+            >
+              Personalize Your Card
+            </h2>
+            <p className="text-sm text-center mb-6" style={{ color: "#8b7040" }}>
+              Add a personal touch before sending
+            </p>
+
+            <div className="space-y-5">
+              <div>
+                <label
+                  className="block text-sm font-bold mb-1"
+                  style={{ fontFamily: "Georgia, serif", color: "#5a4020" }}
+                >
+                  To:
+                </label>
+                <input
+                  type="text"
+                  value={toName}
+                  onChange={(e) => {
+                    if (e.target.value.length <= 50) setToName(e.target.value)
+                  }}
+                  placeholder="Recipient's name"
+                  className="w-full px-4 py-3 rounded-lg border-2 border-[#b8a060] bg-white/80 text-sm focus:outline-none focus:border-[#4EAAA2] transition-colors"
+                  style={{ fontFamily: "Georgia, serif" }}
+                />
+              </div>
+
+              <div>
+                <label
+                  className="block text-sm font-bold mb-1"
+                  style={{ fontFamily: "Georgia, serif", color: "#5a4020" }}
+                >
+                  From:
+                </label>
+                <input
+                  type="text"
+                  value={fromName}
+                  onChange={(e) => {
+                    if (e.target.value.length <= 50) setFromName(e.target.value)
+                  }}
+                  placeholder="Your name"
+                  className="w-full px-4 py-3 rounded-lg border-2 border-[#b8a060] bg-white/80 text-sm focus:outline-none focus:border-[#4EAAA2] transition-colors"
+                  style={{ fontFamily: "Georgia, serif" }}
+                />
+              </div>
+
+              <div>
+                <label
+                  className="block text-sm font-bold mb-1"
+                  style={{ fontFamily: "Georgia, serif", color: "#5a4020" }}
+                >
+                  Personal Note (Optional)
+                </label>
+                <textarea
+                  value={personalNote}
+                  onChange={(e) => {
+                    if (e.target.value.length <= 200) setPersonalNote(e.target.value)
+                  }}
+                  placeholder="Add a special message..."
+                  rows={3}
+                  className="w-full px-4 py-3 rounded-lg border-2 border-[#b8a060] bg-white/80 text-sm focus:outline-none focus:border-[#4EAAA2] transition-colors resize-none"
+                  style={{ fontFamily: "Georgia, serif" }}
+                />
+                <div className="text-right text-xs mt-1" style={{ color: personalNote.length > 180 ? "#c0392b" : "#8b7040" }}>
+                  {personalNote.length}/200
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setStep(5)}
+                className="flex-1 px-4 py-3 rounded-lg font-bold text-sm transition-all"
+                style={{
+                  background: "rgba(0,0,0,0.1)",
+                  color: "#5a4020",
+                  fontFamily: "Georgia, serif",
+                }}
+              >
+                Back
+              </button>
+              <button
                 onClick={handleSubmit}
                 disabled={isSubmitting}
                 className="flex-1 px-4 py-3 rounded-lg text-white font-bold text-sm transition-all disabled:opacity-50"
@@ -800,7 +913,7 @@ export default function ArtistsPage() {
           </div>
         )}
 
-        {step === 6 && (
+        {step === 7 && (
           <div className="flex flex-col items-center justify-center min-h-[70vh]">
             <div
               className="rounded-2xl p-8 md:p-12 text-center max-w-lg w-full"
@@ -914,6 +1027,9 @@ export default function ArtistsPage() {
                     setCreatedCardId(null)
                     setErrorMessage(null)
                     setShareUrl(null)
+                    setToName("")
+                    setFromName("")
+                    setPersonalNote("")
                   }}
                   className="w-full px-6 py-3 rounded-lg text-white font-bold text-sm transition-all hover:scale-105"
                   style={{
