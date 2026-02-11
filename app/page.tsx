@@ -671,7 +671,9 @@ export default function GreetingCardsApp() {
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {group.categories.map((category) => {
-                    const totalCards = category.subcategories.reduce((sum, sub) => sum + sub.cards.length, 0)
+                    const staticCards = category.subcategories.reduce((sum, sub) => sum + sub.cards.length, 0)
+                    const customCount = customCards.filter(c => c.categoryIds && c.categoryIds.includes(category.id)).length
+                    const totalCards = staticCards + customCount
                     return (
                       <button
                         key={category.id}
@@ -741,7 +743,7 @@ export default function GreetingCardsApp() {
             </button>
           </div>
 
-          {categoryInfo && categoryInfo.category.subcategories.filter(s => s.cards.length > 0).length > 0 && (
+          {categoryInfo && (categoryInfo.category.subcategories.filter(s => s.cards.length > 0).length > 0 || customCards.some(c => c.categoryIds && c.categoryIds.includes(selectedCategory))) && (
             <div className="px-4 py-2" style={{ background: 'rgba(120, 100, 70, 0.3)' }}>
               <select
                 value={selectedSubcategory || ""}
