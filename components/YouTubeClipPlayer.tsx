@@ -18,14 +18,17 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 
 // Props for configuring the clip player
 type YouTubeClipPlayerProps = {
-  videoId: string; // YouTube video ID (the "v" param)
-  title: string; // Display title for the clip
-  url: string; // Full YouTube URL for the external link
-  startSeconds: number; // Clip start time in seconds
-  endSeconds: number; // Clip end time in seconds
-  lowVolume?: boolean; // When true, volume is set to 25% (background music)
-  onPlayStateChange?: (playing: boolean) => void; // Callback when play state changes internally
-  externalPlaying?: boolean | null; // Allows a parent to drive play/pause externally
+  videoId: string;
+  title: string;
+  url: string;
+  startSeconds: number;
+  endSeconds: number;
+  lowVolume?: boolean;
+  loop?: boolean;
+  onPlayStateChange?: (playing: boolean) => void;
+  onEnded?: () => void;
+  externalPlaying?: boolean | null;
+  volumeOverride?: number | null;
 };
 
 // Extend Window to include YouTube IFrame API globals
@@ -43,7 +46,7 @@ function formatTime(seconds: number): string {
   return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
-export default function YouTubeClipPlayer({ videoId, title, url, startSeconds, endSeconds, lowVolume = false, onPlayStateChange, externalPlaying = null }: YouTubeClipPlayerProps) {
+export default function YouTubeClipPlayer({ videoId, title, url, startSeconds, endSeconds, lowVolume = false, loop = false, onPlayStateChange, onEnded, externalPlaying = null, volumeOverride = null }: YouTubeClipPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [elapsed, setElapsed] = useState(0); // Seconds elapsed within the clip range
   const [playerReady, setPlayerReady] = useState(false);
@@ -54,6 +57,10 @@ export default function YouTubeClipPlayer({ videoId, title, url, startSeconds, e
   const externalPlayingRef = useRef<boolean | null>(null);
   // Flag to distinguish external (parent-driven) state changes from user-driven ones
   const isExternalUpdateRef = useRef(false);
+  const loopRef = useRef(loop);
+  const onEndedRef = useRef(onEnded);
+  loopRef.current = loop;
+  onEndedRef.current = onEnded;
   const clipDuration = endSeconds - startSeconds;
 
   /** Pauses the YouTube player and clears the progress timer */
@@ -113,7 +120,9 @@ export default function YouTubeClipPlayer({ videoId, title, url, startSeconds, e
           onReady: () => {
             setPlayerReady(true);
             try {
-              if (lowVolume) {
+              if (volumeOverride !== null) {
+                playerRef.current.setVolume(volumeOverride);
+              } else if (lowVolume) {
                 playerRef.current.setVolume(25);
               }
               playerRef.current.seekTo(startSeconds, true);
@@ -127,7 +136,9 @@ export default function YouTubeClipPlayer({ videoId, title, url, startSeconds, e
 
             // PLAYING: start the progress timer and notify parent (unless external)
             if (event.data === window.YT.PlayerState.PLAYING) {
-              if (lowVolume) {
+              if (volumeOverride !== null) {
+                try { playerRef.current.setVolume(volumeOverride); } catch {}
+              } else if (lowVolume) {
                 try { playerRef.current.setVolume(25); } catch {}
               }
               setIsPlaying(true);
@@ -147,15 +158,20 @@ export default function YouTubeClipPlayer({ videoId, title, url, startSeconds, e
               if (!wasExternal) {
                 onPlayStateChange?.(false);
               }
-            // ENDED: clean up timer and always notify parent
             } else if (event.data === window.YT.PlayerState.ENDED) {
-              setIsPlaying(false);
-              if (timerRef.current) {
-                clearInterval(timerRef.current);
-                timerRef.current = null;
+              if (loopRef.current) {
+                playerRef.current.seekTo(startSeconds, true);
+                playerRef.current.playVideo();
+              } else {
+                setIsPlaying(false);
+                if (timerRef.current) {
+                  clearInterval(timerRef.current);
+                  timerRef.current = null;
+                }
+                externalPlayingRef.current = false;
+                onPlayStateChange?.(false);
+                onEndedRef.current?.();
               }
-              externalPlayingRef.current = false;
-              onPlayStateChange?.(false);
             }
           },
         },
@@ -188,8 +204,14 @@ export default function YouTubeClipPlayer({ videoId, title, url, startSeconds, e
         const currentElapsed = Math.max(0, currentTime - startSeconds);
 
         if (currentElapsed >= clipDuration) {
-          stopPlayback();
-          setElapsed(clipDuration);
+          if (loopRef.current) {
+            playerRef.current.seekTo(startSeconds, true);
+            setElapsed(0);
+          } else {
+            stopPlayback();
+            setElapsed(clipDuration);
+            onEndedRef.current?.();
+          }
           return;
         }
 
@@ -198,7 +220,12 @@ export default function YouTubeClipPlayer({ videoId, title, url, startSeconds, e
     }, 250);
   }, [startSeconds, clipDuration, stopPlayback]);
 
-  // Sync effect: reacts to parent-driven play/pause via the externalPlaying prop
+  useEffect(() => {
+    if (volumeOverride !== null && playerRef.current && playerReady) {
+      try { playerRef.current.setVolume(volumeOverride); } catch {}
+    }
+  }, [volumeOverride, playerReady]);
+
   useEffect(() => {
     if (externalPlaying === null || !playerRef.current || !playerReady) return;
     if (externalPlaying === externalPlayingRef.current) return; // No change

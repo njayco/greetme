@@ -60,7 +60,7 @@ type Props = {
  *  - `isExternalUpdateRef` — guards against re-emitting `onPlayStateChange`
  *    when the play/pause was triggered externally (prevents infinite loops).
  */
-function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, externalPlaying = null }: { voiceNoteUrl: string; hasYoutubeClip: boolean; onPlayStateChange?: (playing: boolean) => void; externalPlaying?: boolean | null }) {
+function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, onEnded, externalPlaying = null }: { voiceNoteUrl: string; hasYoutubeClip: boolean; onPlayStateChange?: (playing: boolean) => void; onEnded?: () => void; externalPlaying?: boolean | null }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [elapsed, setElapsed] = useState(0);
@@ -86,7 +86,6 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, exte
       setDuration(audio.duration);
     });
 
-    // Reset state when audio finishes naturally
     audio.addEventListener('ended', () => {
       setIsPlaying(false);
       setElapsed(0);
@@ -95,9 +94,7 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, exte
         clearInterval(timerRef.current);
         timerRef.current = null;
       }
-      if (!isExternalUpdateRef.current) {
-        onPlayStateChange?.(false);
-      }
+      onEnded?.();
     });
 
     // Start the elapsed-time polling interval on play
@@ -240,20 +237,39 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, exte
  */
 export default function ShareCardClient({ cardData, senderName, recipientName, personalNote, categoryName, youtubeClip, giftCard, voiceNoteUrl }: Props) {
   const [cardView, setCardView] = useState<'cover' | 'centerfold' | 'back'>('cover');
-  // syncedPlaying coordinates play state between VoiceNotePlayer and YouTubeClipPlayer
   const [syncedPlaying, setSyncedPlaying] = useState<boolean | null>(null);
+  const [voiceNoteFinished, setVoiceNoteFinished] = useState(false);
+  const [youtubeVolume, setYoutubeVolume] = useState<number | null>(null);
   const hasBoth = !!voiceNoteUrl && !!youtubeClip;
 
-  // Callback forwarded to both media players; only activates sync when both exist
   const handlePlayStateChange = useCallback((playing: boolean) => {
     if (hasBoth) {
+      if (playing) {
+        setVoiceNoteFinished(false);
+        setYoutubeVolume(null);
+      }
       setSyncedPlaying(playing);
     }
   }, [hasBoth]);
 
-  // Reset sync state if the combination of media attachments changes
+  const handleVoiceNoteEnded = useCallback(() => {
+    if (hasBoth) {
+      setVoiceNoteFinished(true);
+      setYoutubeVolume(100);
+      setSyncedPlaying(null);
+    }
+  }, [hasBoth]);
+
+  const handleYoutubeEnded = useCallback(() => {
+    setSyncedPlaying(null);
+    setVoiceNoteFinished(false);
+    setYoutubeVolume(null);
+  }, []);
+
   useEffect(() => {
     setSyncedPlaying(null);
+    setVoiceNoteFinished(false);
+    setYoutubeVolume(null);
   }, [hasBoth]);
 
   // Resolve object-storage cover images through the upload-serve API
@@ -308,11 +324,11 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
                   voiceNoteUrl={voiceNoteUrl}
                   hasYoutubeClip={!!youtubeClip}
                   onPlayStateChange={handlePlayStateChange}
-                  externalPlaying={hasBoth ? syncedPlaying : null}
+                  onEnded={handleVoiceNoteEnded}
+                  externalPlaying={hasBoth && !voiceNoteFinished ? syncedPlaying : null}
                 />
               )}
 
-              {/* YouTube clip player — volume lowered when voice note exists */}
               {youtubeClip && (
                 <YouTubeClipPlayer
                   videoId={youtubeClip.videoId}
@@ -320,9 +336,12 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
                   url={youtubeClip.url}
                   startSeconds={youtubeClip.startSeconds}
                   endSeconds={youtubeClip.endSeconds}
-                  lowVolume={!!voiceNoteUrl}
+                  lowVolume={!!voiceNoteUrl && !voiceNoteFinished}
+                  loop={hasBoth && !voiceNoteFinished}
                   onPlayStateChange={handlePlayStateChange}
+                  onEnded={handleYoutubeEnded}
                   externalPlaying={hasBoth ? syncedPlaying : null}
+                  volumeOverride={youtubeVolume}
                 />
               )}
 

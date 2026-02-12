@@ -172,6 +172,7 @@ CategoryType: { name, color, group?, cards[] }
 - **Upload**: Supports WebM, MP4, MP3, WAV audio files (max 10MB)
 - **Storage**: Voice notes saved to Object Storage under `voice-notes/` directory
 - **Playback**: On the recipient's card view, voice note plays as primary audio (teal "Voice Message" bar) with YouTube clip underneath at 25% volume as background music; playback is synced — pressing play/pause on either player controls both simultaneously
+- **Smart ending**: If voice note is shorter than YouTube clip, the clip continues at full volume after the voice note ends. If YouTube clip is shorter than the voice note, the clip loops until the voice note finishes. Playback always lasts as long as the longer of the two.
 - **API**: POST /api/voice-note/upload (stores audio in Object Storage, returns URL)
 - **Component**: components/VoiceNoteRecorder.tsx (recorder/uploader), VoiceNotePlayer (in ShareCardClient.tsx)
 - **Database**: voice_note_url column on shared_cards table

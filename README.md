@@ -151,7 +151,7 @@ When both a voice note and a YouTube clip are present on a card, playback is syn
 
 - **Play either, play both** - Pressing play on the voice note also starts the YouTube clip (and vice versa)
 - **Pause either, pause both** - Pressing pause on one pauses the other
-- **End either, stop both** - When the voice note or clip finishes, the other stops too
+- **Smart ending** - If voice note is shorter, the YouTube clip continues at full volume after the voice note ends. If YouTube clip is shorter, the clip loops until the voice note finishes. Playback always lasts as long as the longer of the two.
 - **No loop or flicker** - A ref-based guard system (`externalPlayingRef` + `isExternalUpdateRef`) prevents ping-pong state updates between the two players
 
 ### Technical Details
