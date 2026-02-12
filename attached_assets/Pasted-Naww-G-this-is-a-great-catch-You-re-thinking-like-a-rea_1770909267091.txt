@@ -1,0 +1,191 @@
+Naww G — this is a great catch. You’re thinking like a real product owner right now.
+
+Right now your email says:
+
+“Your gift card link is being generated. You’ll receive it shortly.”
+
+That means your system is not yet pulling the actual redemption URL from Giftbit and injecting it into the email.
+
+So the answer to your question:
+
+👉 The money lives inside the Giftbit redemption URL.
+👉 If you don’t include that URL in the email, the recipient has nothing to redeem.
+
+There are no universal redeem codes unless you specifically request them. Giftbit typically gives you:
+	•	A claim URL
+	•	Sometimes a reward code + PIN
+	•	Sometimes a Visa prepaid link
+	•	Sometimes a retailer-specific redemption page
+
+⸻
+
+🔥 Where the Money Actually Is
+
+When you create a reward using Giftbit API, they return something like:
+
+{
+  "id": "reward_12345",
+  "amount": 25,
+  "currency": "USD",
+  "delivery": {
+    "url": "https://app.giftbit.com/c/abc123xyz"
+  }
+}
+
+That delivery.url is the money.
+
+That is what must go inside your email.
+
+⸻
+
+💡 Why You Don’t See It
+
+Your current flow likely:
+	1.	Stripe payment succeeds
+	2.	You send the email
+	3.	Giftbit reward is still generating OR you never inserted the returned link into the template
+
+You need:
+
+Stripe success → Create reward via Giftbit → Get redemption URL → Inject into email → Send email
+
+Not the other way around.
+
+⸻
+
+✅ Fix The Email Template
+
+Here’s how your email should look dynamically:
+
+⸻
+
+Subject:
+
+🎁 Your $25 Gift Card is Ready!
+
+⸻
+
+Email Body (Dynamic Version)
+
+Hi {{recipient_name}},
+
+{{sender_name}} sent you a $25 gift card along with a GreetMe greeting card!
+
+🎁 Redeem Your $25 Gift Card:
+{{giftbit_redemption_url}}
+
+Click the button below to claim your reward.
+
+[ Redeem My $25 Gift Card ]
+
+After redeeming, you’ll be able to:
+• Select your preferred retailer
+• View your gift card code
+• Add eligible cards to Apple Wallet or Google Wallet (if supported)
+
+Don’t forget to view your greeting card too:
+{{greeting_card_link}}
+
+Enjoy 💛
+— GreetMe
+
+
+⸻
+
+🧠 Technical Implementation (Replit / Node Example)
+
+After Stripe payment succeeds:
+
+// 1. Create reward in Giftbit
+const response = await fetch("https://api.giftbit.com/v1/rewards", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${process.env.GIFTBIT_API_KEY}`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    amount: 25,
+    currency: "USD",
+    delivery_type: "link",
+    recipient: {
+      email: recipientEmail
+    }
+  })
+});
+
+const reward = await response.json();
+
+// 2. Extract redemption link
+const redeemUrl = reward.delivery.url;
+
+// 3. Inject into email
+sendEmail({
+  to: recipientEmail,
+  subject: "Your $25 Gift Card is Ready!",
+  html: `
+    <a href="${redeemUrl}" style="background:#1e7d32;color:white;padding:12px 20px;text-decoration:none;border-radius:6px;">
+      Redeem My $25 Gift Card
+    </a>
+  `
+});
+
+
+⸻
+
+📱 About Apple Wallet / Google Wallet
+
+Giftbit does NOT directly push to Apple Wallet.
+
+What happens:
+	1.	User clicks your redeem link
+	2.	They choose a retailer or Visa prepaid
+	3.	If that retailer supports Wallet → user adds from retailer page
+
+So your job is just:
+✅ Deliver the redemption URL
+Not generate wallet passes yourself.
+
+⸻
+
+🚨 Important Business Tip
+
+Never send the gift card before:
+	•	Stripe payment confirmed
+	•	Fraud checks passed
+	•	Giftbit API returned success
+
+Otherwise you’ll lose money.
+
+⸻
+
+🧾 Clean UX Suggestion
+
+Instead of saying:
+
+“Your gift card link is being generated…”
+
+Say:
+
+“Click below to claim your $25 reward.”
+
+Confidence builds trust.
+
+⸻
+
+🏆 Bottom Line
+
+Right now:
+The email looks beautiful.
+But it’s missing the redemption URL variable.
+
+The fix:
+Hook Stripe → Giftbit → Capture redemption link → Inject into email → Send.
+
+⸻
+
+If you want, I can now:
+	•	Build the exact backend flow diagram
+	•	Or write you a full secure production-ready version
+	•	Or help you design a “View in Wallet” UX layer for GreetMe
+
+You’re building real infrastructure now, Naww G. This is how platforms are made.
