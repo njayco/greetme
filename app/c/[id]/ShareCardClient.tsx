@@ -69,56 +69,63 @@ type Props = {
  *    when the play/pause was triggered externally (prevents infinite loops).
  */
 function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, onEnded, externalPlaying = null }: { voiceNoteUrl: string; hasYoutubeClip: boolean; onPlayStateChange?: (playing: boolean) => void; onEnded?: () => void; externalPlaying?: boolean | null }) {
+  const MAX_PLAYBACK_SECONDS = 30;
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [elapsed, setElapsed] = useState(0);
-  const [duration, setDuration] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  // Tracks the last external play state to skip no-op updates
   const externalPlayingRef = useRef<boolean | null>(null);
-  // When true, suppresses onPlayStateChange to avoid feedback loops
   const isExternalUpdateRef = useRef(false);
+  const onEndedRef = useRef(onEnded);
+  const onPlayStateChangeRef = useRef(onPlayStateChange);
+  onEndedRef.current = onEnded;
+  onPlayStateChangeRef.current = onPlayStateChange;
 
-  // Resolve object-storage paths to the upload-serve API route
   const resolvedUrl = voiceNoteUrl.startsWith('/objects/')
     ? `/api/uploads/serve?path=${encodeURIComponent(voiceNoteUrl)}`
     : voiceNoteUrl;
 
-  // Initialize the Audio element and wire up event listeners
+  const stopPlayback = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    if (audioRef.current) {
+      try { audioRef.current.pause(); } catch {}
+    }
+    setIsPlaying(false);
+  }, []);
+
   useEffect(() => {
     const audio = new Audio(resolvedUrl);
-    audio.preload = 'metadata';
+    audio.preload = 'auto';
     audioRef.current = audio;
 
-    const updateDuration = () => {
-      if (audio.duration && isFinite(audio.duration) && audio.duration > 0) {
-        setDuration(audio.duration);
-      }
-    };
-    audio.addEventListener('loadedmetadata', updateDuration);
-    audio.addEventListener('durationchange', updateDuration);
-
     audio.addEventListener('ended', () => {
-      setIsPlaying(false);
+      stopPlayback();
       setElapsed(0);
       externalPlayingRef.current = false;
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-      onEnded?.();
+      onEndedRef.current?.();
     });
 
     audio.addEventListener('play', () => {
       setIsPlaying(true);
       externalPlayingRef.current = true;
-      updateDuration();
+      if (timerRef.current) clearInterval(timerRef.current);
       timerRef.current = setInterval(() => {
-        setElapsed(audio.currentTime);
-        updateDuration();
+        if (!audioRef.current) return;
+        const currentTime = audioRef.current.currentTime;
+        if (currentTime >= MAX_PLAYBACK_SECONDS) {
+          stopPlayback();
+          setElapsed(MAX_PLAYBACK_SECONDS);
+          externalPlayingRef.current = false;
+          onEndedRef.current?.();
+          return;
+        }
+        setElapsed(currentTime);
       }, 250);
       if (!isExternalUpdateRef.current) {
-        onPlayStateChange?.(true);
+        onPlayStateChangeRef.current?.(true);
       }
     });
 
@@ -130,19 +137,17 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, onEn
         timerRef.current = null;
       }
       if (!isExternalUpdateRef.current) {
-        onPlayStateChange?.(false);
+        onPlayStateChangeRef.current?.(false);
       }
     });
 
-    // Cleanup: stop audio and release resources on unmount
     return () => {
       audio.pause();
       audio.src = '';
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [resolvedUrl]);
+  }, [resolvedUrl, stopPlayback]);
 
-  // Respond to external play/pause commands (synced playback with YouTube)
   useEffect(() => {
     if (externalPlaying === null || !audioRef.current) return;
     if (externalPlaying === externalPlayingRef.current) return;
@@ -150,33 +155,37 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, onEn
     isExternalUpdateRef.current = true;
 
     if (externalPlaying) {
-      // If the track ended, restart from the beginning
-      if (elapsed >= duration && duration > 0) {
+      if (elapsed >= MAX_PLAYBACK_SECONDS) {
         audioRef.current.currentTime = 0;
         setElapsed(0);
       }
-      audioRef.current.play().catch(() => {}).finally(() => {
+      audioRef.current.play().catch((err: any) => {
+        console.warn('Voice note play failed:', err?.message);
+        setIsPlaying(false);
+        externalPlayingRef.current = false;
+      }).finally(() => {
         isExternalUpdateRef.current = false;
       });
     } else {
       audioRef.current.pause();
       isExternalUpdateRef.current = false;
     }
-  }, [externalPlaying, elapsed, duration]);
+  }, [externalPlaying, elapsed]);
 
-  /** Toggle play/pause when user clicks the player */
   const togglePlay = useCallback(() => {
     if (!audioRef.current) return;
     if (isPlaying) {
       audioRef.current.pause();
     } else {
-      if (elapsed >= duration && duration > 0) {
+      if (elapsed >= MAX_PLAYBACK_SECONDS) {
         audioRef.current.currentTime = 0;
         setElapsed(0);
       }
-      audioRef.current.play().catch(() => {});
+      audioRef.current.play().catch((err: any) => {
+        console.warn('Voice note play failed:', err?.message);
+      });
     }
-  }, [isPlaying, elapsed, duration]);
+  }, [isPlaying, elapsed]);
 
   const formatTime = (seconds: number) => {
     if (!isFinite(seconds) || isNaN(seconds)) return '0:00';
@@ -187,7 +196,6 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, onEn
 
   return (
     <div className="mt-3 w-full">
-      {/* Pill-shaped player bar */}
       <div
         className="flex items-center gap-3 px-4 py-3 rounded-full cursor-pointer select-none"
         style={{
@@ -196,18 +204,16 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, onEn
         }}
         onClick={togglePlay}
       >
-        {/* Microphone icon */}
         <div className="flex-shrink-0 w-5 h-5 text-white">
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
             <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6.91 6c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z" />
           </svg>
         </div>
-        {/* Label and elapsed / duration display */}
         <div className="flex-1 min-w-0">
           <div className="text-white text-sm font-bold leading-tight">
             Voice Message{' '}
             <span className="text-teal-100">
-              ({formatTime(elapsed)}/{formatTime(duration)})
+              ({formatTime(elapsed)}/{formatTime(MAX_PLAYBACK_SECONDS)})
             </span>
           </div>
           {hasYoutubeClip && (
@@ -215,7 +221,6 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, onEn
           )}
         </div>
 
-        {/* Play / Pause button */}
         <button
           className="flex-shrink-0 w-10 h-10 rounded-full bg-white/20 border-2 border-white flex items-center justify-center hover:bg-white/30 transition-colors"
           onClick={(e) => {
@@ -409,15 +414,15 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
 
   const handleVoiceNoteEnded = useCallback(() => {
     if (hasBoth) {
+      setSyncedPlaying(false);
       setVoiceNoteFinished(true);
-      setYoutubeVolume(100);
-      setSyncedPlaying(null);
+      setYoutubeVolume(null);
     }
   }, [hasBoth]);
 
   const handleYoutubeEnded = useCallback(() => {
-    setSyncedPlaying(null);
-    setVoiceNoteFinished(false);
+    setSyncedPlaying(false);
+    setVoiceNoteFinished(true);
     setYoutubeVolume(null);
   }, []);
 
@@ -480,7 +485,7 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
                   hasYoutubeClip={!!youtubeClip}
                   onPlayStateChange={handlePlayStateChange}
                   onEnded={handleVoiceNoteEnded}
-                  externalPlaying={hasBoth && !voiceNoteFinished ? syncedPlaying : null}
+                  externalPlaying={hasBoth ? syncedPlaying : null}
                 />
               )}
 
@@ -491,8 +496,8 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
                   url={youtubeClip.url}
                   startSeconds={youtubeClip.startSeconds}
                   endSeconds={youtubeClip.endSeconds}
-                  lowVolume={!!voiceNoteUrl && !voiceNoteFinished}
-                  loop={hasBoth && !voiceNoteFinished}
+                  lowVolume={!!voiceNoteUrl}
+                  loop={hasBoth}
                   onPlayStateChange={handlePlayStateChange}
                   onEnded={handleYoutubeEnded}
                   externalPlaying={hasBoth ? syncedPlaying : null}

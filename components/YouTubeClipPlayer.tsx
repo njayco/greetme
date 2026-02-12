@@ -159,19 +159,8 @@ export default function YouTubeClipPlayer({ videoId, title, url, startSeconds, e
                 onPlayStateChange?.(false);
               }
             } else if (event.data === window.YT.PlayerState.ENDED) {
-              if (loopRef.current) {
-                playerRef.current.seekTo(startSeconds, true);
-                playerRef.current.playVideo();
-              } else {
-                setIsPlaying(false);
-                if (timerRef.current) {
-                  clearInterval(timerRef.current);
-                  timerRef.current = null;
-                }
-                externalPlayingRef.current = false;
-                onPlayStateChange?.(false);
-                onEndedRef.current?.();
-              }
+              playerRef.current.seekTo(startSeconds, true);
+              playerRef.current.playVideo();
             }
           },
         },
@@ -210,6 +199,8 @@ export default function YouTubeClipPlayer({ videoId, title, url, startSeconds, e
           } else {
             stopPlayback();
             setElapsed(clipDuration);
+            externalPlayingRef.current = false;
+            onPlayStateChange?.(false);
             onEndedRef.current?.();
           }
           return;

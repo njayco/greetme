@@ -333,16 +333,19 @@ export default function VoiceNoteRecorder({
                 <span className="text-xs text-gray-400">/ {formatTimer(MAX_RECORDING_SECONDS)}</span>
               </div>
 
-              <button
-                onClick={stopRecording}
-                className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-white font-bold text-sm transition-all hover:opacity-90 active:scale-[0.98]"
-                style={{ background: "#DC2626" }}
-              >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="white">
-                  <rect x="3" y="3" width="10" height="10" rx="1" />
-                </svg>
-                Stop Recording
-              </button>
+              <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-1000 ease-linear"
+                  style={{
+                    width: `${(elapsed / MAX_RECORDING_SECONDS) * 100}%`,
+                    background: "linear-gradient(90deg, #DC2626, #EF4444)",
+                  }}
+                />
+              </div>
+
+              <p className="text-xs text-gray-500 text-center">
+                Recording for {MAX_RECORDING_SECONDS} seconds — please read the message aloud!
+              </p>
             </div>
           )}
 
