@@ -28,9 +28,11 @@ app/api/artists/create/      - Artist card creation API (with Stripe for persona
 app/api/artists/cards/       - Fetch approved public custom cards
 app/api/artists/confirm-payment/ - Confirm Stripe payment for personal cards
 app/api/youtube/resolve/     - YouTube URL resolver (oEmbed title lookup)
+app/api/voice-note/upload/   - Voice note audio upload API (stores in Object Storage)
 app/c/[id]/                  - Dynamic share page with OG metadata
 components/                  - UI components (shadcn/ui)
 components/YouTubeClipPlayer.tsx - YouTube clip player with red bar UI
+components/VoiceNoteRecorder.tsx - Voice note recorder/uploader with MediaRecorder API
 lib/                         - Utility functions
 lib/cardData.ts              - Shared card data definitions (categories, groups, tags)
 lib/resendClient.ts          - Resend email client (via Replit connector)
@@ -163,8 +165,19 @@ CategoryType: { name, color, group?, cards[] }
 - **Component**: components/YouTubeClipPlayer.tsx
 - **Seed script**: scripts/seed-youtube-addon.ts
 
+## Voice Notes (Personal Audio Message)
+- **Feature**: When adding a YouTube clip, creators can also record or upload a personal voice message (up to 60 seconds)
+- **Instruction**: Creators are prompted to "Read the card's message aloud — make it personal!" with the centerfold text shown as reference
+- **Recording**: Browser-native MediaRecorder API (audio/webm), auto-stops at 60s, includes playback preview
+- **Upload**: Supports WebM, MP4, MP3, WAV audio files (max 10MB)
+- **Storage**: Voice notes saved to Object Storage under `voice-notes/` directory
+- **Playback**: On the recipient's card view, voice note plays as primary audio (teal "Voice Message" bar) with YouTube clip underneath at 25% volume as background music
+- **API**: POST /api/voice-note/upload (stores audio in Object Storage, returns URL)
+- **Component**: components/VoiceNoteRecorder.tsx (recorder/uploader), VoiceNotePlayer (in ShareCardClient.tsx)
+- **Database**: voice_note_url column on shared_cards table
+
 ## Database Tables
-- `shared_cards` - Short link storage (id VARCHAR(8) PK, card_id INTEGER nullable, sender_name, recipient_name, personal_note, custom_card_id VARCHAR(8) nullable, youtube_video_id, youtube_url, youtube_title, youtube_start_seconds, youtube_end_seconds, youtube_clip_enabled BOOLEAN, created_at)
+- `shared_cards` - Short link storage (id VARCHAR(8) PK, card_id INTEGER nullable, sender_name, recipient_name, personal_note, custom_card_id VARCHAR(8) nullable, youtube_video_id, youtube_url, youtube_title, youtube_start_seconds, youtube_end_seconds, youtube_clip_enabled BOOLEAN, voice_note_url TEXT, created_at)
 - `custom_cards` - Artist-created cards (id VARCHAR(8) PK, cover_image_url, centerfold_message, caption, back_message, category_ids TEXT[], creator_name, is_public, is_approved, is_paid, stripe_session_id, created_at)
 - `stripe.*` - Stripe sync tables (managed by stripe-replit-sync)
 

@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
       fromName,
       personalNote,
       youtube,
+      voiceNoteUrl,
     } = body;
 
     if (!coverUrl || !centerfold || !backMessage || !artistName) {
@@ -175,9 +176,11 @@ export async function POST(request: NextRequest) {
         shareAttempts++;
       }
 
+      const safeVoiceNoteUrl = voiceNoteUrl ? String(voiceNoteUrl).trim().slice(0, 500) : null;
+
       await shareClient.query(
-        `INSERT INTO shared_cards (id, card_id, sender_name, recipient_name, personal_note, custom_card_id, youtube_video_id, youtube_url, youtube_title, youtube_start_seconds, youtube_end_seconds, youtube_clip_enabled)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+        `INSERT INTO shared_cards (id, card_id, sender_name, recipient_name, personal_note, custom_card_id, youtube_video_id, youtube_url, youtube_title, youtube_start_seconds, youtube_end_seconds, youtube_clip_enabled, voice_note_url)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
         [
           shareShortId, null, safeSender, safeRecipient, safePersonalNote, cardId,
           String(youtube.videoId).slice(0, 20),
@@ -186,6 +189,7 @@ export async function POST(request: NextRequest) {
           Number(youtube.startSeconds) || 0,
           Number(youtube.endSeconds) || 30,
           false,
+          safeVoiceNoteUrl,
         ]
       );
       await shareClient.end();
@@ -225,9 +229,11 @@ export async function POST(request: NextRequest) {
       shareAttempts++;
     }
 
+    const safeVoiceNoteUrl2 = voiceNoteUrl ? String(voiceNoteUrl).trim().slice(0, 500) : null;
+
     await client.query(
-      'INSERT INTO shared_cards (id, card_id, sender_name, recipient_name, personal_note, custom_card_id) VALUES ($1, $2, $3, $4, $5, $6)',
-      [shareShortId, null, safeSender, safeRecipient, safePersonalNote, cardId]
+      'INSERT INTO shared_cards (id, card_id, sender_name, recipient_name, personal_note, custom_card_id, voice_note_url) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+      [shareShortId, null, safeSender, safeRecipient, safePersonalNote, cardId, safeVoiceNoteUrl2]
     );
 
     await client.end();

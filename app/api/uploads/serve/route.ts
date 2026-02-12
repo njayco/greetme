@@ -60,11 +60,15 @@ export async function GET(request: NextRequest) {
     const [metadata] = await file.getMetadata();
     const [buffer] = await file.download();
 
+    const contentType = (metadata.contentType as string) || 'image/jpeg';
+    const isAudio = contentType.startsWith('audio/');
+
     return new NextResponse(buffer, {
       headers: {
-        'Content-Type': (metadata.contentType as string) || 'image/jpeg',
-        'Cache-Control': 'public, max-age=86400',
+        'Content-Type': contentType,
+        'Cache-Control': isAudio ? 'public, max-age=3600' : 'public, max-age=86400',
         'Content-Length': String(buffer.length),
+        ...(isAudio ? { 'Accept-Ranges': 'bytes' } : {}),
       },
     });
   } catch (error: any) {

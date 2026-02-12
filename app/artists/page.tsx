@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { categoryGroups } from "@/lib/cardData"
 import { ArrowLeft, Upload, Check } from "lucide-react"
+import VoiceNoteRecorder from "@/components/VoiceNoteRecorder"
 
 function BookshelfBackground({ children }: { children: React.ReactNode }) {
   return (
@@ -101,6 +102,7 @@ export default function ArtistsPage() {
   const [youtubeLoading, setYoutubeLoading] = useState(false)
   const [youtubeError, setYoutubeError] = useState("")
   const [youtubeStartTime, setYoutubeStartTime] = useState("0:00")
+  const [voiceNoteUrl, setVoiceNoteUrl] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const parseTimeToSeconds = (time: string): number => {
@@ -252,6 +254,7 @@ export default function ArtistsPage() {
           fromName: fromName.trim(),
           personalNote: personalNote.trim(),
           youtube: getYoutubeData(),
+          voiceNoteUrl: voiceNoteUrl || undefined,
         }),
       })
 
@@ -941,6 +944,7 @@ export default function ArtistsPage() {
                         setYoutubeResolved(null)
                         setYoutubeError("")
                         setYoutubeStartTime("0:00")
+                        setVoiceNoteUrl(null)
                       }
                     }}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${youtubeClipEnabled ? 'bg-red-500' : 'bg-gray-300'}`}
@@ -996,6 +1000,11 @@ export default function ArtistsPage() {
                         </div>
                       </div>
                     )}
+
+                    <VoiceNoteRecorder
+                      onVoiceNoteChange={setVoiceNoteUrl}
+                      centerfoldMessage={centerfold || ''}
+                    />
                   </div>
                 )}
               </div>

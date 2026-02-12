@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import YouTubeClipPlayer from '@/components/YouTubeClipPlayer';
 
 type CardData = {
@@ -35,9 +35,131 @@ type Props = {
   categoryName: string;
   youtubeClip?: YouTubeClipData | null;
   giftCard?: GiftCardData | null;
+  voiceNoteUrl?: string | null;
 };
 
-export default function ShareCardClient({ cardData, senderName, recipientName, personalNote, categoryName, youtubeClip, giftCard }: Props) {
+function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip }: { voiceNoteUrl: string; hasYoutubeClip: boolean }) {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const resolvedUrl = voiceNoteUrl.startsWith('/objects/')
+    ? `/api/uploads/serve?path=${encodeURIComponent(voiceNoteUrl)}`
+    : voiceNoteUrl;
+
+  useEffect(() => {
+    const audio = new Audio(resolvedUrl);
+    audio.preload = 'metadata';
+    audioRef.current = audio;
+
+    audio.addEventListener('loadedmetadata', () => {
+      setDuration(audio.duration);
+    });
+
+    audio.addEventListener('ended', () => {
+      setIsPlaying(false);
+      setElapsed(0);
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    });
+
+    audio.addEventListener('play', () => {
+      setIsPlaying(true);
+      timerRef.current = setInterval(() => {
+        setElapsed(audio.currentTime);
+      }, 250);
+    });
+
+    audio.addEventListener('pause', () => {
+      setIsPlaying(false);
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    });
+
+    return () => {
+      audio.pause();
+      audio.src = '';
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [resolvedUrl]);
+
+  const togglePlay = useCallback(() => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      if (elapsed >= duration && duration > 0) {
+        audioRef.current.currentTime = 0;
+        setElapsed(0);
+      }
+      audioRef.current.play().catch(() => {});
+    }
+  }, [isPlaying, elapsed, duration]);
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  };
+
+  return (
+    <div className="mt-3 w-full">
+      <div
+        className="flex items-center gap-3 px-4 py-3 rounded-full cursor-pointer select-none"
+        style={{
+          background: 'linear-gradient(135deg, #4EAAA2, #3d9089)',
+          boxShadow: '0 2px 8px rgba(78, 170, 162, 0.4)',
+        }}
+        onClick={togglePlay}
+      >
+        <div className="flex-shrink-0 w-5 h-5 text-white">
+          <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6.91 6c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z" />
+          </svg>
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-white text-sm font-bold leading-tight">
+            Voice Message{' '}
+            <span className="text-teal-100">
+              ({formatTime(elapsed)}/{formatTime(duration)})
+            </span>
+          </div>
+          {hasYoutubeClip && (
+            <div className="text-teal-100 text-xs mt-0.5">with background music</div>
+          )}
+        </div>
+
+        <button
+          className="flex-shrink-0 w-10 h-10 rounded-full bg-white/20 border-2 border-white flex items-center justify-center hover:bg-white/30 transition-colors"
+          onClick={(e) => {
+            e.stopPropagation();
+            togglePlay();
+          }}
+          aria-label={isPlaying ? 'Pause' : 'Play'}
+        >
+          {isPlaying ? (
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="white">
+              <rect x="3" y="2" width="4" height="12" rx="1" />
+              <rect x="9" y="2" width="4" height="12" rx="1" />
+            </svg>
+          ) : (
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="white">
+              <path d="M4 2L14 8L4 14V2Z" />
+            </svg>
+          )}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default function ShareCardClient({ cardData, senderName, recipientName, personalNote, categoryName, youtubeClip, giftCard, voiceNoteUrl }: Props) {
   const [cardView, setCardView] = useState<'cover' | 'centerfold' | 'back'>('cover');
 
   const resolvedCover = cardData.cover?.startsWith('/objects/')
@@ -80,6 +202,10 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
                 </div>
               </div>
 
+              {voiceNoteUrl && (
+                <VoiceNotePlayer voiceNoteUrl={voiceNoteUrl} hasYoutubeClip={!!youtubeClip} />
+              )}
+
               {youtubeClip && (
                 <YouTubeClipPlayer
                   videoId={youtubeClip.videoId}
@@ -87,6 +213,7 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
                   url={youtubeClip.url}
                   startSeconds={youtubeClip.startSeconds}
                   endSeconds={youtubeClip.endSeconds}
+                  lowVolume={!!voiceNoteUrl}
                 />
               )}
 

@@ -8,6 +8,7 @@ type YouTubeClipPlayerProps = {
   url: string;
   startSeconds: number;
   endSeconds: number;
+  lowVolume?: boolean;
 };
 
 declare global {
@@ -23,7 +24,7 @@ function formatTime(seconds: number): string {
   return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
-export default function YouTubeClipPlayer({ videoId, title, url, startSeconds, endSeconds }: YouTubeClipPlayerProps) {
+export default function YouTubeClipPlayer({ videoId, title, url, startSeconds, endSeconds, lowVolume = false }: YouTubeClipPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [playerReady, setPlayerReady] = useState(false);
@@ -82,12 +83,18 @@ export default function YouTubeClipPlayer({ videoId, title, url, startSeconds, e
           onReady: () => {
             setPlayerReady(true);
             try {
+              if (lowVolume) {
+                playerRef.current.setVolume(25);
+              }
               playerRef.current.seekTo(startSeconds, true);
               playerRef.current.playVideo();
             } catch {}
           },
           onStateChange: (event: any) => {
             if (event.data === window.YT.PlayerState.PLAYING) {
+              if (lowVolume) {
+                try { playerRef.current.setVolume(25); } catch {}
+              }
               setIsPlaying(true);
               startTimer();
             } else if (event.data === window.YT.PlayerState.PAUSED || event.data === window.YT.PlayerState.ENDED) {
@@ -165,7 +172,7 @@ export default function YouTubeClipPlayer({ videoId, title, url, startSeconds, e
       >
         <div className="flex-1 min-w-0">
           <div className="text-white text-sm font-bold leading-tight">
-            Now Playing Clip{' '}
+            {lowVolume ? 'Background Music' : 'Now Playing Clip'}{' '}
             <a
               href={url}
               target="_blank"

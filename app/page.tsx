@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress"
 import { Eye, EyeOff, ChevronLeft, ChevronRight, Copy, Share2, ArrowLeft } from "lucide-react"
 
 import { categoryGroups, cardCategories, type CategoryType, type SubcategoryType } from '@/lib/cardData';
+import VoiceNoteRecorder from '@/components/VoiceNoteRecorder';
 
 function CloudDecoration({ className = "" }: { className?: string }) {
   return (
@@ -103,6 +104,7 @@ export default function GreetingCardsApp() {
   const [youtubeLoading, setYoutubeLoading] = useState(false)
   const [youtubeError, setYoutubeError] = useState("")
   const [youtubeStartTime, setYoutubeStartTime] = useState("0:00")
+  const [voiceNoteUrl, setVoiceNoteUrl] = useState<string | null>(null)
   const [giftCardEnabled, setGiftCardEnabled] = useState(false)
   const [giftCardBrands, setGiftCardBrands] = useState<Array<{ brand_code: string; name: string; image_url: string; min_price_in_cents: number; max_price_in_cents: number }>>([])
   const [giftCardBrand, setGiftCardBrand] = useState<string>("")
@@ -310,6 +312,7 @@ export default function GreetingCardsApp() {
         to: formData.to,
         note: formData.personalNote,
         youtube: getYoutubeShareData(),
+        voiceNoteUrl: voiceNoteUrl || undefined,
       }
       if (selectedCard.isCustomCard && selectedCard.customCardId) {
         shareBody.customCardId = selectedCard.customCardId
@@ -363,6 +366,7 @@ export default function GreetingCardsApp() {
           to: formData.to,
           note: formData.personalNote,
           youtube: getYoutubeShareData(),
+          voiceNoteUrl: voiceNoteUrl || undefined,
         }
         if (needsGiftCardPayment) {
           const selectedBrandObj = giftCardBrands.find(b => b.brand_code === giftCardBrand)
@@ -1121,6 +1125,7 @@ export default function GreetingCardsApp() {
                               setYoutubeResolved(null)
                               setYoutubeError("")
                               setYoutubeStartTime("0:00")
+                              setVoiceNoteUrl(null)
                             }
                           }}
                           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${youtubeClipEnabled ? 'bg-red-500' : 'bg-gray-300'}`}
@@ -1173,6 +1178,11 @@ export default function GreetingCardsApp() {
                               </div>
                             </div>
                           )}
+
+                          <VoiceNoteRecorder
+                            onVoiceNoteChange={setVoiceNoteUrl}
+                            centerfoldMessage={selectedCard?.centerfold || ''}
+                          />
                         </div>
                       )}
                     </div>
