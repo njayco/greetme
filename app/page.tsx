@@ -1179,8 +1179,9 @@ export default function GreetingCardsApp() {
 
                     <div className="mt-4 p-3 rounded-lg border border-gray-200 bg-white/50">
                       <div className="flex items-center justify-between mb-2">
-                        <label className="font-bold text-gray-800 text-sm" style={{ fontFamily: "Georgia, serif" }}>
+                        <label className="font-bold text-gray-800 text-sm flex items-center gap-2" style={{ fontFamily: "Georgia, serif" }}>
                           Add a Gift Card
+                          <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 border border-amber-300">Beta</span>
                         </label>
                         <button
                           type="button"
