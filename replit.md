@@ -36,6 +36,8 @@ lib/cardData.ts              - Shared card data definitions (categories, groups,
 lib/resendClient.ts          - Resend email client (via Replit connector)
 lib/stripeClient.ts          - Stripe client and StripeSync initialization
 lib/initStripe.ts            - Stripe schema migration and webhook setup
+lib/youtubeAddon.ts          - Dynamic YouTube addon Stripe product/price provisioning
+lib/webhookHandlers.ts       - Stripe webhook processing (YouTube clip verification)
 public/images/               - Card images and assets (incl. gen-* AI images)
 scripts/                     - Generation and seed scripts
 scripts/generate-cards.ts    - AI card generation script (covers + text)

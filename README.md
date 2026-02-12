@@ -123,7 +123,7 @@ Artists can also add YouTube clips to their custom cards during the personalizat
 |---|---|
 | **Resolve API** | `POST /api/youtube/resolve` — Uses YouTube oEmbed for title lookup (no API key needed) |
 | **Player Component** | `components/YouTubeClipPlayer.tsx` — YouTube IFrame Player API wrapper |
-| **Stripe Product** | Seeded via `scripts/seed-youtube-addon.ts`, price ID stored in `YOUTUBE_ADDON_PRICE_ID` env var |
+| **Stripe Product** | Dynamically found or created via `lib/youtubeAddon.ts` — auto-provisions in both Stripe test and live modes |
 | **Database Columns** | `youtube_video_id`, `youtube_url`, `youtube_title`, `youtube_start_seconds`, `youtube_end_seconds`, `youtube_clip_enabled` on `shared_cards` |
 | **Webhook** | `lib/webhookHandlers.ts` — Server-side Stripe line item verification before enabling clip playback |
 
@@ -218,6 +218,7 @@ greetme/
 │   ├── resendClient.ts              # Resend email client setup
 │   ├── cardBackup.ts               # Object Storage backup/restore for custom cards
 │   ├── webhookHandlers.ts           # Stripe webhook processing
+│   ├── youtubeAddon.ts             # Dynamic YouTube addon Stripe product/price provisioning
 │   └── utils.ts                     # Utility functions (cn)
 ├── public/images/                    # Card images and assets (incl. gen-* AI images)
 ├── scripts/
@@ -675,9 +676,7 @@ npx tsx scripts/merge-generated-cards.ts
 | `REPLIT_DOMAINS` | Application domain(s) for absolute URLs |
 | `REPLIT_CONNECTORS_HOSTNAME` | Replit connectors API hostname |
 | `REPL_IDENTITY` | Replit identity token (auto-provided) |
-| `YOUTUBE_ADDON_PRICE_ID` | Stripe Price ID for the YouTube clip add-on ($0.99) |
-
-Stripe and Resend credentials are managed automatically via Replit connectors - no manual API keys required.
+Stripe and Resend credentials are managed automatically via Replit connectors - no manual API keys required. The YouTube clip add-on product and price are auto-provisioned in Stripe (both test and live modes) — no manual setup needed.
 
 ---
 
