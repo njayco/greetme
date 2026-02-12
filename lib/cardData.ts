@@ -1091,7 +1091,6 @@ export const categoryGroups: CategoryGroupType[] = [
                 centerfold:
                   "I asked the raven what love was—\nIt answered not with sound, but truth.\nIt stayed.",
                 back: "Love stays. Always.",
-                price: 2.14,
               },
               {
                 id: 89,
