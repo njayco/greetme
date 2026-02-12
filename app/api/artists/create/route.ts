@@ -119,6 +119,7 @@ export async function POST(request: NextRequest) {
           quantity: 1,
         }],
         mode: 'payment',
+        allow_promotion_codes: true,
         success_url: `${origin}/artists?payment=artist_success&cardId=${cardId}&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/artists?payment=artist_cancelled`,
         metadata: {
@@ -193,6 +194,7 @@ export async function POST(request: NextRequest) {
         payment_method_types: ['card'],
         line_items: lineItems,
         mode: 'payment',
+        allow_promotion_codes: true,
         success_url: `${origin}/artists?payment=artist_success&cardId=${cardId}&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/artists?payment=artist_cancelled`,
         metadata: {

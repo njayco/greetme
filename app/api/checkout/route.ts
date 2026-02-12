@@ -37,6 +37,7 @@ export async function POST(request: NextRequest) {
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
+      allow_promotion_codes: true,
       success_url: successUrl || `${origin}/?payment=success&card=${cardTitle || ''}`,
       cancel_url: cancelUrl || `${origin}/?payment=cancelled`,
       metadata: {
