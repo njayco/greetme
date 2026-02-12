@@ -1281,10 +1281,17 @@ export default function GreetingCardsApp() {
                       )}
                     </div>
 
-                    <div className="text-left mb-5 mt-4">
+                    <div className="text-left mb-3 mt-4">
                       <span className="font-bold text-gray-800 text-lg" style={{ fontFamily: "Georgia, serif" }}>
-                        Total: ${((selectedCard?.price || 0) + (youtubeClipEnabled && youtubeResolved ? 0.99 : 0) + (giftCardEnabled && giftCardBrand ? giftCardAmount / 100 : 0)).toFixed(2)}
+                        Total Due Now: ${((selectedCard?.price || 0) + (youtubeClipEnabled && youtubeResolved ? 0.99 : 0)).toFixed(2)}
                       </span>
+                      {giftCardEnabled && giftCardBrand && giftCardAmount > 0 && (
+                        <div className="mt-2 p-2.5 bg-amber-50 border border-amber-200 rounded-lg">
+                          <p className="text-sm text-amber-800">
+                            <strong>${(giftCardAmount / 100).toFixed(0)} Gift Card</strong> — Your card will be charged ${(giftCardAmount / 100).toFixed(2)} only when the recipient redeems the gift card.
+                          </p>
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex justify-end">

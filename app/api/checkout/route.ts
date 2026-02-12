@@ -53,11 +53,19 @@ export async function POST(request: NextRequest) {
     const resolvedSuccessUrl = successUrl || `${origin}/?payment=success&card=${cardTitle || ''}`;
     const resolvedCancelUrl = cancelUrl || `${origin}/?payment=cancelled`;
 
+    const giftCardAmountDollars = hasGiftCard ? (giftCard.amountCents / 100).toFixed(0) : '0';
+    const giftCardBrandName = hasGiftCard ? (giftCard.brandName || 'Gift Card') : '';
+
     if (hasGiftCard && !hasImmediateCharges) {
       console.log('Gift card only - using setup mode to save payment method');
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
         mode: 'setup',
+        custom_text: {
+          submit: {
+            message: `Your $${giftCardAmountDollars} ${giftCardBrandName} gift card will be charged to this card when the recipient redeems it.`,
+          },
+        },
         success_url: resolvedSuccessUrl,
         cancel_url: resolvedCancelUrl,
         metadata,
@@ -68,6 +76,18 @@ export async function POST(request: NextRequest) {
 
     if (hasGiftCard && hasImmediateCharges) {
       console.log('Gift card + other items - payment mode with setup_future_usage');
+      lineItems.push({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: `$${giftCardAmountDollars} ${giftCardBrandName} Gift Card`,
+            description: `Charged $${giftCardAmountDollars} when recipient redeems`,
+          },
+          unit_amount: 0,
+        },
+        quantity: 1,
+      });
+
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
         line_items: lineItems,
@@ -75,6 +95,11 @@ export async function POST(request: NextRequest) {
         allow_promotion_codes: true,
         payment_intent_data: {
           setup_future_usage: 'off_session',
+        },
+        custom_text: {
+          submit: {
+            message: `Your $${giftCardAmountDollars} gift card will be charged to this card when the recipient redeems it.`,
+          },
         },
         success_url: resolvedSuccessUrl,
         cancel_url: resolvedCancelUrl,
