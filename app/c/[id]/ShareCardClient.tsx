@@ -82,9 +82,13 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, onEn
     audio.preload = 'metadata';
     audioRef.current = audio;
 
-    audio.addEventListener('loadedmetadata', () => {
-      setDuration(audio.duration);
-    });
+    const updateDuration = () => {
+      if (audio.duration && isFinite(audio.duration) && audio.duration > 0) {
+        setDuration(audio.duration);
+      }
+    };
+    audio.addEventListener('loadedmetadata', updateDuration);
+    audio.addEventListener('durationchange', updateDuration);
 
     audio.addEventListener('ended', () => {
       setIsPlaying(false);
@@ -97,12 +101,13 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, onEn
       onEnded?.();
     });
 
-    // Start the elapsed-time polling interval on play
     audio.addEventListener('play', () => {
       setIsPlaying(true);
       externalPlayingRef.current = true;
+      updateDuration();
       timerRef.current = setInterval(() => {
         setElapsed(audio.currentTime);
+        updateDuration();
       }, 250);
       if (!isExternalUpdateRef.current) {
         onPlayStateChange?.(true);
@@ -165,8 +170,8 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, onEn
     }
   }, [isPlaying, elapsed, duration]);
 
-  /** Format seconds into m:ss display */
   const formatTime = (seconds: number) => {
+    if (!isFinite(seconds) || isNaN(seconds)) return '0:00';
     const m = Math.floor(seconds / 60);
     const s = Math.floor(seconds % 60);
     return `${m}:${s.toString().padStart(2, '0')}`;
