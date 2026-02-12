@@ -1,0 +1,126 @@
+Here’s a clean way to integrate Giftbit into GreetMe (sandbox → production), plus a ready-to-paste Replit build prompt.
+1) Get the API key (token) the right way
+Sandbox (testing)
+1. Go to testbed.giftbit.com and register a sandbox account. (Intercom)
+2. In Testbed: Account → API Keys → Generate test token. (Intercom)
+3. Giftbit auth is via HTTP header: Authorization: Bearer <YOUR_TOKEN> (giftbit.com)
+Production (going live)
+1. Sign up for a production Giftbit account. (Intercom)
+2. When ready, email testbed@giftbit.com to enable API access in production. (Intercom)
+3. Then you’ll generate a Production token, recreate templates, and pull the full catalog via /brands in Production. (Intercom)
+2) Core integration rule (important)
+Never call Giftbit from the browser. Do it server-side only (API routes / backend) so your token stays secret.
+3) How it should work inside GreetMe (recommended flow)
+A. Data you’ll want in your DB
+Create a giftbit_orders table (or collection) with:
+* id
+* user_id
+* greetme_order_id (your Stripe checkout/order id)
+* amount / currency
+* recipient_email (or phone, if you deliver via SMS)
+* brand_code (Giftbit brand identifier)
+* giftbit_order_id (or “reward id” returned by Giftbit)
+* status (created/sent/failed/canceled)
+* raw_response (JSON for debugging)
+* timestamps
+B. Stripe → Giftbit sequence (so you don’t lose money)
+1. User buys a gift card add-on in GreetMe (Stripe Checkout)
+2. Stripe confirms payment (best: webhook checkout.session.completed)
+3. Your server creates the Giftbit order/reward
+4. You store Giftbit response + status
+5. You show the “gift sent” confirmation + allow user to re-send if email bounces
+This protects you from issuing rewards before payment clears.
+C. Catalog / UI
+* On your “Add a Gift Card” screen:
+    * Call your backend GET /api/giftbit/brands
+    * Render brand tiles, denominations, etc. (Giftbit expects you to pull these via API docs; /brands is specifically called out for production catalog pulls.) (Intercom)
+4) Replit setup (secrets + env)
+In Replit:
+* Add secrets:
+    * GIFTBIT_ENV=sandbox (or production)
+    * GIFTBIT_TOKEN=...
+    * (optional) GIFTBIT_BASE_URL=... (if Giftbit uses different base URLs per env; otherwise keep in code)
+In code:
+* A single giftbitClient module that reads env vars and injects:
+    * Authorization: Bearer ${token} (giftbit.com)
+5) Error handling you should build (so rewards don’t break)
+At minimum:
+* If Giftbit returns an error: mark giftbit_orders.status = failed
+* Add a retry endpoint (admin-only or user support tool)
+* Log undeliverable contact cases (Giftbit recommends planning for these) (Intercom)
+* Don’t block the user checkout success page if Giftbit is temporarily down—queue it and fulfill shortly after (even a simple DB “pending” state works)
+6) Copy/paste Replit “Build Prompt” (tailored for your agent)
+You are working inside my existing Replit project “GreetMe” (Next.js app with Stripe already set up).
+
+Goal: Integrate Giftbit gift card fulfillment (sandbox first, then production) in a secure server-side way.
+
+Requirements:
+1) Security
+- Never expose the Giftbit token to the client.
+- Store secrets in Replit Secrets: GIFTBIT_ENV, GIFTBIT_TOKEN.
+- All Giftbit calls must happen in server routes / backend modules.
+
+2) Giftbit Client
+- Create a server-only module lib/giftbit.ts (or .js) that:
+  - Reads token from env
+  - Sends requests with header: Authorization: Bearer <token>
+  - Has typed helper methods: listBrands(), createRewardOrOrder(), getStatus()
+- Add robust error handling and return clean errors to callers.
+
+3) API Routes
+- Add Next API routes:
+  - GET /api/giftbit/brands -> calls listBrands() and returns normalized brand data for UI
+  - POST /api/giftbit/fulfill -> creates a reward/order after payment is confirmed (server-validated)
+
+4) Stripe Fulfillment
+- Implement Stripe webhook handler (if not already present):
+  - On checkout.session.completed:
+    - Verify session is paid
+    - Read metadata that indicates a Giftbit gift card purchase (brand_code, amount, recipient info)
+    - Call Giftbit createRewardOrOrder()
+    - Store result in DB table giftbit_orders (create table if needed)
+- Ensure idempotency: do not create multiple Giftbit rewards for the same Stripe session id.
+
+5) Database
+- Add a giftbit_orders table with:
+  - greetme_order_id / stripe_session_id
+  - user_id
+  - brand_code
+  - amount, currency
+  - recipient_email
+  - giftbit_order_id
+  - status
+  - raw_response JSON
+  - timestamps
+- If this project already uses a DB, follow existing patterns.
+
+6) UI
+- Add a simple “Add Gift Card” UI:
+  - Pulls /api/giftbit/brands
+  - Lets user pick brand + denomination + recipient email
+  - On checkout creation, store these values in Stripe Checkout session metadata so webhook can fulfill
+
+7) Sandbox vs Production
+- Use GIFTBIT_ENV to switch endpoints/behavior if needed.
+- Add clear comments and a GO-LIVE checklist:
+  - switch env to production
+  - replace token with production token
+  - verify /brands shows full catalog
+  - run an end-to-end test
+
+Deliverables:
+- Working sandbox flow end-to-end: user pays -> webhook fires -> Giftbit reward created -> order stored -> UI confirmation.
+- Minimal but clear documentation in README: setup steps, secrets, testing steps.
+7) Quick “Go Live” checklist (so you don’t get stuck)
+* ✅ Working in Testbed end-to-end
+* ✅ Email Giftbit to enable API access in production (Intercom)
+* ✅ Generate production token (Intercom)
+* ✅ Switch secrets to production values
+* ✅ Pull /brands in production to populate your real catalog (Intercom)
+* ✅ Run a $1 live test purchase and confirm fulfillment + email delivery
+
+
+“Implement a just-in-time fulfillment approach: when a user buys a gift card, it’s reserved but not charged until the recipient redeems. Ensure the Giftbit API call uses a reserve-then-fulfill logic (Giftbit supports this). Handle statuses: reserved, redeemed, expired. On redemption (webhook or polling), charge the final amount and mark the gift as fulfilled. Include error handling for expired or failed redemptions.”
+
+This ensures you only pay when the recipient actually enjoys their gift!
+
