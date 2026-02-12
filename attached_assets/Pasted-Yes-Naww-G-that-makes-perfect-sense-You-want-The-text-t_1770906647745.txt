@@ -1,0 +1,155 @@
+Yes Naww G — that makes perfect sense.
+
+You want:
+
+• The text to change from **"$25 Gift Card Included"**
+→ to **"Redeem $25 Gift Card Here"**
+• It should be clickable
+• It should redirect to Giftbit
+• The purchaser should ONLY be charged when the recipient redeems
+• Not when the card is created
+• Just-in-Time charging model
+
+That’s clean. Smart. Lower friction. 💡
+
+Here’s a **simple, clear Replit prompt** you can paste into the Agent:
+
+---
+
+## 🔥 REPLIT AGENT PROMPT
+
+I need to update my GreetMe gift card logic.
+
+### 1️⃣ Frontend Update
+
+Replace the static text:
+
+"$25 Gift Card Included"
+
+With a clickable link that reads:
+
+"Redeem $25 Gift Card Here"
+
+It should:
+
+• Render as a styled button or hyperlink
+• Send the user to `/redeem/:cardId`
+• Not trigger payment immediately
+
+Example:
+
+```jsx
+<a href={`/redeem/${card.id}`} className="redeem-link">
+  Redeem $25 Gift Card Here
+</a>
+```
+
+---
+
+### 2️⃣ Backend Logic – Just-In-Time Charging
+
+Current problem:
+The purchaser is charged when creating the greeting card.
+
+New required behavior:
+The purchaser should only be charged when the recipient clicks "Redeem".
+
+---
+
+### 3️⃣ New Flow Required
+
+When greeting card is created:
+• Save gift amount
+• Save purchaser payment method (Stripe SetupIntent)
+• DO NOT charge yet
+• Store payment_method_id
+• Status = "pending"
+
+When recipient clicks Redeem:
+• Create Stripe PaymentIntent using saved payment method
+• Charge purchaser
+• After successful charge:
+→ Call Giftbit API
+→ Generate gift card
+→ Redirect recipient to Giftbit redemption link
+• Update status to "redeemed"
+
+---
+
+### 4️⃣ Stripe Implementation Requirements
+
+Use:
+
+Stripe SetupIntent on card creation
+Stripe PaymentIntent on redemption
+
+Do NOT capture payment at creation.
+
+Example logic:
+
+```js
+// On redemption
+const paymentIntent = await stripe.paymentIntents.create({
+  amount: card.amount * 100,
+  currency: "usd",
+  customer: purchaser.stripeCustomerId,
+  payment_method: purchaser.savedPaymentMethodId,
+  confirm: true
+});
+```
+
+Only after successful payment:
+
+```js
+await generateGiftCardWithGiftbit();
+```
+
+---
+
+### 5️⃣ Security Rules
+
+• Redemption link should only work once
+• If already redeemed → show "Gift Card Already Redeemed"
+• Validate cardId before charging
+• Prevent double charges
+
+---
+
+### 6️⃣ UX Requirements
+
+If payment fails:
+• Show error message
+• Do NOT generate gift card
+
+If successful:
+• Show “Your Gift Card is Ready 🎉”
+• Redirect to Giftbit URL
+
+---
+
+### END GOAL
+
+Implement a Just-In-Time gift card payment system where:
+
+• No charge at creation
+• Charge only on redemption
+• Automatic Giftbit generation after successful charge
+• Clean UX
+• Secure
+
+---
+
+That’s your production-ready implementation request.
+
+---
+
+If you want, I can also:
+
+• Design the database schema
+• Help you structure webhook handling
+• Help you reduce fraud risk
+• Or map this into a scalable GreetMe architecture
+
+This is how you build GreetMe into a real fintech-grade product.
+
+Let me know, boss.
