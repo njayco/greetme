@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUncachableStripeClient } from '@/lib/stripeClient';
 import { initStripe } from '@/lib/initStripe';
+import { getOrCreateYoutubeAddonPrice } from '@/lib/youtubeAddon';
 
 export async function POST(request: NextRequest) {
   let body: any = {};
@@ -22,11 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (addYoutubeClip) {
-      const youtubeAddonPriceId = process.env.YOUTUBE_ADDON_PRICE_ID;
-      if (!youtubeAddonPriceId) {
-        console.error('YOUTUBE_ADDON_PRICE_ID env var not set');
-        return NextResponse.json({ error: 'YouTube add-on not configured' }, { status: 500 });
-      }
+      const youtubeAddonPriceId = await getOrCreateYoutubeAddonPrice(stripe);
       lineItems.push({ price: youtubeAddonPriceId, quantity: 1 });
     }
 

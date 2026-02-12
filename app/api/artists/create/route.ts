@@ -3,6 +3,7 @@ import pg from 'pg';
 import { getUncachableStripeClient } from '@/lib/stripeClient';
 import { initStripe } from '@/lib/initStripe';
 import { backupCardToStorage } from '@/lib/cardBackup';
+import { getOrCreateYoutubeAddonPrice } from '@/lib/youtubeAddon';
 
 function generateId(): string {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
@@ -96,8 +97,7 @@ export async function POST(request: NextRequest) {
     const domain = process.env.REPLIT_DOMAINS?.split(',')[0] || request.headers.get('host') || '';
 
     const hasYoutubeClip = youtube && youtube.videoId && youtube.url && youtube.title;
-    const youtubeAddonPriceId = process.env.YOUTUBE_ADDON_PRICE_ID;
-    const needsYoutubePayment = hasYoutubeClip && youtubeAddonPriceId;
+    const needsYoutubePayment = hasYoutubeClip;
 
     if (!isPublicBool && !needsYoutubePayment) {
       await client.end();
@@ -160,7 +160,8 @@ export async function POST(request: NextRequest) {
         });
       }
 
-      lineItems.push({ price: youtubeAddonPriceId, quantity: 1 });
+      const ytAddonPriceId = await getOrCreateYoutubeAddonPrice(stripe);
+      lineItems.push({ price: ytAddonPriceId, quantity: 1 });
 
       let shareShortId = generateShortId();
       let shareAttempts = 0;

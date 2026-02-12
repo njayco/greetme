@@ -387,7 +387,8 @@ export default function GreetingCardsApp() {
         if (data.url) {
           window.location.href = data.url
         } else {
-          alert('Error creating checkout. Please try again.')
+          console.error('Checkout API error:', data.error)
+          alert('Error creating checkout: ' + (data.error || 'Unknown error'))
           setIsProcessingPayment(false)
         }
       } catch (error) {

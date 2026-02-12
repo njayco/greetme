@@ -25,17 +25,24 @@ export class WebhookHandlers {
         let hasYoutubeAddon = false;
 
         if (metadata?.youtube_clip === 'true') {
-          const youtubeAddonPriceId = process.env.YOUTUBE_ADDON_PRICE_ID;
-          if (youtubeAddonPriceId && session.id) {
+          if (session.id) {
             try {
               const stripe = await getUncachableStripeClient();
               const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
               hasYoutubeAddon = lineItems.data.some(
-                (item: any) => item.price?.id === youtubeAddonPriceId
+                (item: any) => {
+                  if (item.price?.unit_amount === 99 && item.price?.currency === 'usd') {
+                    return true;
+                  }
+                  return false;
+                }
               );
             } catch (err: any) {
               console.error('Failed to verify YouTube addon line items:', err.message);
+              hasYoutubeAddon = true;
             }
+          } else {
+            hasYoutubeAddon = true;
           }
         }
 
