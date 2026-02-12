@@ -1,0 +1,121 @@
+Got you. Option B = “manual request via Cash App deep link” (no API). Here’s a Replit prompt you can paste in that adds:
+	•	Recipient enters their $cashtag
+	•	App generates a Request Money link/button that opens Cash App (or Cash App web) with a prefilled amount + note
+	•	Creator sees a Pay request CTA link too (as fallback)
+	•	You store gift amount, cashtag, and request status in your DB so you can track “requested / paid / confirmed” manually
+
+Note: Deep-link formats can change, so we build it configurable and with fallbacks (open Cash App if installed; otherwise open a web URL).
+
+⸻
+
+
+You are working inside my existing GreetMe digital greeting card app (Next.js/React). Implement “Cash App Request (Manual)” gifting (Option B) WITHOUT using any Cash App API.
+
+FEATURE SUMMARY
+- When the card creator is building a card, they can optionally add a “Cash Gift”:
+  - choose preset amounts ($5, $10, $25, $50, $100) OR enter a custom amount
+  - add an optional short note for the request (default: “GreetMe cash gift”)
+- On the recipient card view, show a “Claim Cash Gift” section if a cash gift is attached:
+  - recipient enters their Cash App tag (cashtag), e.g. $nawwG
+  - app generates a “Request in Cash App” button that deep-links into Cash App with:
+    - amount
+    - note including card id and sender name (for tracking)
+  - if Cash App isn’t installed or deep link fails, provide a fallback “Open Request Page” link that opens a Cash App web request URL (or a generic cash.app URL) with the same info
+- This flow is MANUAL:
+  - recipient sends request in Cash App
+  - creator fulfills request in Cash App
+  - recipient then clicks “I received it” (manual confirmation)
+  - creator can also mark as “Paid” from their dashboard (manual confirmation)
+
+DATA MODEL
+- Extend Card model / CardDraft:
+  - cashGiftEnabled: boolean
+  - cashGiftAmount: number (in USD)
+  - cashGiftNote: string
+  - cashGiftRecipientCashtag: string (nullable; set by recipient)
+  - cashGiftStatus: 'none' | 'offered' | 'requested' | 'paid' | 'confirmed' (default 'offered' when enabled)
+  - cashGiftRequestedAt, cashGiftPaidAt, cashGiftConfirmedAt (timestamps nullable)
+
+UI/UX DETAILS
+1) Card Creator (Editor):
+- Add a “Cash Gift (Optional)” panel
+- Toggle on/off
+- Preset buttons + custom input
+- Validation: amount must be >= 1 and <= 250 (configurable)
+- Save these fields with the card draft and final card
+
+2) Recipient Card View:
+- If cashGiftEnabled:
+  - Show amount and “Claim Cash Gift”
+  - Input for cashtag:
+    - allow user to type with or without leading $
+    - sanitize: strip spaces, ensure it’s alphanumeric/underscore only (typical cashtag constraints)
+  - After user submits cashtag:
+    - store cashtag on server: POST /api/cashgift/request with cardId + cashtag
+    - server sets status to 'requested' and sets requestedAt
+  - Then show big buttons:
+    - “Request in Cash App” (primary) => opens deep link / URL
+    - “Copy request message” (copies: “Requesting $X from <sender>. Card: <id>”)
+    - “I received it” => POST /api/cashgift/confirm (sets status 'confirmed')
+
+3) Creator Dashboard / Card Manage Screen:
+- Show cash gift status
+- Buttons:
+  - “Mark as Paid” => POST /api/cashgift/mark-paid
+  - “Copy recipient cashtag”
+  - “Open Cash App to Pay” => generates a “pay” link (fallback) to open Cash App with amount and note
+
+LINK GENERATION (IMPORTANT)
+- Implement a helper: utils/cashAppLinks.ts
+- Provide two link types:
+  A) Request link for recipient (opens request flow)
+  B) Pay link for creator (opens pay flow)
+- Because Cash App link formats may vary, implement:
+  - a primary deep-link URL (cashapp:// or similar) if known
+  - a web fallback URL under https://cash.app/...
+- Put these formats in ONE place (utils/cashAppLinks.ts) and make them configurable via env vars:
+  - NEXT_PUBLIC_CASHAPP_REQUEST_URL_TEMPLATE
+  - NEXT_PUBLIC_CASHAPP_PAY_URL_TEMPLATE
+- If env vars are missing, default to a safe generic cash.app URL that at least opens the Cash App website and includes a prefilled note via query string when possible.
+
+SECURITY / VALIDATION
+- Validate amount server-side
+- Validate cashtag server-side
+- Rate limit request endpoint (basic: 5 per minute per IP) to prevent spam
+- Ensure users can only request/confirm for a card they have access to (card token or public card share id)
+
+API ROUTES TO ADD (or adapt to your backend)
+- POST /api/cashgift/request
+  body: { cardId, cashtag }
+  action: save cashtag, set status 'requested', requestedAt, return requestUrl + payUrl + status
+- POST /api/cashgift/mark-paid
+  body: { cardId }
+  action: set status 'paid', paidAt
+- POST /api/cashgift/confirm
+  body: { cardId }
+  action: set status 'confirmed', confirmedAt
+
+IMPLEMENTATION FILES
+- components/CashGiftCreatorPanel.tsx (creator editor UI)
+- components/CashGiftClaimPanel.tsx (recipient claim UI)
+- components/CashGiftStatusBadge.tsx (status pill)
+- utils/cashAppLinks.ts (single source for URL templates)
+- pages or app routes for the API endpoints above
+- Update types/interfaces and DB migration for new fields
+
+TESTING CHECKLIST
+- iOS Safari: tap “Request in Cash App” opens Cash App if installed; otherwise opens cash.app
+- Android Chrome: same behavior
+- Cashtag sanitize (with and without $)
+- Status transitions: offered -> requested -> paid -> confirmed
+- Ensure card still works if cash gift is disabled
+
+After implementing, output:
+- where in the UI the panels appear
+- what env vars are optional and the defaults used
+- example request/pay URLs generated for amount=25 and note=”GreetMe Card ABC123”
+
+
+⸻
+
+If you want, I can also give you a ready-to-use default URL template to paste into Replit env vars (so the buttons work immediately), but I didn’t want to invent a format you don’t trust.
