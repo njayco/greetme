@@ -38,6 +38,8 @@ export interface GiftbitBrand {
   name: string;
   image_url: string;
   disclaimer?: string;
+  min_price_in_cents?: number;
+  max_price_in_cents?: number;
 }
 
 export interface GiftbitCampaignResult {
@@ -48,6 +50,15 @@ export interface GiftbitCampaignResult {
 export async function listBrands(region: string = 'us'): Promise<GiftbitBrand[]> {
   const data = await giftbitFetch(`/brands?region=${encodeURIComponent(region)}`);
   return data.brands || [];
+}
+
+export async function getBrandDetails(brandCode: string): Promise<GiftbitBrand | null> {
+  try {
+    const data = await giftbitFetch(`/brands/${encodeURIComponent(brandCode)}`);
+    return data.brand || null;
+  } catch {
+    return null;
+  }
 }
 
 export async function createCampaign(params: {

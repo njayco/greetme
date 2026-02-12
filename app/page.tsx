@@ -104,7 +104,7 @@ export default function GreetingCardsApp() {
   const [youtubeError, setYoutubeError] = useState("")
   const [youtubeStartTime, setYoutubeStartTime] = useState("0:00")
   const [giftCardEnabled, setGiftCardEnabled] = useState(false)
-  const [giftCardBrands, setGiftCardBrands] = useState<Array<{ brand_code: string; name: string; image_url: string }>>([])
+  const [giftCardBrands, setGiftCardBrands] = useState<Array<{ brand_code: string; name: string; image_url: string; min_price_in_cents: number; max_price_in_cents: number }>>([])
   const [giftCardBrand, setGiftCardBrand] = useState<string>("")
   const [giftCardAmount, setGiftCardAmount] = useState<number>(500)
   const [giftCardEmail, setGiftCardEmail] = useState("")
@@ -1193,7 +1193,9 @@ export default function GreetingCardsApp() {
                                 .then(r => r.json())
                                 .then(data => {
                                   setGiftCardBrands(data.brands || [])
-                                  if (data.brands?.length > 0) setGiftCardBrand(data.brands[0].brand_code)
+                                  const defaultAmount = 500
+                                  const firstAvailable = (data.brands || []).find((b: any) => defaultAmount >= (b.min_price_in_cents || 0) && defaultAmount <= (b.max_price_in_cents || 100000))
+                                  if (firstAvailable) setGiftCardBrand(firstAvailable.brand_code)
                                 })
                                 .catch(() => {})
                                 .finally(() => setGiftCardBrandsLoading(false))
@@ -1217,36 +1219,50 @@ export default function GreetingCardsApp() {
                           ) : (
                             <>
                               <div>
-                                <label className="text-xs text-gray-600 block mb-1">Brand</label>
-                                <div className="grid grid-cols-3 gap-2 max-h-32 overflow-y-auto">
-                                  {giftCardBrands.map((brand) => (
-                                    <button
-                                      key={brand.brand_code}
-                                      type="button"
-                                      onClick={() => setGiftCardBrand(brand.brand_code)}
-                                      className={`p-2 rounded border text-center transition-all ${giftCardBrand === brand.brand_code ? 'border-green-500 bg-green-50 ring-1 ring-green-500' : 'border-gray-200 hover:border-gray-400'}`}
-                                    >
-                                      <img src={brand.image_url} alt={brand.name} className="w-full h-8 object-contain mb-1" />
-                                      <span className="text-[10px] text-gray-700 block truncate">{brand.name}</span>
-                                    </button>
-                                  ))}
-                                </div>
-                              </div>
-
-                              <div>
                                 <label className="text-xs text-gray-600 block mb-1">Amount</label>
                                 <div className="flex gap-2 flex-wrap">
                                   {[500, 1000, 1500, 2000, 2500, 5000].map((amt) => (
                                     <button
                                       key={amt}
                                       type="button"
-                                      onClick={() => setGiftCardAmount(amt)}
+                                      onClick={() => {
+                                        setGiftCardAmount(amt)
+                                        const currentBrandObj = giftCardBrands.find(b => b.brand_code === giftCardBrand)
+                                        if (currentBrandObj && (amt < (currentBrandObj.min_price_in_cents || 0) || amt > (currentBrandObj.max_price_in_cents || 100000))) {
+                                          const firstAvailable = giftCardBrands.find(b => amt >= (b.min_price_in_cents || 0) && amt <= (b.max_price_in_cents || 100000))
+                                          setGiftCardBrand(firstAvailable?.brand_code || "")
+                                        }
+                                      }}
                                       className={`px-3 py-1 rounded text-sm font-bold transition-all ${giftCardAmount === amt ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                                     >
                                       ${(amt / 100).toFixed(0)}
                                     </button>
                                   ))}
                                 </div>
+                              </div>
+
+                              <div>
+                                <label className="text-xs text-gray-600 block mb-1">Brand</label>
+                                {(() => {
+                                  const filteredBrands = giftCardBrands.filter(b => giftCardAmount >= (b.min_price_in_cents || 0) && giftCardAmount <= (b.max_price_in_cents || 100000))
+                                  return filteredBrands.length > 0 ? (
+                                    <div className="grid grid-cols-3 gap-2 max-h-32 overflow-y-auto">
+                                      {filteredBrands.map((brand) => (
+                                        <button
+                                          key={brand.brand_code}
+                                          type="button"
+                                          onClick={() => setGiftCardBrand(brand.brand_code)}
+                                          className={`p-2 rounded border text-center transition-all ${giftCardBrand === brand.brand_code ? 'border-green-500 bg-green-50 ring-1 ring-green-500' : 'border-gray-200 hover:border-gray-400'}`}
+                                        >
+                                          <img src={brand.image_url} alt={brand.name} className="w-full h-8 object-contain mb-1" />
+                                          <span className="text-[10px] text-gray-700 block truncate">{brand.name}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    <p className="text-xs text-gray-500 italic">No brands available for this amount</p>
+                                  )
+                                })()}
                               </div>
 
                               <div>
