@@ -14,6 +14,7 @@ Created by **Najee Jeremiah**
 - [How It Works](#how-it-works)
 - [Greet Me Clips](#greet-me-clips)
 - [Greet Me for Artists](#greet-me-for-artists)
+- [Gift Cards](#gift-cards)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Card Categories](#card-categories)
@@ -36,6 +37,7 @@ Created by **Najee Jeremiah**
 - **Card customization** with sender name, recipient name, and personal notes
 - **Greet Me for Artists** — create custom cards by uploading artwork, writing messages, and sharing or selling
 - **Greet Me Clips** — attach a 30-second YouTube audio clip to any card for $0.99, powered by YouTube
+- **Gift Cards** — attach a digital gift card (powered by Giftbit/Tremendous) to any greeting card with just-in-time charging — the sender is only charged when the recipient redeems
 - **Stripe payment integration** for premium Valentine's Day cards ($0.99 - $2.99), personal artist cards ($4.99), and audio clip add-ons ($0.99)
 - **Shareable short links** that work on social media with OG metadata previews
 - **Email confirmations** sent automatically after purchase via Resend
@@ -162,6 +164,56 @@ Custom cards are automatically backed up to Replit Object Storage to protect aga
 
 ---
 
+## Gift Cards
+
+GreetMe lets senders attach a digital gift card to any greeting card. Powered by the **Giftbit API** (Tremendous), the system uses a **just-in-time charging model** — the sender's card is saved at checkout but only charged when the recipient redeems the gift card.
+
+### How Gift Cards Work
+
+1. **Enable Gift Card** - On the Customize screen, toggle "Add Gift Card" and enter the recipient's email, select a brand, and choose an amount ($5, $10, $15, $25, $50)
+2. **Brand Selection** - Gift card brands are fetched from the Giftbit API with min/max pricing, and filtered by the selected amount to prevent validation errors
+3. **Checkout** - The sender completes Stripe checkout. The gift card amount is NOT charged at this point — only the greeting card price (if any) is charged. A $0 line item for the gift card appears on the Stripe checkout page with a message: "Your $25 gift card will be charged to this card when the recipient redeems it."
+4. **Payment Method Saved** - The Stripe webhook saves the sender's customer ID and payment method for later use
+5. **Recipient Redeems** - The recipient sees a "Redeem $25 Gift Card Here" button on the share page (`/c/[id]`), linking to the redemption page (`/redeem/[id]`)
+6. **Redemption Page** - Shows the gift card amount, sender name, and the email where the gift card will be sent. When the recipient clicks "Redeem":
+   - The sender's saved payment method is charged via Stripe (off-session)
+   - A Giftbit campaign is created to generate the gift card
+   - A confirmation email is sent to the recipient via Resend with the gift card link
+   - The page updates to show "Open Gift Card" with a direct link
+7. **After Redemption** - The share page button changes from "Redeem" to "Open Gift Card"
+
+### Just-in-Time Charging Model
+
+| Checkout Scenario | What Happens |
+|---|---|
+| **Gift card only** (free greeting card) | Stripe Setup mode — saves payment method, charges $0 |
+| **Gift card + paid greeting card** | Stripe Payment mode with `setup_future_usage` — charges card price, saves payment method for later gift card charge |
+| **No gift card** | Standard Stripe Payment mode |
+
+The sender sees "Total Due Now" on the app (excluding gift card) with an amber notice: "Your $25 Gift Card — Your card will be charged $25.00 only when the recipient redeems the gift card."
+
+### Gift Card Statuses
+
+| Status | Meaning |
+|---|---|
+| `pending` | Gift card created, awaiting redemption |
+| `redeemed` | Recipient redeemed, charge succeeded, gift card delivered |
+| `charge_failed` | Sender's payment method failed at redemption |
+| `charge_succeeded_fulfill_failed` | Charge succeeded but Giftbit campaign creation failed (requires manual resolution) |
+
+### Technical Details
+
+| Component | Details |
+|---|---|
+| **Giftbit Client** | `lib/giftbitClient.ts` — API client for brands, campaigns, and links |
+| **Brands API** | `GET /api/giftbit/brands` — Cached brand listing with min/max pricing |
+| **Redemption API** | `POST /api/redeem/[id]` — Charges sender, creates Giftbit campaign, sends email |
+| **Redemption Page** | `app/redeem/[id]/` — Server + client components for redemption UI |
+| **Webhook Handler** | `lib/webhookHandlers.ts` — Saves customer/payment method from SetupIntent or PaymentIntent |
+| **Database** | `shared_cards` table stores gift card fields; `giftbit_orders` tracks fulfillment |
+
+---
+
 ## Tech Stack
 
 | Technology | Purpose |
@@ -198,6 +250,11 @@ greetme/
 │   │   ├── stripe/webhook/route.ts   # Stripe webhook handler
 │   │   ├── youtube/
 │   │   │   └── resolve/route.ts     # YouTube URL resolver (oEmbed title lookup)
+│   │   ├── giftbit/
+│   │   │   ├── brands/route.ts      # Gift card brand listing (cached)
+│   │   │   └── fulfill/route.ts     # Manual gift card fulfillment
+│   │   ├── redeem/
+│   │   │   └── [id]/route.ts        # Gift card redemption (charge + fulfill)
 │   │   ├── artists/
 │   │   │   ├── upload/route.ts       # Artist image upload (Object Storage)
 │   │   │   ├── create/route.ts       # Artist card creation with Stripe
@@ -205,6 +262,9 @@ greetme/
 │   │   │   └── confirm-payment/route.ts # Confirm Stripe payment for personal cards
 │   │   └── uploads/
 │   │       └── serve/route.ts        # Serve images from Object Storage
+│   ├── redeem/[id]/
+│   │   ├── page.tsx                 # Gift card redemption page (server)
+│   │   └── RedeemClient.tsx         # Gift card redemption UI (client)
 │   └── c/[id]/                       # Dynamic share page
 │       ├── page.tsx                  # Server component with OG metadata
 │       └── ShareCardClient.tsx       # Client component for card display
@@ -217,6 +277,7 @@ greetme/
 │   ├── initStripe.ts                # Stripe schema migration & webhooks
 │   ├── resendClient.ts              # Resend email client setup
 │   ├── cardBackup.ts               # Object Storage backup/restore for custom cards
+│   ├── giftbitClient.ts             # Giftbit API client (brands, campaigns, links)
 │   ├── webhookHandlers.ts           # Stripe webhook processing
 │   ├── youtubeAddon.ts             # Dynamic YouTube addon Stripe product/price provisioning
 │   └── utils.ts                     # Utility functions (cn)
@@ -362,6 +423,15 @@ The app uses **Stripe Checkout** for processing card purchases.
 
 **Artist Personal Cards:** $4.99 flat fee
 
+**Gift Card Payment Flow (Just-in-Time):**
+
+1. Sender enables gift card, selects brand/amount, enters recipient email
+2. At checkout, only the greeting card price is charged; payment method is saved
+3. Stripe webhook stores customer ID and payment method in `shared_cards`
+4. Recipient clicks "Redeem" on the share page, linking to `/redeem/[id]`
+5. Redemption API charges saved payment method, creates Giftbit campaign
+6. Confirmation email sent to recipient with gift card link
+
 ### Stripe Integration
 
 - **Client**: `lib/stripeClient.ts` manages Stripe API credentials via Replit connectors (auto-rotating tokens)
@@ -421,6 +491,16 @@ After a successful Stripe payment, the app sends a confirmation email via **Rese
 
 The Resend client (`lib/resendClient.ts`) authenticates via Replit connectors, which handle API key rotation automatically.
 
+### Gift Card Redemption Email
+
+When a gift card is redeemed, a styled HTML email is sent to the recipient via Resend containing:
+- The gift card amount and sender name
+- An "Open Your Gift Card" button with the Giftbit redemption link
+- A link to view the greeting card
+- GreetMe branding
+
+The email is sent as a best-effort (non-blocking) — if it fails, the redemption still succeeds.
+
 ---
 
 ## Database
@@ -447,6 +527,13 @@ The app uses a PostgreSQL database provided by Replit (Neon-backed) for storing 
 | `youtube_start_seconds` | INTEGER (nullable) | Clip start time in seconds |
 | `youtube_end_seconds` | INTEGER (nullable) | Clip end time in seconds |
 | `youtube_clip_enabled` | BOOLEAN | Whether clip playback is enabled (set to true after payment verification) |
+| `gift_card_brand` | VARCHAR (nullable) | Giftbit brand code |
+| `gift_card_amount_cents` | INTEGER (nullable) | Gift card value in cents |
+| `gift_card_recipient_email` | VARCHAR (nullable) | Email to send gift card to |
+| `gift_card_status` | VARCHAR (nullable) | Status: pending, redeemed, charge_failed |
+| `gift_card_link` | TEXT (nullable) | Giftbit redemption link |
+| `stripe_customer_id` | VARCHAR (nullable) | Stripe customer ID for deferred charging |
+| `stripe_payment_method_id` | VARCHAR (nullable) | Saved payment method for deferred charging |
 | `created_at` | TIMESTAMP | When the link was created |
 
 **`custom_cards`** - Artist-created cards
@@ -465,6 +552,27 @@ The app uses a PostgreSQL database provided by Replit (Neon-backed) for storing 
 | `is_paid` | BOOLEAN | Whether payment has been completed |
 | `stripe_session_id` | TEXT (nullable) | Stripe checkout session ID |
 | `created_at` | TIMESTAMP | When the card was created |
+
+**`giftbit_orders`** - Tracks gift card fulfillment
+
+| Column | Type | Description |
+|---|---|---|
+| `id` | VARCHAR | Primary key - 7-character order ID |
+| `stripe_session_id` | TEXT | Stripe session/payment intent ID |
+| `share_id` | VARCHAR | References the shared card |
+| `brand_code` | VARCHAR | Giftbit brand code |
+| `brand_name` | VARCHAR | Human-readable brand name |
+| `amount_cents` | INTEGER | Gift card value in cents |
+| `currency` | VARCHAR | Currency code (USD) |
+| `recipient_email` | VARCHAR | Recipient email address |
+| `recipient_name` | VARCHAR | Recipient name |
+| `sender_name` | VARCHAR | Sender name |
+| `giftbit_campaign_id` | TEXT (nullable) | Giftbit campaign UUID |
+| `giftbit_link_url` | TEXT (nullable) | Gift card redemption URL |
+| `status` | VARCHAR | Order status: pending, sent, failed |
+| `raw_response` | JSONB (nullable) | Raw Giftbit API response |
+| `created_at` | TIMESTAMP | Order creation time |
+| `updated_at` | TIMESTAMP (nullable) | Last update time |
 
 **`stripe.*`** - Managed by `stripe-replit-sync` for Stripe data synchronization (products, prices, customers, checkout sessions, etc.)
 
@@ -618,9 +726,47 @@ Resolves a YouTube URL and returns the video ID, title, and canonical URL using 
 }
 ```
 
+### `GET /api/giftbit/brands`
+
+Returns available gift card brands with pricing information. Results are cached for 1 hour.
+
+**Response:**
+```json
+{
+  "brands": [
+    {
+      "brand_code": "visa-gift-card",
+      "brand_name": "Visa Gift Card", 
+      "min_price_in_cents": 2500,
+      "max_price_in_cents": 50000
+    }
+  ]
+}
+```
+
+### `POST /api/redeem/[id]`
+
+Charges the sender's saved payment method and generates a gift card via Giftbit. Sends confirmation email to recipient.
+
+**Response (success):**
+```json
+{
+  "success": true,
+  "redeemed": true,
+  "giftCardLink": "https://giftbit.com/...",
+  "recipientEmail": "happy@gmail.com",
+  "amount": 2500,
+  "brand": "visa-gift-card"
+}
+```
+
+### `POST /api/giftbit/fulfill`
+
+Manual gift card fulfillment endpoint for orders that failed automatic fulfillment.
+
 ### `POST /api/stripe/webhook`
 
-Receives and processes Stripe webhook events (managed by `stripe-replit-sync`). Also handles YouTube clip activation by verifying Stripe line items contain the YouTube add-on price before enabling clip playback.
+Receives and processes Stripe webhook events (managed by `stripe-replit-sync`). Also handles YouTube clip activation by verifying Stripe line items contain the YouTube add-on price before enabling clip playback. Also saves gift card payment methods for just-in-time charging.
 
 ---
 
@@ -676,6 +822,7 @@ npx tsx scripts/merge-generated-cards.ts
 | `REPLIT_DOMAINS` | Application domain(s) for absolute URLs |
 | `REPLIT_CONNECTORS_HOSTNAME` | Replit connectors API hostname |
 | `REPL_IDENTITY` | Replit identity token (auto-provided) |
+| `GIFTBIT_API_KEY` | Giftbit/Tremendous API key for gift card generation |
 Stripe and Resend credentials are managed automatically via Replit connectors - no manual API keys required. The YouTube clip add-on product and price are auto-provisioned in Stripe (both test and live modes) — no manual setup needed.
 
 ---
