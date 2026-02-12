@@ -244,6 +244,7 @@ function CashGiftSection({ cashGift, senderName }: { cashGift: CashGiftData; sen
   const [confirmed, setConfirmed] = useState(cashGift.status === 'confirmed');
   const [confirming, setConfirming] = useState(false);
   const [confirmError, setConfirmError] = useState('');
+  const [showHelp, setShowHelp] = useState(false);
 
   const sanitizedTag = cashGift.cashtag.replace(/[^a-zA-Z0-9_]/g, '');
   const cashAppUrl = `https://cash.app/$${sanitizedTag}?amount=${cashGift.amount}&note=${encodeURIComponent(`Gift from ${senderName} via GreetMe`)}`;
@@ -286,7 +287,7 @@ function CashGiftSection({ cashGift, senderName }: { cashGift: CashGiftData; sen
       <p className="text-white font-bold text-lg mb-1" style={{ fontFamily: 'Georgia, serif' }}>
         {senderName} sent you ${cashGift.amount}!
       </p>
-      <p className="text-white/90 text-xs mb-3">via Cash App to $<span className="font-semibold">{cashGift.cashtag}</span></p>
+      <p className="text-white/90 text-xs mb-3">via Cash App to $<span className="font-semibold">{sanitizedTag}</span></p>
 
       <a
         href={cashAppUrl}
@@ -307,6 +308,72 @@ function CashGiftSection({ cashGift, senderName }: { cashGift: CashGiftData; sen
           {confirming ? 'Confirming...' : 'I received it'}
         </button>
         {confirmError && <p className="text-white/70 text-xs mt-1">{confirmError}</p>}
+      </div>
+
+      <div className="mt-3">
+        <button
+          onClick={() => setShowHelp(!showHelp)}
+          className="text-white/80 text-xs hover:text-white transition-colors flex items-center gap-1 mx-auto"
+        >
+          <span>{showHelp ? 'Hide help' : 'I need help'}</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: showHelp ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+
+        {showHelp && (
+          <div className="mt-3 p-4 rounded-lg text-left text-sm" style={{ background: 'rgba(255,255,255,0.95)', color: '#333' }}>
+            <p className="font-bold text-base mb-3" style={{ color: '#00D632', fontFamily: 'Georgia, serif' }}>
+              How to Receive Your ${cashGift.amount} Gift
+            </p>
+
+            <div className="space-y-3">
+              <div>
+                <p className="font-bold mb-1">Step 1: Download Cash App</p>
+                <p className="text-gray-600 text-xs mb-2">If you don't have Cash App yet, download it for free:</p>
+                <div className="flex gap-2">
+                  <a
+                    href="https://apps.apple.com/us/app/cash-app/id711923939"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 px-3 py-2 rounded-lg text-center text-xs font-bold text-white transition-all hover:opacity-90"
+                    style={{ background: '#000' }}
+                  >
+                    App Store (iPhone)
+                  </a>
+                  <a
+                    href="https://play.google.com/store/apps/details?id=com.squareup.cash"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 px-3 py-2 rounded-lg text-center text-xs font-bold text-white transition-all hover:opacity-90"
+                    style={{ background: '#000' }}
+                  >
+                    Google Play (Android)
+                  </a>
+                </div>
+              </div>
+
+              <div>
+                <p className="font-bold mb-1">Step 2: Set Up Your Account</p>
+                <p className="text-gray-600 text-xs">Open Cash App and create an account with your email or phone number. You'll also link a debit card or bank account so you can receive money.</p>
+              </div>
+
+              <div>
+                <p className="font-bold mb-1">Step 3: Request the Money</p>
+                <p className="text-gray-600 text-xs mb-2">Tap the green <strong>"Request in Cash App"</strong> button above. It will open Cash App with the amount ($<span>{cashGift.amount}</span>) and sender ($<span>{sanitizedTag}</span>) already filled in. Just tap <strong>"Request"</strong> to send the request.</p>
+              </div>
+
+              <div>
+                <p className="font-bold mb-1">Step 4: Wait & Confirm</p>
+                <p className="text-gray-600 text-xs">Once {senderName} approves your request in their Cash App, the money will appear in your Cash App balance. Come back here and tap <strong>"I received it"</strong> to let them know!</p>
+              </div>
+
+              <div className="pt-2 border-t border-gray-200">
+                <p className="text-gray-400 text-[10px]">Cash App is a free app by Block, Inc. GreetMe does not process any payments — your money goes directly between you and {senderName} through Cash App.</p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
