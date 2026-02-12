@@ -15,7 +15,7 @@ Created by **Najee Jeremiah**
 - [Greet Me Clips](#greet-me-clips)
 - [Voice Notes](#voice-notes)
 - [Greet Me for Artists](#greet-me-for-artists)
-- [Gift Cards](#gift-cards)
+- [Cash Gifting via Cash App](#cash-gifting-via-cash-app)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Card Categories](#card-categories)
@@ -39,7 +39,7 @@ Created by **Najee Jeremiah**
 - **Greet Me for Artists** — create custom cards by uploading artwork, writing messages, and sharing or selling
 - **Greet Me Clips** — attach a 30-second YouTube audio clip to any card for $0.99, powered by YouTube
 - **Voice Notes** — record or upload a personal voice message (up to 30 seconds) that plays alongside the YouTube clip with synced playback controls
-- **Gift Cards** — attach a digital gift card (powered by Giftbit/Tremendous) to any greeting card with just-in-time charging — the sender is only charged when the recipient redeems
+- **Cash Gifting via Cash App** — attach a cash gift ($5–$50) to any card; recipient requests money directly through Cash App
 - **Stripe payment integration** for premium Valentine's Day cards ($0.99 - $2.99), personal artist cards ($4.99), and audio clip add-ons ($0.99)
 - **Shareable short links** that work on social media with OG metadata previews
 - **Email confirmations** sent automatically after purchase via Resend
@@ -200,53 +200,48 @@ Custom cards are automatically backed up to Replit Object Storage to protect aga
 
 ---
 
-## Gift Cards
+## Cash Gifting via Cash App
 
-GreetMe lets senders attach a digital gift card to any greeting card. Powered by the **Giftbit API** (Tremendous), the system uses a **just-in-time charging model** — the sender's card is saved at checkout but only charged when the recipient redeems the gift card.
+GreetMe lets senders attach a cash gift to any greeting card. The money is sent directly between sender and recipient through **Cash App** — GreetMe does not process any monetary transactions.
 
-### How Gift Cards Work
+### How Cash Gifting Works
 
-1. **Enable Gift Card** - On the Customize screen, toggle "Add Gift Card" and enter the recipient's email, select a brand, and choose an amount ($5, $10, $15, $25, $50)
-2. **Brand Selection** - Gift card brands are fetched from the Giftbit API with min/max pricing, and filtered by the selected amount to prevent validation errors
-3. **Checkout** - The sender completes Stripe checkout. The gift card amount is NOT charged at this point — only the greeting card price (if any) is charged. A $0 line item for the gift card appears on the Stripe checkout page with a message: "Your $25 gift card will be charged to this card when the recipient redeems it."
-4. **Payment Method Saved** - The Stripe webhook saves the sender's customer ID and payment method for later use
-5. **Recipient Redeems** - The recipient sees a "Redeem $25 Gift Card Here" button on the share page (`/c/[id]`), linking to the redemption page (`/redeem/[id]`)
-6. **Redemption Page** - Shows the gift card amount, sender name, and the email where the gift card will be sent. When the recipient clicks "Redeem":
-   - The sender's saved payment method is charged via Stripe (off-session)
-   - A Giftbit campaign is created to generate the gift card
-   - A confirmation email is sent to the recipient via Resend with the gift card link
-   - The page updates to show "Open Gift Card" with a direct link
-7. **After Redemption** - The share page button changes from "Redeem" to "Open Gift Card"
+1. **Enable Cash Gift** - On the Customize screen, toggle "Add Cash Gift" and enter your Cash App $cashtag and select an amount ($5, $10, $15, $25, or $50)
+2. **Send the Card** - The card is sent with the cash gift info attached. No payment is processed through GreetMe for the gift amount
+3. **Recipient Opens Card** - On the Centerfold tab, the recipient sees a green Cash App section with the gift amount and a "Request in Cash App" button
+4. **Request Money** - Tapping the button opens Cash App with the amount and sender's $cashtag pre-filled via deep link. The recipient just taps "Request"
+5. **Sender Approves** - The sender approves the request in their Cash App
+6. **Confirm Receipt** - The recipient returns to GreetMe and taps "I received it" to confirm
 
-### Just-in-Time Charging Model
+### "I Need Help" Guide
 
-| Checkout Scenario | What Happens |
-|---|---|
-| **Gift card only** (free greeting card) | Stripe Setup mode — saves payment method, charges $0 |
-| **Gift card + paid greeting card** | Stripe Payment mode with `setup_future_usage` — charges card price, saves payment method for later gift card charge |
-| **No gift card** | Standard Stripe Payment mode |
+For recipients who don't have Cash App, an expandable help section walks them through:
 
-The sender sees "Total Due Now" on the app (excluding gift card) with an amber notice: "Your $25 Gift Card — Your card will be charged $25.00 only when the recipient redeems the gift card."
+1. **Download Cash App** - A prominent green button links to the Cash App referral URL (`https://cash.app/app/LTG88CT`) with a **free $5 bonus** offer. Direct App Store and Google Play links are also provided
+2. **Set Up Account** - Instructions to create an account and enter referral code **LTG88CT** for the $5 bonus
+3. **Request the Money** - How to use the pre-filled Cash App deep link
+4. **Wait & Confirm** - How to confirm receipt back on GreetMe
 
-### Gift Card Statuses
+### Server-Side Validation
+
+- **Cashtag**: Sanitized to alphanumeric characters and underscores only
+- **Amount**: Validated within $1–$500 range
+
+### Cash Gift Statuses
 
 | Status | Meaning |
 |---|---|
-| `pending` | Gift card created, awaiting redemption |
-| `redeemed` | Recipient redeemed, charge succeeded, gift card delivered |
-| `charge_failed` | Sender's payment method failed at redemption |
-| `charge_succeeded_fulfill_failed` | Charge succeeded but Giftbit campaign creation failed (requires manual resolution) |
+| `pending` | Cash gift created, awaiting recipient confirmation |
+| `confirmed` | Recipient confirmed they received the money |
 
 ### Technical Details
 
 | Component | Details |
 |---|---|
-| **Giftbit Client** | `lib/giftbitClient.ts` — API client for brands, campaigns, and links |
-| **Brands API** | `GET /api/giftbit/brands` — Cached brand listing with min/max pricing |
-| **Redemption API** | `POST /api/redeem/[id]` — Charges sender, creates Giftbit campaign, sends email |
-| **Redemption Page** | `app/redeem/[id]/` — Server + client components for redemption UI |
-| **Webhook Handler** | `lib/webhookHandlers.ts` — Saves customer/payment method from SetupIntent or PaymentIntent |
-| **Database** | `shared_cards` table stores gift card fields; `giftbit_orders` tracks fulfillment |
+| **Deep Link Generator** | `lib/cashAppLinks.ts` — Generates Cash App deep link URLs with pre-filled amount, cashtag, and note |
+| **Confirmation API** | `POST /api/cashgift/confirm` — Sets `cash_gift_status` to `confirmed` |
+| **Share Page UI** | `CashGiftSection` in `app/c/[id]/ShareCardClient.tsx` — Green Cash App branded section with request button and help guide |
+| **Database Columns** | `cash_gift_amount` (INTEGER), `cash_gift_cashtag` (VARCHAR), `cash_gift_status` (VARCHAR), `cash_gift_confirmed_at` (TIMESTAMP) on `shared_cards` |
 
 ---
 
