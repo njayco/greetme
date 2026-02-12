@@ -1,37 +1,54 @@
+/**
+ * VoiceNoteRecorder.tsx
+ *
+ * A client-side component that allows users to record a voice note via their
+ * microphone or upload an existing audio file. Recorded/uploaded audio is sent
+ * to the server (/api/voice-note/upload) and the resulting URL is passed back
+ * to the parent through the onVoiceNoteChange callback.
+ *
+ * Modes: idle → recording → recorded / uploaded
+ * Supports WebM & MP4 recording codecs with a 30-second max duration.
+ */
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
 
+// Props accepted by the VoiceNoteRecorder component
 type VoiceNoteRecorderProps = {
   onVoiceNoteChange: (voiceNoteUrl: string | null) => void;
   centerfoldMessage?: string;
 };
 
+/** Formats a number of seconds into a mm:ss display string */
 function formatTimer(seconds: number): string {
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
   return `${mins}:${secs.toString().padStart(2, "0")}`;
 }
 
-const MAX_RECORDING_SECONDS = 30;
-const MAX_FILE_SIZE = 10 * 1024 * 1024;
+// Recording constraints
+const MAX_RECORDING_SECONDS = 30; // Auto-stop after 30 seconds
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB upload limit
 const ACCEPTED_TYPES = ["audio/webm", "audio/mp4", "audio/mpeg", "audio/wav"];
 
 export default function VoiceNoteRecorder({
   onVoiceNoteChange,
   centerfoldMessage,
 }: VoiceNoteRecorderProps) {
+  // UI state machine: idle → recording → recorded/uploaded
   const [mode, setMode] = useState<"idle" | "recording" | "recorded" | "uploaded">("idle");
-  const [elapsed, setElapsed] = useState(0);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [elapsed, setElapsed] = useState(0); // Seconds elapsed during recording
+  const [audioUrl, setAudioUrl] = useState<string | null>(null); // Local blob URL for playback preview
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Refs for managing the MediaRecorder lifecycle and cleanup
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
+  const chunksRef = useRef<Blob[]>([]); // Accumulates audio data chunks during recording
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
+  /** Tears down the timer, media stream tracks, and recorder refs */
   const cleanup = useCallback(() => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
@@ -45,10 +62,15 @@ export default function VoiceNoteRecorder({
     chunksRef.current = [];
   }, []);
 
+  // Run cleanup on component unmount to release microphone and timers
   useEffect(() => {
     return cleanup;
   }, [cleanup]);
 
+  /**
+   * Uploads an audio Blob to the server via /api/voice-note/upload.
+   * On success, passes the returned URL to the parent via onVoiceNoteChange.
+   */
   const uploadBlob = useCallback(
     async (blob: Blob, filename: string) => {
       setUploading(true);
@@ -76,6 +98,7 @@ export default function VoiceNoteRecorder({
     [onVoiceNoteChange]
   );
 
+  /** Detects the best supported audio MIME type for MediaRecorder */
   const getSupportedMimeType = (): string => {
     if (typeof MediaRecorder !== "undefined") {
       if (MediaRecorder.isTypeSupported("audio/webm")) return "audio/webm";
@@ -84,9 +107,15 @@ export default function VoiceNoteRecorder({
     return "audio/webm";
   };
 
+  /**
+   * Starts microphone recording: requests mic access, creates a MediaRecorder,
+   * and begins a 1-second interval timer that auto-stops at MAX_RECORDING_SECONDS.
+   * When recording stops, the audio blob is assembled and automatically uploaded.
+   */
   const startRecording = async () => {
     setError(null);
     try {
+      // Request microphone access from the browser
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
@@ -99,6 +128,7 @@ export default function VoiceNoteRecorder({
         if (e.data.size > 0) chunksRef.current.push(e.data);
       };
 
+      // When recording stops, assemble the blob and trigger upload
       recorder.onstop = () => {
         const blob = new Blob(chunksRef.current, { type: mimeType });
         const url = URL.createObjectURL(blob);
@@ -116,6 +146,7 @@ export default function VoiceNoteRecorder({
       setMode("recording");
       setElapsed(0);
 
+      // Elapsed-time ticker; auto-stops recording when max duration is reached
       timerRef.current = setInterval(() => {
         setElapsed((prev) => {
           const next = prev + 1;
@@ -138,6 +169,7 @@ export default function VoiceNoteRecorder({
     }
   };
 
+  /** Manually stops the active recording and clears the timer */
   const stopRecording = () => {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
       mediaRecorderRef.current.stop();
@@ -148,6 +180,10 @@ export default function VoiceNoteRecorder({
     }
   };
 
+  /**
+   * Handles user-selected audio file uploads. Validates type and size,
+   * creates a local preview URL, then uploads the file to the server.
+   */
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setError(null);
     const file = e.target.files?.[0];
@@ -171,6 +207,7 @@ export default function VoiceNoteRecorder({
     await uploadBlob(file, file.name);
   };
 
+  /** Resets the component back to idle state so the user can re-record or upload again */
   const handleReRecord = () => {
     if (audioUrl) URL.revokeObjectURL(audioUrl);
     setAudioUrl(null);

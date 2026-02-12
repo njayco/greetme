@@ -1,7 +1,17 @@
+/**
+ * ShareCardClient.tsx — Client component for displaying a shared greeting card.
+ *
+ * Renders an interactive card viewer with three tabs (Cover, Centerfold, Back),
+ * optional voice note playback, optional YouTube clip playback, and optional
+ * gift card redemption. When both a voice note and YouTube clip are present,
+ * their play/pause states are synced so they start and stop together.
+ */
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import YouTubeClipPlayer from '@/components/YouTubeClipPlayer';
+
+// ---------- Type definitions for data passed from the server component ----------
 
 type CardData = {
   id: number;
@@ -38,19 +48,35 @@ type Props = {
   voiceNoteUrl?: string | null;
 };
 
+/**
+ * VoiceNotePlayer — Self-contained audio player for a voice note attachment.
+ *
+ * Manages its own HTML Audio element and exposes play-state changes via
+ * `onPlayStateChange` so the parent can coordinate with other media players.
+ *
+ * Synced playback refs:
+ *  - `externalPlayingRef`  — tracks the last known external play state to
+ *    avoid redundant play/pause calls when the value hasn't changed.
+ *  - `isExternalUpdateRef` — guards against re-emitting `onPlayStateChange`
+ *    when the play/pause was triggered externally (prevents infinite loops).
+ */
 function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, externalPlaying = null }: { voiceNoteUrl: string; hasYoutubeClip: boolean; onPlayStateChange?: (playing: boolean) => void; externalPlaying?: boolean | null }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [duration, setDuration] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Tracks the last external play state to skip no-op updates
   const externalPlayingRef = useRef<boolean | null>(null);
+  // When true, suppresses onPlayStateChange to avoid feedback loops
   const isExternalUpdateRef = useRef(false);
 
+  // Resolve object-storage paths to the upload-serve API route
   const resolvedUrl = voiceNoteUrl.startsWith('/objects/')
     ? `/api/uploads/serve?path=${encodeURIComponent(voiceNoteUrl)}`
     : voiceNoteUrl;
 
+  // Initialize the Audio element and wire up event listeners
   useEffect(() => {
     const audio = new Audio(resolvedUrl);
     audio.preload = 'metadata';
@@ -60,6 +86,7 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, exte
       setDuration(audio.duration);
     });
 
+    // Reset state when audio finishes naturally
     audio.addEventListener('ended', () => {
       setIsPlaying(false);
       setElapsed(0);
@@ -73,6 +100,7 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, exte
       }
     });
 
+    // Start the elapsed-time polling interval on play
     audio.addEventListener('play', () => {
       setIsPlaying(true);
       externalPlayingRef.current = true;
@@ -96,6 +124,7 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, exte
       }
     });
 
+    // Cleanup: stop audio and release resources on unmount
     return () => {
       audio.pause();
       audio.src = '';
@@ -103,6 +132,7 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, exte
     };
   }, [resolvedUrl]);
 
+  // Respond to external play/pause commands (synced playback with YouTube)
   useEffect(() => {
     if (externalPlaying === null || !audioRef.current) return;
     if (externalPlaying === externalPlayingRef.current) return;
@@ -110,6 +140,7 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, exte
     isExternalUpdateRef.current = true;
 
     if (externalPlaying) {
+      // If the track ended, restart from the beginning
       if (elapsed >= duration && duration > 0) {
         audioRef.current.currentTime = 0;
         setElapsed(0);
@@ -123,6 +154,7 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, exte
     }
   }, [externalPlaying, elapsed, duration]);
 
+  /** Toggle play/pause when user clicks the player */
   const togglePlay = useCallback(() => {
     if (!audioRef.current) return;
     if (isPlaying) {
@@ -136,6 +168,7 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, exte
     }
   }, [isPlaying, elapsed, duration]);
 
+  /** Format seconds into m:ss display */
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
     const s = Math.floor(seconds % 60);
@@ -144,6 +177,7 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, exte
 
   return (
     <div className="mt-3 w-full">
+      {/* Pill-shaped player bar */}
       <div
         className="flex items-center gap-3 px-4 py-3 rounded-full cursor-pointer select-none"
         style={{
@@ -152,11 +186,13 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, exte
         }}
         onClick={togglePlay}
       >
+        {/* Microphone icon */}
         <div className="flex-shrink-0 w-5 h-5 text-white">
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
             <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6.91 6c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z" />
           </svg>
         </div>
+        {/* Label and elapsed / duration display */}
         <div className="flex-1 min-w-0">
           <div className="text-white text-sm font-bold leading-tight">
             Voice Message{' '}
@@ -169,6 +205,7 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, exte
           )}
         </div>
 
+        {/* Play / Pause button */}
         <button
           className="flex-shrink-0 w-10 h-10 rounded-full bg-white/20 border-2 border-white flex items-center justify-center hover:bg-white/30 transition-colors"
           onClick={(e) => {
@@ -193,27 +230,41 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, exte
   );
 }
 
+/**
+ * ShareCardClient — Main client component for the shared-card page.
+ *
+ * Manages:
+ *  - `cardView`      — which card face is currently visible (cover / centerfold / back).
+ *  - `syncedPlaying`  — shared play/pause state used to keep voice note and
+ *                       YouTube clip in sync (only active when both exist).
+ */
 export default function ShareCardClient({ cardData, senderName, recipientName, personalNote, categoryName, youtubeClip, giftCard, voiceNoteUrl }: Props) {
   const [cardView, setCardView] = useState<'cover' | 'centerfold' | 'back'>('cover');
+  // syncedPlaying coordinates play state between VoiceNotePlayer and YouTubeClipPlayer
   const [syncedPlaying, setSyncedPlaying] = useState<boolean | null>(null);
   const hasBoth = !!voiceNoteUrl && !!youtubeClip;
 
+  // Callback forwarded to both media players; only activates sync when both exist
   const handlePlayStateChange = useCallback((playing: boolean) => {
     if (hasBoth) {
       setSyncedPlaying(playing);
     }
   }, [hasBoth]);
 
+  // Reset sync state if the combination of media attachments changes
   useEffect(() => {
     setSyncedPlaying(null);
   }, [hasBoth]);
 
+  // Resolve object-storage cover images through the upload-serve API
   const resolvedCover = cardData.cover?.startsWith('/objects/')
     ? `/api/uploads/serve?path=${encodeURIComponent(cardData.cover)}`
     : cardData.cover;
 
+  /** Render the currently selected card face */
   const renderCard = () => {
     switch (cardView) {
+      // Front cover — displays the card image
       case 'cover':
         return (
           <div className="aspect-[3/4] bg-white rounded-lg shadow-2xl flex items-center justify-center p-2 border border-gray-200">
@@ -224,6 +275,7 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
             />
           </div>
         );
+      // Inside / centerfold — greeting text, personal note, media players, gift card
       case 'centerfold':
         return (
           <div className="bg-gradient-to-b from-gray-50 to-white rounded-lg shadow-2xl overflow-hidden border border-gray-200">
@@ -231,6 +283,7 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
               <div className="min-h-[300px] flex flex-col">
                 <h3 className="text-xl font-bold mb-4 text-center text-gray-800" style={{ fontFamily: "Georgia, serif" }}>Special Greeting!</h3>
                 <div className="flex-1 flex flex-col justify-center">
+                  {/* Centerfold message — font size adapts for long messages */}
                   <p
                     className={`text-gray-700 mb-4 text-center leading-relaxed ${
                       cardData.centerfold.length > 200 ? "text-sm" : "text-base"
@@ -239,6 +292,7 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
                   >
                     {cardData.centerfold}
                   </p>
+                  {/* Optional personal note from the sender */}
                   {personalNote && (
                     <div className="mt-4 p-4 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg border-l-4 border-amber-500">
                       <p className="text-sm italic text-gray-800 font-medium break-words" style={{ fontFamily: "Georgia, serif" }}>"{personalNote}"</p>
@@ -248,6 +302,7 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
                 </div>
               </div>
 
+              {/* Voice note player — synced with YouTube when both are present */}
               {voiceNoteUrl && (
                 <VoiceNotePlayer
                   voiceNoteUrl={voiceNoteUrl}
@@ -257,6 +312,7 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
                 />
               )}
 
+              {/* YouTube clip player — volume lowered when voice note exists */}
               {youtubeClip && (
                 <YouTubeClipPlayer
                   videoId={youtubeClip.videoId}
@@ -270,6 +326,7 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
                 />
               )}
 
+              {/* Gift card section — shows redeem link, open link, or redeemed badge */}
               {giftCard && (
                 <div className="mt-3 text-center">
                   {giftCard.status === 'redeemed' && giftCard.link ? (
@@ -311,6 +368,7 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
             </div>
           </div>
         );
+      // Back of the card — closing message with sender/recipient info
       case 'back':
         return (
           <div className="aspect-[3/4] bg-gradient-to-b from-gray-50 to-white rounded-lg shadow-2xl flex items-center justify-center p-6 border border-gray-200">
@@ -335,6 +393,7 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
     }
   };
 
+  // Tab definitions for the bottom navigation bar
   const tabs = [
     { key: 'cover', label: 'Cover' },
     { key: 'centerfold', label: 'Centerfold' },
@@ -348,6 +407,7 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
         background: 'linear-gradient(135deg, #c49a6c 0%, #b8860b 25%, #c49a6c 50%, #d4a574 75%, #c49a6c 100%)',
       }}
     >
+      {/* Faux wood-grain vertical stripe overlay */}
       <div
         className="absolute inset-0"
         style={{
@@ -357,6 +417,7 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
       />
 
       <div className="relative z-10 flex flex-col min-h-screen">
+        {/* Top header bar with sender → recipient info */}
         <div className="flex justify-between items-center px-4 py-3 bg-[#4EAAA2] text-white">
           <div className="text-lg font-bold" style={{ fontFamily: "Georgia, serif" }}>Greeting Card</div>
           <div className="text-sm" style={{ fontFamily: "Georgia, serif" }}>
@@ -365,6 +426,7 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
         </div>
 
         <div className="flex-1 flex flex-col">
+          {/* Decorative shelf/ledge above the card */}
           <div className="px-4 pt-4">
             <div className="min-h-[60px]"></div>
             <div className="relative w-full h-6">
@@ -379,6 +441,7 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
             </div>
           </div>
 
+          {/* Card display area */}
           <div className="flex-1 flex items-start justify-center px-4 -mt-2 relative z-20">
             <div className="w-full max-w-sm">
               <h2
@@ -389,6 +452,7 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
               </h2>
               {renderCard()}
 
+              {/* CTA to create a new card */}
               <div className="text-center mt-6">
                 <a
                   href="/"
@@ -404,6 +468,7 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
             </div>
           </div>
 
+          {/* Bottom tab bar for switching card faces */}
           <div className="mt-auto pb-2">
             <div
               className="py-3"

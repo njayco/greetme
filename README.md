@@ -13,6 +13,7 @@ Created by **Najee Jeremiah**
 - [Features](#features)
 - [How It Works](#how-it-works)
 - [Greet Me Clips](#greet-me-clips)
+- [Voice Notes](#voice-notes)
 - [Greet Me for Artists](#greet-me-for-artists)
 - [Gift Cards](#gift-cards)
 - [Tech Stack](#tech-stack)
@@ -37,6 +38,7 @@ Created by **Najee Jeremiah**
 - **Card customization** with sender name, recipient name, and personal notes
 - **Greet Me for Artists** — create custom cards by uploading artwork, writing messages, and sharing or selling
 - **Greet Me Clips** — attach a 30-second YouTube audio clip to any card for $0.99, powered by YouTube
+- **Voice Notes** — record or upload a personal voice message (up to 30 seconds) that plays alongside the YouTube clip with synced playback controls
 - **Gift Cards** — attach a digital gift card (powered by Giftbit/Tremendous) to any greeting card with just-in-time charging — the sender is only charged when the recipient redeems
 - **Stripe payment integration** for premium Valentine's Day cards ($0.99 - $2.99), personal artist cards ($4.99), and audio clip add-ons ($0.99)
 - **Shareable short links** that work on social media with OG metadata previews
@@ -128,6 +130,40 @@ Artists can also add YouTube clips to their custom cards during the personalizat
 | **Stripe Product** | Dynamically found or created via `lib/youtubeAddon.ts` — auto-provisions in both Stripe test and live modes |
 | **Database Columns** | `youtube_video_id`, `youtube_url`, `youtube_title`, `youtube_start_seconds`, `youtube_end_seconds`, `youtube_clip_enabled` on `shared_cards` |
 | **Webhook** | `lib/webhookHandlers.ts` — Server-side Stripe line item verification before enabling clip playback |
+
+---
+
+## Voice Notes
+
+**Voice Notes** let card creators record or upload a personal voice message (up to 30 seconds) when adding a YouTube clip to any card. The voice note becomes the primary audio experience, with the YouTube clip playing as background music.
+
+### How Voice Notes Work
+
+1. **Enable a YouTube Clip first** - Voice Notes appear within the YouTube Clip section on the Customize screen (or Artists personalization step)
+2. **Record or Upload** - Use the built-in microphone recorder (auto-stops at 30 seconds) or upload a WebM, MP4, MP3, or WAV audio file (max 10MB)
+3. **Read the card aloud** - The UI prompts the creator to read the card's centerfold message aloud and shows the text as reference
+4. **Preview before sending** - A native audio player lets the creator listen back, re-record, or upload a different file
+5. **Recipient gets both** - On the share page Centerfold tab, the voice note plays at full volume (teal "Voice Message" bar) and the YouTube clip plays underneath at 25% volume (red "Background Music" bar)
+
+### Synced Playback
+
+When both a voice note and a YouTube clip are present on a card, playback is synchronized:
+
+- **Play either, play both** - Pressing play on the voice note also starts the YouTube clip (and vice versa)
+- **Pause either, pause both** - Pressing pause on one pauses the other
+- **End either, stop both** - When the voice note or clip finishes, the other stops too
+- **No loop or flicker** - A ref-based guard system (`externalPlayingRef` + `isExternalUpdateRef`) prevents ping-pong state updates between the two players
+
+### Technical Details
+
+| Component | Details |
+|---|---|
+| **Recorder Component** | `components/VoiceNoteRecorder.tsx` — MediaRecorder API (audio/webm, fallback audio/mp4), 30s max, upload to Object Storage |
+| **Upload API** | `POST /api/voice-note/upload` — Accepts FormData with `audio` field, stores to Object Storage under `voice-notes/` |
+| **Voice Player** | `VoiceNotePlayer` in `app/c/[id]/ShareCardClient.tsx` — HTML Audio element with play/pause sync |
+| **Sync Mechanism** | `ShareCardClient` manages `syncedPlaying` state, passes `externalPlaying` and `onPlayStateChange` to both players |
+| **Storage** | Replit Object Storage under `voice-notes/` directory, served via `/api/uploads/serve` |
+| **Database Column** | `voice_note_url` (TEXT, nullable) on `shared_cards` table |
 
 ---
 
@@ -255,6 +291,8 @@ greetme/
 │   │   │   └── fulfill/route.ts     # Manual gift card fulfillment
 │   │   ├── redeem/
 │   │   │   └── [id]/route.ts        # Gift card redemption (charge + fulfill)
+│   │   ├── voice-note/
+│   │   │   └── upload/route.ts      # Voice note upload (Object Storage)
 │   │   ├── artists/
 │   │   │   ├── upload/route.ts       # Artist image upload (Object Storage)
 │   │   │   ├── create/route.ts       # Artist card creation with Stripe
@@ -269,7 +307,8 @@ greetme/
 │       ├── page.tsx                  # Server component with OG metadata
 │       └── ShareCardClient.tsx       # Client component for card display
 ├── components/                       # shadcn/ui components
-│   ├── YouTubeClipPlayer.tsx        # YouTube clip player with red bar UI
+│   ├── YouTubeClipPlayer.tsx        # YouTube clip player with red bar UI & sync
+│   ├── VoiceNoteRecorder.tsx        # Voice note recorder/uploader component
 │   └── ui/                           # Button, Card, Input, etc.
 ├── lib/
 │   ├── cardData.ts                   # All card & category definitions
