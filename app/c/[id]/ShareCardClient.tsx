@@ -330,13 +330,24 @@ function CashGiftSection({ cashGift, senderName }: { cashGift: CashGiftData; sen
             <div className="space-y-3">
               <div>
                 <p className="font-bold mb-1">Step 1: Download Cash App</p>
-                <p className="text-gray-600 text-xs mb-2">If you don't have Cash App yet, download it for free:</p>
+                <p className="text-gray-600 text-xs mb-2">If you don't have Cash App yet, use the link below to download it and get a <strong>free $5 bonus</strong> when you send your first $5+!</p>
+                <a
+                  href="https://cash.app/app/LTG88CT"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full px-3 py-2.5 rounded-lg text-center text-sm font-bold text-white transition-all hover:opacity-90 mb-2"
+                  style={{ background: '#00D632' }}
+                >
+                  Download Cash App & Get $5 Free
+                </a>
+                <p className="text-gray-500 text-[10px] mb-2 text-center">Use referral code: <strong>LTG88CT</strong> when signing up</p>
+                <p className="text-gray-500 text-[10px] mb-1">Or download directly from:</p>
                 <div className="flex gap-2">
                   <a
                     href="https://apps.apple.com/us/app/cash-app/id711923939"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 px-3 py-2 rounded-lg text-center text-xs font-bold text-white transition-all hover:opacity-90"
+                    className="flex-1 px-3 py-1.5 rounded-lg text-center text-[10px] font-bold text-white transition-all hover:opacity-90"
                     style={{ background: '#000' }}
                   >
                     App Store (iPhone)
@@ -345,7 +356,7 @@ function CashGiftSection({ cashGift, senderName }: { cashGift: CashGiftData; sen
                     href="https://play.google.com/store/apps/details?id=com.squareup.cash"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 px-3 py-2 rounded-lg text-center text-xs font-bold text-white transition-all hover:opacity-90"
+                    className="flex-1 px-3 py-1.5 rounded-lg text-center text-[10px] font-bold text-white transition-all hover:opacity-90"
                     style={{ background: '#000' }}
                   >
                     Google Play (Android)
@@ -355,7 +366,7 @@ function CashGiftSection({ cashGift, senderName }: { cashGift: CashGiftData; sen
 
               <div>
                 <p className="font-bold mb-1">Step 2: Set Up Your Account</p>
-                <p className="text-gray-600 text-xs">Open Cash App and create an account with your email or phone number. You'll also link a debit card or bank account so you can receive money.</p>
+                <p className="text-gray-600 text-xs">Open Cash App and create an account with your email or phone number. When asked for a referral code, enter <strong>LTG88CT</strong> to get a free $5 bonus! You'll also link a debit card or bank account so you can receive money.</p>
               </div>
 
               <div>
