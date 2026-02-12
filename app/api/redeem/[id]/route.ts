@@ -115,9 +115,9 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       );
 
       let linkUrl = null;
-      let retries = 0;
-      while (!linkUrl && retries < 3) {
-        await new Promise(resolve => setTimeout(resolve, 3000));
+      const retryDelays = [2000, 3000, 4000, 5000, 5000, 5000];
+      for (let i = 0; i < retryDelays.length; i++) {
+        await new Promise(resolve => setTimeout(resolve, retryDelays[i]));
         try {
           const linksData = await getLinks(giftbitCampaignId);
           if (linksData.shortlinks && linksData.shortlinks.length > 0) {
@@ -125,10 +125,10 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
           } else if (linksData.links && linksData.links.length > 0) {
             linkUrl = linksData.links[0].url || linksData.links[0].shortlink;
           }
+          if (linkUrl) break;
         } catch (linkErr: any) {
-          console.log(`Gift card link attempt ${retries + 1} not ready:`, linkErr.message);
+          console.log(`Gift card link attempt ${i + 1}/${retryDelays.length} not ready:`, linkErr.message);
         }
-        retries++;
       }
 
       if (linkUrl) {
@@ -147,7 +147,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
       const domain = process.env.REPLIT_DOMAINS?.split(',')[0] || 'greetme.me';
       const shareUrl = `https://${domain}/c/${shareId}`;
-      if (recipientEmail) try {
+      if (recipientEmail && linkUrl) try {
         const { client: resend, fromEmail } = await getUncachableResendClient();
         const amountDollars = (card.gift_card_amount_cents / 100).toFixed(0);
         const htmlContent = `
@@ -164,18 +164,15 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
               <p style="color: #333; font-size: 16px; line-height: 1.6;">
                 <strong>${senderName}</strong> sent you a <strong>$${amountDollars} gift card</strong> along with a GreetMe greeting card!
               </p>
-              ${linkUrl ? `
               <div style="text-align: center; margin: 24px 0;">
                 <a href="${linkUrl}"
                    style="display: inline-block; background: linear-gradient(180deg, #34C759, #28a745); color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: bold; box-shadow: 0 3px 8px rgba(40,167,69,0.4);">
-                  Open Your Gift Card
+                  Redeem Your $${amountDollars} Gift Card
                 </a>
               </div>
-              ` : `
-              <p style="color: #666; font-size: 14px; text-align: center; font-style: italic;">
-                Your gift card link is being generated. You'll receive it shortly!
+              <p style="color: #666; font-size: 13px; text-align: center; margin-top: 8px;">
+                Click above to choose your preferred retailer and claim your reward.
               </p>
-              `}
               <div style="background: #f5f0e8; border-radius: 8px; padding: 16px; margin: 20px 0; border: 1px solid #e0d5c0;">
                 <p style="color: #666; font-size: 13px; margin: 0 0 6px 0;">Don't forget to view your greeting card too:</p>
                 <a href="${shareUrl}" style="color: #4EAAA2; font-size: 14px; word-break: break-all;">${shareUrl}</a>

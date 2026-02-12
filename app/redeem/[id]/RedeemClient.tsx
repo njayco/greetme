@@ -101,9 +101,19 @@ export default function RedeemClient({ giftCard }: { giftCard: GiftCardInfo }) {
                 Open Gift Card
               </a>
             ) : (
-              <p className="text-sm text-gray-500 italic">
-                Your gift card link is being generated.{recipientEmail ? ` Check your ${recipientEmail} email shortly!` : ' Check your email shortly!'}
-              </p>
+              <div>
+                <p className="text-sm text-green-700 font-medium mb-2">
+                  Your gift card has been created successfully!
+                </p>
+                <p className="text-sm text-gray-600 mb-2">
+                  Your gift card link is being prepared. Refresh this page in a moment to access it.
+                </p>
+                {recipientEmail && (
+                  <p className="text-sm text-gray-500">
+                    Once ready, it will also be sent to <strong>{recipientEmail}</strong>
+                  </p>
+                )}
+              </div>
             )}
 
             <div className="mt-6 pt-4 border-t border-gray-100">
