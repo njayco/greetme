@@ -39,10 +39,11 @@ async function getSharedCard(id: string) {
       endSeconds: row.youtube_end_seconds || 30,
     } : null;
 
-    const giftCard = row.gift_card_status === 'sent' && row.gift_card_link ? {
+    const giftCard = row.gift_card_brand && row.gift_card_amount_cents ? {
       amountCents: row.gift_card_amount_cents,
-      link: row.gift_card_link,
+      link: row.gift_card_link || null,
       brand: row.gift_card_brand || 'Gift Card',
+      status: row.gift_card_status || 'pending',
     } : null;
 
     if (row.custom_card_id) {

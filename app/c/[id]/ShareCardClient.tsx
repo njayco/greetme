@@ -21,8 +21,9 @@ type YouTubeClipData = {
 
 type GiftCardData = {
   amountCents: number;
-  link: string;
+  link: string | null;
   brand: string;
+  status: string;
 };
 
 type Props = {
@@ -90,18 +91,40 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
 
               {giftCard && (
                 <div className="mt-3 text-center">
-                  <a
-                    href={giftCard.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block px-5 py-2 rounded-lg font-bold text-sm text-white transition-all hover:opacity-90"
-                    style={{
-                      background: 'linear-gradient(180deg, #34C759, #28a745)',
-                      boxShadow: '0 2px 6px rgba(40,167,69,0.4)',
-                    }}
-                  >
-                    Redeem ${(giftCard.amountCents / 100).toFixed(0)} Gift Card
-                  </a>
+                  {giftCard.link ? (
+                    <a
+                      href={giftCard.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block px-5 py-2 rounded-lg font-bold text-sm text-white transition-all hover:opacity-90"
+                      style={{
+                        background: 'linear-gradient(180deg, #34C759, #28a745)',
+                        boxShadow: '0 2px 6px rgba(40,167,69,0.4)',
+                      }}
+                    >
+                      Redeem ${(giftCard.amountCents / 100).toFixed(0)} Gift Card
+                    </a>
+                  ) : giftCard.status === 'pending' ? (
+                    <div
+                      className="inline-block px-5 py-2 rounded-lg font-bold text-sm text-white"
+                      style={{
+                        background: 'linear-gradient(180deg, #f0ad4e, #ec971f)',
+                        boxShadow: '0 2px 6px rgba(236,151,31,0.4)',
+                      }}
+                    >
+                      ${(giftCard.amountCents / 100).toFixed(0)} Gift Card Processing...
+                    </div>
+                  ) : (
+                    <div
+                      className="inline-block px-5 py-2 rounded-lg font-bold text-sm text-white"
+                      style={{
+                        background: 'linear-gradient(180deg, #34C759, #28a745)',
+                        boxShadow: '0 2px 6px rgba(40,167,69,0.4)',
+                      }}
+                    >
+                      ${(giftCard.amountCents / 100).toFixed(0)} Gift Card Included
+                    </div>
+                  )}
                 </div>
               )}
             </div>
