@@ -24,6 +24,7 @@ type GiftCardData = {
   link: string | null;
   brand: string;
   status: string;
+  shareId: string;
 };
 
 type Props = {
@@ -91,7 +92,7 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
 
               {giftCard && (
                 <div className="mt-3 text-center">
-                  {giftCard.link ? (
+                  {giftCard.status === 'redeemed' && giftCard.link ? (
                     <a
                       href={giftCard.link}
                       target="_blank"
@@ -102,28 +103,28 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
                         boxShadow: '0 2px 6px rgba(40,167,69,0.4)',
                       }}
                     >
-                      Redeem ${(giftCard.amountCents / 100).toFixed(0)} Gift Card
+                      Open ${(giftCard.amountCents / 100).toFixed(0)} Gift Card
                     </a>
-                  ) : giftCard.status === 'pending' ? (
+                  ) : giftCard.status === 'redeemed' ? (
                     <div
                       className="inline-block px-5 py-2 rounded-lg font-bold text-sm text-white"
                       style={{
-                        background: 'linear-gradient(180deg, #f0ad4e, #ec971f)',
-                        boxShadow: '0 2px 6px rgba(236,151,31,0.4)',
+                        background: 'linear-gradient(180deg, #6B7280, #4B5563)',
                       }}
                     >
-                      ${(giftCard.amountCents / 100).toFixed(0)} Gift Card Processing...
+                      ${(giftCard.amountCents / 100).toFixed(0)} Gift Card Redeemed
                     </div>
                   ) : (
-                    <div
-                      className="inline-block px-5 py-2 rounded-lg font-bold text-sm text-white"
+                    <a
+                      href={`/redeem/${giftCard.shareId}`}
+                      className="inline-block px-5 py-2 rounded-lg font-bold text-sm text-white transition-all hover:opacity-90"
                       style={{
                         background: 'linear-gradient(180deg, #34C759, #28a745)',
                         boxShadow: '0 2px 6px rgba(40,167,69,0.4)',
                       }}
                     >
-                      ${(giftCard.amountCents / 100).toFixed(0)} Gift Card Included
-                    </div>
+                      Redeem ${(giftCard.amountCents / 100).toFixed(0)} Gift Card Here
+                    </a>
                   )}
                 </div>
               )}

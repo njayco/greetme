@@ -44,6 +44,7 @@ async function getSharedCard(id: string) {
       link: row.gift_card_link || null,
       brand: row.gift_card_brand || 'Gift Card',
       status: row.gift_card_status || 'pending',
+      shareId: row.id,
     } : null;
 
     if (row.custom_card_id) {

@@ -16,37 +16,6 @@ export async function POST(request: NextRequest) {
     const stripe = await getUncachableStripeClient();
     const origin = request.headers.get('origin') || request.nextUrl.origin;
 
-    const lineItems: Array<{ price?: string; price_data?: any; quantity: number }> = [];
-
-    if (priceId) {
-      lineItems.push({ price: priceId, quantity: 1 });
-    }
-
-    if (addYoutubeClip) {
-      const youtubeAddonPriceId = await getOrCreateYoutubeAddonPrice(stripe);
-      lineItems.push({ price: youtubeAddonPriceId, quantity: 1 });
-    }
-
-    if (giftCard && giftCard.brandCode && giftCard.amountCents > 0) {
-      lineItems.push({
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: `${giftCard.brandName || 'Gift Card'} Gift Card`,
-            description: `$${(giftCard.amountCents / 100).toFixed(2)} gift card for ${giftCard.recipientEmail || 'recipient'}`,
-          },
-          unit_amount: giftCard.amountCents,
-        },
-        quantity: 1,
-      });
-    }
-
-    if (lineItems.length === 0) {
-      return NextResponse.json({ error: 'No items to checkout' }, { status: 400 });
-    }
-
-    console.log('Creating checkout with line_items:', JSON.stringify(lineItems));
-
     const metadata: any = {
       cardTitle: cardTitle || '',
       shareId: shareId || '',
@@ -63,13 +32,66 @@ export async function POST(request: NextRequest) {
       metadata.gift_card_recipient_name = giftCard.recipientName || '';
     }
 
+    const lineItems: Array<{ price?: string; price_data?: any; quantity: number }> = [];
+
+    if (priceId) {
+      lineItems.push({ price: priceId, quantity: 1 });
+    }
+
+    if (addYoutubeClip) {
+      const youtubeAddonPriceId = await getOrCreateYoutubeAddonPrice(stripe);
+      lineItems.push({ price: youtubeAddonPriceId, quantity: 1 });
+    }
+
+    const hasImmediateCharges = lineItems.length > 0;
+    const hasGiftCard = giftCard && giftCard.brandCode && giftCard.amountCents > 0;
+
+    if (!hasImmediateCharges && !hasGiftCard) {
+      return NextResponse.json({ error: 'No items to checkout' }, { status: 400 });
+    }
+
+    const resolvedSuccessUrl = successUrl || `${origin}/?payment=success&card=${cardTitle || ''}`;
+    const resolvedCancelUrl = cancelUrl || `${origin}/?payment=cancelled`;
+
+    if (hasGiftCard && !hasImmediateCharges) {
+      console.log('Gift card only - using setup mode to save payment method');
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        mode: 'setup',
+        success_url: resolvedSuccessUrl,
+        cancel_url: resolvedCancelUrl,
+        metadata,
+      });
+
+      return NextResponse.json({ url: session.url });
+    }
+
+    if (hasGiftCard && hasImmediateCharges) {
+      console.log('Gift card + other items - payment mode with setup_future_usage');
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: lineItems,
+        mode: 'payment',
+        allow_promotion_codes: true,
+        payment_intent_data: {
+          setup_future_usage: 'off_session',
+        },
+        success_url: resolvedSuccessUrl,
+        cancel_url: resolvedCancelUrl,
+        metadata,
+      });
+
+      return NextResponse.json({ url: session.url });
+    }
+
+    console.log('No gift card - standard payment mode');
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
       allow_promotion_codes: true,
-      success_url: successUrl || `${origin}/?payment=success&card=${cardTitle || ''}`,
-      cancel_url: cancelUrl || `${origin}/?payment=cancelled`,
+      success_url: resolvedSuccessUrl,
+      cancel_url: resolvedCancelUrl,
       metadata,
     });
 
