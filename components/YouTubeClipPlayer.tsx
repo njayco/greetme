@@ -9,6 +9,8 @@ type YouTubeClipPlayerProps = {
   startSeconds: number;
   endSeconds: number;
   lowVolume?: boolean;
+  onPlayStateChange?: (playing: boolean) => void;
+  externalPlaying?: boolean | null;
 };
 
 declare global {
@@ -24,13 +26,15 @@ function formatTime(seconds: number): string {
   return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
-export default function YouTubeClipPlayer({ videoId, title, url, startSeconds, endSeconds, lowVolume = false }: YouTubeClipPlayerProps) {
+export default function YouTubeClipPlayer({ videoId, title, url, startSeconds, endSeconds, lowVolume = false, onPlayStateChange, externalPlaying = null }: YouTubeClipPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [playerReady, setPlayerReady] = useState(false);
   const playerRef = useRef<any>(null);
   const containerRef = useRef<string>(`yt-player-${videoId}-${Date.now()}`);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const externalPlayingRef = useRef<boolean | null>(null);
+  const isExternalUpdateRef = useRef(false);
   const clipDuration = endSeconds - startSeconds;
 
   const stopPlayback = useCallback(() => {
@@ -87,22 +91,40 @@ export default function YouTubeClipPlayer({ videoId, title, url, startSeconds, e
                 playerRef.current.setVolume(25);
               }
               playerRef.current.seekTo(startSeconds, true);
-              playerRef.current.playVideo();
             } catch {}
           },
           onStateChange: (event: any) => {
+            const wasExternal = isExternalUpdateRef.current;
+            isExternalUpdateRef.current = false;
+
             if (event.data === window.YT.PlayerState.PLAYING) {
               if (lowVolume) {
                 try { playerRef.current.setVolume(25); } catch {}
               }
               setIsPlaying(true);
               startTimer();
-            } else if (event.data === window.YT.PlayerState.PAUSED || event.data === window.YT.PlayerState.ENDED) {
+              externalPlayingRef.current = true;
+              if (!wasExternal) {
+                onPlayStateChange?.(true);
+              }
+            } else if (event.data === window.YT.PlayerState.PAUSED) {
               setIsPlaying(false);
               if (timerRef.current) {
                 clearInterval(timerRef.current);
                 timerRef.current = null;
               }
+              externalPlayingRef.current = false;
+              if (!wasExternal) {
+                onPlayStateChange?.(false);
+              }
+            } else if (event.data === window.YT.PlayerState.ENDED) {
+              setIsPlaying(false);
+              if (timerRef.current) {
+                clearInterval(timerRef.current);
+                timerRef.current = null;
+              }
+              externalPlayingRef.current = false;
+              onPlayStateChange?.(false);
             }
           },
         },
@@ -139,6 +161,25 @@ export default function YouTubeClipPlayer({ videoId, title, url, startSeconds, e
       } catch {}
     }, 250);
   }, [startSeconds, clipDuration, stopPlayback]);
+
+  useEffect(() => {
+    if (externalPlaying === null || !playerRef.current || !playerReady) return;
+    if (externalPlaying === externalPlayingRef.current) return;
+    externalPlayingRef.current = externalPlaying;
+    isExternalUpdateRef.current = true;
+
+    try {
+      if (externalPlaying) {
+        if (elapsed >= clipDuration) {
+          playerRef.current.seekTo(startSeconds, true);
+          setElapsed(0);
+        }
+        playerRef.current.playVideo();
+      } else {
+        playerRef.current.pauseVideo();
+      }
+    } catch {}
+  }, [externalPlaying, playerReady, elapsed, clipDuration, startSeconds]);
 
   const togglePlay = () => {
     if (!playerRef.current || !playerReady) return;

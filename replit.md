@@ -166,12 +166,12 @@ CategoryType: { name, color, group?, cards[] }
 - **Seed script**: scripts/seed-youtube-addon.ts
 
 ## Voice Notes (Personal Audio Message)
-- **Feature**: When adding a YouTube clip, creators can also record or upload a personal voice message (up to 60 seconds)
+- **Feature**: When adding a YouTube clip, creators can also record or upload a personal voice message (up to 30 seconds)
 - **Instruction**: Creators are prompted to "Read the card's message aloud — make it personal!" with the centerfold text shown as reference
-- **Recording**: Browser-native MediaRecorder API (audio/webm), auto-stops at 60s, includes playback preview
+- **Recording**: Browser-native MediaRecorder API (audio/webm), auto-stops at 30s, includes playback preview
 - **Upload**: Supports WebM, MP4, MP3, WAV audio files (max 10MB)
 - **Storage**: Voice notes saved to Object Storage under `voice-notes/` directory
-- **Playback**: On the recipient's card view, voice note plays as primary audio (teal "Voice Message" bar) with YouTube clip underneath at 25% volume as background music
+- **Playback**: On the recipient's card view, voice note plays as primary audio (teal "Voice Message" bar) with YouTube clip underneath at 25% volume as background music; playback is synced — pressing play/pause on either player controls both simultaneously
 - **API**: POST /api/voice-note/upload (stores audio in Object Storage, returns URL)
 - **Component**: components/VoiceNoteRecorder.tsx (recorder/uploader), VoiceNotePlayer (in ShareCardClient.tsx)
 - **Database**: voice_note_url column on shared_cards table

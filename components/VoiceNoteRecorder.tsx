@@ -13,7 +13,7 @@ function formatTimer(seconds: number): string {
   return `${mins}:${secs.toString().padStart(2, "0")}`;
 }
 
-const MAX_RECORDING_SECONDS = 60;
+const MAX_RECORDING_SECONDS = 30;
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ACCEPTED_TYPES = ["audio/webm", "audio/mp4", "audio/mpeg", "audio/wav"];
 
