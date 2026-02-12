@@ -39,6 +39,12 @@ async function getSharedCard(id: string) {
       endSeconds: row.youtube_end_seconds || 30,
     } : null;
 
+    const giftCard = row.gift_card_status === 'sent' && row.gift_card_link ? {
+      amountCents: row.gift_card_amount_cents,
+      link: row.gift_card_link,
+      brand: row.gift_card_brand || 'Gift Card',
+    } : null;
+
     if (row.custom_card_id) {
       const customResult = await client.query(
         'SELECT * FROM custom_cards WHERE id = $1',
@@ -64,6 +70,7 @@ async function getSharedCard(id: string) {
         },
         categoryName: 'Custom',
         youtubeClip,
+        giftCard,
       };
     }
 
@@ -79,6 +86,7 @@ async function getSharedCard(id: string) {
       card: cardInfo?.card || null,
       categoryName: cardInfo?.categoryName || '',
       youtubeClip,
+      giftCard,
     };
   } catch (error) {
     console.error('Error fetching shared card:', error);
@@ -155,6 +163,7 @@ export default async function SharePage({ params }: Props) {
       personalNote={data.personalNote}
       categoryName={data.categoryName}
       youtubeClip={data.youtubeClip}
+      giftCard={data.giftCard}
     />
   );
 }
