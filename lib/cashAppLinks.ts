@@ -11,12 +11,9 @@ export function isValidCashtag(tag: string): boolean {
   return clean.length >= 1 && clean.length <= 30;
 }
 
-export function getRequestUrl(creatorCashtag: string, amount: number, note?: string): string {
+export function getProfileUrl(creatorCashtag: string): string {
   const clean = sanitizeCashtag(creatorCashtag);
-  const params = new URLSearchParams();
-  params.set('amount', amount.toString());
-  if (note) params.set('note', note);
-  return `${CASHAPP_BASE_URL}/$${clean}?${params.toString()}`;
+  return `${CASHAPP_BASE_URL}/$${clean}`;
 }
 
 export function getCashAppDownloadUrl(): { ios: string; android: string; web: string } {

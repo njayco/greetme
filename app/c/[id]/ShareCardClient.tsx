@@ -252,7 +252,7 @@ function CashGiftSection({ cashGift, senderName }: { cashGift: CashGiftData; sen
   const [showHelp, setShowHelp] = useState(false);
 
   const sanitizedTag = cashGift.cashtag.replace(/[^a-zA-Z0-9_]/g, '');
-  const cashAppUrl = `https://cash.app/$${sanitizedTag}?amount=${cashGift.amount}&note=${encodeURIComponent(`Gift from ${senderName} via GreetMe`)}`;
+  const cashAppUrl = `https://cash.app/$${sanitizedTag}`;
 
   const handleConfirm = async () => {
     setConfirming(true);
@@ -301,7 +301,7 @@ function CashGiftSection({ cashGift, senderName }: { cashGift: CashGiftData; sen
         className="inline-block px-6 py-2.5 rounded-lg font-bold text-sm transition-all hover:opacity-90 mb-2"
         style={{ background: '#fff', color: '#00D632', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}
       >
-        Request in Cash App
+        Open ${sanitizedTag} on Cash App
       </a>
 
       <div className="mt-2">
@@ -376,7 +376,7 @@ function CashGiftSection({ cashGift, senderName }: { cashGift: CashGiftData; sen
 
               <div>
                 <p className="font-bold mb-1">Step 3: Request the Money</p>
-                <p className="text-gray-600 text-xs mb-2">Tap the green <strong>"Request in Cash App"</strong> button above. It will open Cash App with the amount ($<span>{cashGift.amount}</span>) and sender ($<span>{sanitizedTag}</span>) already filled in. Just tap <strong>"Request"</strong> to send the request.</p>
+                <p className="text-gray-600 text-xs mb-2">Tap the green <strong>"Open ${sanitizedTag} on Cash App"</strong> button above. It will open their Cash App profile page. From there, tap <strong>"Request"</strong> and enter <strong>${cashGift.amount}</strong> to request your gift!</p>
               </div>
 
               <div>
