@@ -10,6 +10,7 @@ type GiftCardInfo = {
   amountCents: number;
   status: string;
   link: string | null;
+  recipientEmail: string | null;
 };
 
 export default function RedeemClient({ giftCard }: { giftCard: GiftCardInfo }) {
@@ -17,6 +18,7 @@ export default function RedeemClient({ giftCard }: { giftCard: GiftCardInfo }) {
   const [error, setError] = useState('');
   const [redeemed, setRedeemed] = useState(giftCard.status === 'redeemed');
   const [giftCardLink, setGiftCardLink] = useState(giftCard.link);
+  const [recipientEmail, setRecipientEmail] = useState(giftCard.recipientEmail);
 
   const amountDollars = (giftCard.amountCents / 100).toFixed(0);
 
@@ -42,6 +44,9 @@ export default function RedeemClient({ giftCard }: { giftCard: GiftCardInfo }) {
       }
 
       setRedeemed(true);
+      if (data.recipientEmail) {
+        setRecipientEmail(data.recipientEmail);
+      }
       if (data.giftCardLink) {
         setGiftCardLink(data.giftCardLink);
         setTimeout(() => {
@@ -72,9 +77,16 @@ export default function RedeemClient({ giftCard }: { giftCard: GiftCardInfo }) {
             <p className="text-gray-600 mb-2">
               {giftCard.senderName} sent you a <strong>${amountDollars}</strong> gift card.
             </p>
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="text-sm text-gray-500 mb-4">
               Choose from available retailers and add to Apple Wallet if supported.
             </p>
+            {recipientEmail && (
+              <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-sm text-green-800">
+                  Your gift card details will also be sent to <strong>{recipientEmail}</strong>
+                </p>
+              </div>
+            )}
             {giftCardLink ? (
               <a
                 href={giftCardLink}
@@ -90,7 +102,7 @@ export default function RedeemClient({ giftCard }: { giftCard: GiftCardInfo }) {
               </a>
             ) : (
               <p className="text-sm text-gray-500 italic">
-                Your gift card link is being generated. Check your email shortly!
+                Your gift card link is being generated.{recipientEmail ? ` Check your ${recipientEmail} email shortly!` : ' Check your email shortly!'}
               </p>
             )}
 
@@ -115,7 +127,15 @@ export default function RedeemClient({ giftCard }: { giftCard: GiftCardInfo }) {
             <p className="text-3xl font-bold text-green-600 mb-1" style={{ fontFamily: 'Georgia, serif' }}>
               ${amountDollars}
             </p>
-            <p className="text-gray-600 mb-6">gift card with your greeting card</p>
+            <p className="text-gray-600 mb-4">gift card with your greeting card</p>
+
+            {recipientEmail && (
+              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-800">
+                  Your gift card will be sent to <strong>{recipientEmail}</strong>
+                </p>
+              </div>
+            )}
 
             {error && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">

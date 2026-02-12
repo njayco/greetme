@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUncachableStripeClient } from '@/lib/stripeClient';
+import { getUncachableResendClient } from '@/lib/resendClient';
 import { createCampaign, getLinks } from '@/lib/giftbitClient';
 import pg from 'pg';
 
@@ -144,10 +145,63 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
       await client.end();
 
+      const domain = process.env.REPLIT_DOMAINS?.split(',')[0] || 'greetme.me';
+      const shareUrl = `https://${domain}/c/${shareId}`;
+      if (recipientEmail) try {
+        const { client: resend, fromEmail } = await getUncachableResendClient();
+        const amountDollars = (card.gift_card_amount_cents / 100).toFixed(0);
+        const htmlContent = `
+          <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; background: linear-gradient(180deg, #f5ecd0 0%, #ede0b8 100%);">
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h1 style="color: #8B6914; font-size: 28px; margin: 0;">GreetMe</h1>
+              <p style="color: #a07830; font-size: 14px; margin-top: 4px;">Digital Greeting Cards</p>
+            </div>
+            <div style="background: white; border-radius: 12px; padding: 30px; border: 1px solid #d4b896; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+              <h2 style="color: #2d5016; font-size: 22px; margin-top: 0; text-align: center;">🎁 Your $${amountDollars} Gift Card is Ready!</h2>
+              <p style="color: #333; font-size: 16px; line-height: 1.6;">
+                Hi${recipientName ? ` ${recipientName}` : ''},
+              </p>
+              <p style="color: #333; font-size: 16px; line-height: 1.6;">
+                <strong>${senderName}</strong> sent you a <strong>$${amountDollars} gift card</strong> along with a GreetMe greeting card!
+              </p>
+              ${linkUrl ? `
+              <div style="text-align: center; margin: 24px 0;">
+                <a href="${linkUrl}"
+                   style="display: inline-block; background: linear-gradient(180deg, #34C759, #28a745); color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: bold; box-shadow: 0 3px 8px rgba(40,167,69,0.4);">
+                  Open Your Gift Card
+                </a>
+              </div>
+              ` : `
+              <p style="color: #666; font-size: 14px; text-align: center; font-style: italic;">
+                Your gift card link is being generated. You'll receive it shortly!
+              </p>
+              `}
+              <div style="background: #f5f0e8; border-radius: 8px; padding: 16px; margin: 20px 0; border: 1px solid #e0d5c0;">
+                <p style="color: #666; font-size: 13px; margin: 0 0 6px 0;">Don't forget to view your greeting card too:</p>
+                <a href="${shareUrl}" style="color: #4EAAA2; font-size: 14px; word-break: break-all;">${shareUrl}</a>
+              </div>
+            </div>
+            <div style="text-align: center; margin-top: 24px;">
+              <p style="color: #a07830; font-size: 12px;">&copy; GreetMe - Spread joy, one card at a time.</p>
+            </div>
+          </div>
+        `;
+
+        await resend.emails.send({
+          from: fromEmail || 'GreetMe <onboarding@resend.dev>',
+          to: [recipientEmail],
+          subject: `🎁 Your $${amountDollars} Gift Card from ${senderName} is Ready!`,
+          html: htmlContent,
+        });
+      } catch (emailErr: any) {
+        console.error('Gift card confirmation email failed:', emailErr.message);
+      }
+
       return NextResponse.json({
         success: true,
         redeemed: true,
         giftCardLink: linkUrl,
+        recipientEmail: recipientEmail,
         amount: card.gift_card_amount_cents,
         brand: brandName,
       });

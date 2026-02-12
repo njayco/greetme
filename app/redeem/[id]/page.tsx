@@ -11,7 +11,7 @@ async function getGiftCardInfo(id: string) {
     const client = new pg.Client({ connectionString: process.env.DATABASE_URL });
     await client.connect();
     const result = await client.query(
-      'SELECT id, sender_name, recipient_name, gift_card_brand, gift_card_amount_cents, gift_card_status, gift_card_link FROM shared_cards WHERE id = $1',
+      'SELECT id, sender_name, recipient_name, gift_card_brand, gift_card_amount_cents, gift_card_status, gift_card_link, gift_card_recipient_email FROM shared_cards WHERE id = $1',
       [id]
     );
     await client.end();
@@ -28,6 +28,7 @@ async function getGiftCardInfo(id: string) {
       amountCents: row.gift_card_amount_cents,
       status: row.gift_card_status || 'pending',
       link: row.gift_card_link || null,
+      recipientEmail: row.gift_card_recipient_email || null,
     };
   } catch (error) {
     console.error('Error fetching gift card info:', error);
