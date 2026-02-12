@@ -37,6 +37,13 @@ type GiftCardData = {
   shareId: string;
 };
 
+type CashGiftData = {
+  cashtag: string;
+  amount: number;
+  status: string;
+  shareId: string;
+};
+
 type Props = {
   cardData: CardData;
   senderName: string;
@@ -45,6 +52,7 @@ type Props = {
   categoryName: string;
   youtubeClip?: YouTubeClipData | null;
   giftCard?: GiftCardData | null;
+  cashGift?: CashGiftData | null;
   voiceNoteUrl?: string | null;
 };
 
@@ -232,15 +240,79 @@ function VoiceNotePlayer({ voiceNoteUrl, hasYoutubeClip, onPlayStateChange, onEn
   );
 }
 
-/**
- * ShareCardClient — Main client component for the shared-card page.
- *
- * Manages:
- *  - `cardView`      — which card face is currently visible (cover / centerfold / back).
- *  - `syncedPlaying`  — shared play/pause state used to keep voice note and
- *                       YouTube clip in sync (only active when both exist).
- */
-export default function ShareCardClient({ cardData, senderName, recipientName, personalNote, categoryName, youtubeClip, giftCard, voiceNoteUrl }: Props) {
+function CashGiftSection({ cashGift, senderName }: { cashGift: CashGiftData; senderName: string }) {
+  const [confirmed, setConfirmed] = useState(cashGift.status === 'confirmed');
+  const [confirming, setConfirming] = useState(false);
+  const [confirmError, setConfirmError] = useState('');
+
+  const sanitizedTag = cashGift.cashtag.replace(/[^a-zA-Z0-9_]/g, '');
+  const cashAppUrl = `https://cash.app/$${sanitizedTag}?amount=${cashGift.amount}&note=${encodeURIComponent(`Gift from ${senderName} via GreetMe`)}`;
+
+  const handleConfirm = async () => {
+    setConfirming(true);
+    setConfirmError('');
+    try {
+      const res = await fetch('/api/cashgift/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ shareId: cashGift.shareId }),
+      });
+      if (res.ok) {
+        setConfirmed(true);
+      } else {
+        setConfirmError('Could not confirm. Please try again.');
+      }
+    } catch {
+      setConfirmError('Could not confirm. Please try again.');
+    }
+    setConfirming(false);
+  };
+
+  if (confirmed) {
+    return (
+      <div className="mt-4 text-center">
+        <div
+          className="inline-block px-5 py-2 rounded-lg font-bold text-sm text-white"
+          style={{ background: 'linear-gradient(180deg, #6B7280, #4B5563)' }}
+        >
+          ${cashGift.amount} Cash Gift Received
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-4 p-4 rounded-xl text-center" style={{ background: 'linear-gradient(135deg, #00D632 0%, #00B83F 100%)' }}>
+      <p className="text-white font-bold text-lg mb-1" style={{ fontFamily: 'Georgia, serif' }}>
+        {senderName} sent you ${cashGift.amount}!
+      </p>
+      <p className="text-white/90 text-xs mb-3">via Cash App to $<span className="font-semibold">{cashGift.cashtag}</span></p>
+
+      <a
+        href={cashAppUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-block px-6 py-2.5 rounded-lg font-bold text-sm transition-all hover:opacity-90 mb-2"
+        style={{ background: '#fff', color: '#00D632', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}
+      >
+        Request in Cash App
+      </a>
+
+      <div className="mt-2">
+        <button
+          onClick={handleConfirm}
+          disabled={confirming}
+          className="text-white/80 text-xs underline hover:text-white transition-colors disabled:opacity-50"
+        >
+          {confirming ? 'Confirming...' : 'I received it'}
+        </button>
+        {confirmError && <p className="text-white/70 text-xs mt-1">{confirmError}</p>}
+      </div>
+    </div>
+  );
+}
+
+export default function ShareCardClient({ cardData, senderName, recipientName, personalNote, categoryName, youtubeClip, giftCard, cashGift, voiceNoteUrl }: Props) {
   const [cardView, setCardView] = useState<'cover' | 'centerfold' | 'back'>('cover');
   const [syncedPlaying, setSyncedPlaying] = useState<boolean | null>(null);
   const [voiceNoteFinished, setVoiceNoteFinished] = useState(false);
@@ -350,7 +422,6 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
                 />
               )}
 
-              {/* Gift card section — shows redeem link, open link, or redeemed badge */}
               {giftCard && (
                 <div className="mt-3 text-center">
                   {giftCard.status === 'redeemed' && giftCard.link ? (
@@ -388,6 +459,10 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
                     </a>
                   )}
                 </div>
+              )}
+
+              {cashGift && (
+                <CashGiftSection cashGift={cashGift} senderName={senderName} />
               )}
             </div>
           </div>

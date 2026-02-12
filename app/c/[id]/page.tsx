@@ -70,12 +70,18 @@ async function getSharedCard(id: string) {
 
     const voiceNoteUrl = row.voice_note_url || null;
 
-    // Build gift card object only when brand and amount are set
     const giftCard = row.gift_card_brand && row.gift_card_amount_cents ? {
       amountCents: row.gift_card_amount_cents,
       link: row.gift_card_link || null,
       brand: row.gift_card_brand || 'Gift Card',
       status: row.gift_card_status || 'pending',
+      shareId: row.id,
+    } : null;
+
+    const cashGift = row.cash_gift_cashtag && row.cash_gift_amount ? {
+      cashtag: row.cash_gift_cashtag,
+      amount: row.cash_gift_amount,
+      status: row.cash_gift_status || 'pending',
       shareId: row.id,
     } : null;
 
@@ -106,6 +112,7 @@ async function getSharedCard(id: string) {
         categoryName: 'Custom',
         youtubeClip,
         giftCard,
+        cashGift,
         voiceNoteUrl,
       };
     }
@@ -124,6 +131,7 @@ async function getSharedCard(id: string) {
       categoryName: cardInfo?.categoryName || '',
       youtubeClip,
       giftCard,
+      cashGift,
       voiceNoteUrl,
     };
   } catch (error) {
@@ -219,6 +227,7 @@ export default async function SharePage({ params }: Props) {
       categoryName={data.categoryName}
       youtubeClip={data.youtubeClip}
       giftCard={data.giftCard}
+      cashGift={data.cashGift}
       voiceNoteUrl={data.voiceNoteUrl}
     />
   );

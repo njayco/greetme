@@ -111,6 +111,9 @@ export default function GreetingCardsApp() {
   const [giftCardAmount, setGiftCardAmount] = useState<number>(500)
   const [giftCardEmail, setGiftCardEmail] = useState("")
   const [giftCardBrandsLoading, setGiftCardBrandsLoading] = useState(false)
+  const [cashGiftEnabled, setCashGiftEnabled] = useState(false)
+  const [cashGiftAmount, setCashGiftAmount] = useState<number>(5)
+  const [cashGiftCashtag, setCashGiftCashtag] = useState("")
 
   const cardsPerPage = 8
 
@@ -314,6 +317,12 @@ export default function GreetingCardsApp() {
         youtube: getYoutubeShareData(),
         voiceNoteUrl: voiceNoteUrl || undefined,
       }
+      if (cashGiftEnabled && cashGiftCashtag && cashGiftAmount > 0) {
+        shareBody.cashGift = {
+          cashtag: cashGiftCashtag,
+          amount: cashGiftAmount,
+        }
+      }
       if (selectedCard.isCustomCard && selectedCard.customCardId) {
         shareBody.customCardId = selectedCard.customCardId
       } else {
@@ -351,6 +360,11 @@ export default function GreetingCardsApp() {
       return
     }
 
+    if (cashGiftEnabled && (!cashGiftCashtag || cashGiftAmount < 1)) {
+      alert('Please enter your Cash App tag and a gift amount of at least $1.')
+      return
+    }
+
     const cardPrice = selectedCard.price || 0
     const stripeProduct = stripeProducts[selectedCard.id.toString()]
     const needsClipPayment = youtubeClipEnabled && youtubeResolved
@@ -367,6 +381,12 @@ export default function GreetingCardsApp() {
           note: formData.personalNote,
           youtube: getYoutubeShareData(),
           voiceNoteUrl: voiceNoteUrl || undefined,
+        }
+        if (cashGiftEnabled && cashGiftCashtag && cashGiftAmount > 0) {
+          shareBody.cashGift = {
+            cashtag: cashGiftCashtag,
+            amount: cashGiftAmount,
+          }
         }
         if (needsGiftCardPayment) {
           const selectedBrandObj = giftCardBrands.find(b => b.brand_code === giftCardBrand)
@@ -1190,104 +1210,55 @@ export default function GreetingCardsApp() {
                     <div className="mt-4 p-3 rounded-lg border border-gray-200 bg-white/50">
                       <div className="flex items-center justify-between mb-2">
                         <label className="font-bold text-gray-800 text-sm flex items-center gap-2" style={{ fontFamily: "Georgia, serif" }}>
-                          Add a Gift Card
-                          <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 border border-amber-300">Beta</span>
+                          Send a Cash Gift
+                          <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded" style={{ background: '#00D632', color: '#fff' }}>Cash App</span>
                         </label>
                         <button
                           type="button"
                           onClick={() => {
-                            const next = !giftCardEnabled
-                            setGiftCardEnabled(next)
-                            if (next && giftCardBrands.length === 0) {
-                              setGiftCardBrandsLoading(true)
-                              fetch('/api/giftbit/brands')
-                                .then(r => r.json())
-                                .then(data => {
-                                  setGiftCardBrands(data.brands || [])
-                                  const defaultAmount = 500
-                                  const firstAvailable = (data.brands || []).find((b: any) => defaultAmount >= (b.min_price_in_cents || 0) && defaultAmount <= (b.max_price_in_cents || 100000))
-                                  if (firstAvailable) setGiftCardBrand(firstAvailable.brand_code)
-                                })
-                                .catch(() => {})
-                                .finally(() => setGiftCardBrandsLoading(false))
-                            }
+                            const next = !cashGiftEnabled
+                            setCashGiftEnabled(next)
                             if (!next) {
-                              setGiftCardBrand("")
-                              setGiftCardAmount(500)
-                              setGiftCardEmail("")
+                              setCashGiftCashtag("")
+                              setCashGiftAmount(5)
                             }
                           }}
-                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${giftCardEnabled ? 'bg-green-500' : 'bg-gray-300'}`}
+                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${cashGiftEnabled ? 'bg-green-500' : 'bg-gray-300'}`}
                         >
-                          <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${giftCardEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
+                          <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${cashGiftEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
                         </button>
                       </div>
 
-                      {giftCardEnabled && (
+                      {cashGiftEnabled && (
                         <div className="space-y-3 mt-3">
-                          {giftCardBrandsLoading ? (
-                            <p className="text-sm text-gray-500">Loading gift card brands...</p>
-                          ) : (
-                            <>
-                              <div>
-                                <label className="text-xs text-gray-600 block mb-1">Amount</label>
-                                <div className="flex gap-2 flex-wrap">
-                                  {[500, 1000, 1500, 2000, 2500, 5000].map((amt) => (
-                                    <button
-                                      key={amt}
-                                      type="button"
-                                      onClick={() => {
-                                        setGiftCardAmount(amt)
-                                        const currentBrandObj = giftCardBrands.find(b => b.brand_code === giftCardBrand)
-                                        if (currentBrandObj && (amt < (currentBrandObj.min_price_in_cents || 0) || amt > (currentBrandObj.max_price_in_cents || 100000))) {
-                                          const firstAvailable = giftCardBrands.find(b => amt >= (b.min_price_in_cents || 0) && amt <= (b.max_price_in_cents || 100000))
-                                          setGiftCardBrand(firstAvailable?.brand_code || "")
-                                        }
-                                      }}
-                                      className={`px-3 py-1 rounded text-sm font-bold transition-all ${giftCardAmount === amt ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
-                                    >
-                                      ${(amt / 100).toFixed(0)}
-                                    </button>
-                                  ))}
-                                </div>
-                              </div>
+                          <p className="text-xs text-gray-500">Your recipient will see a button to request money from your Cash App. No money goes through GreetMe.</p>
 
-                              <div>
-                                <label className="text-xs text-gray-600 block mb-1">Brand</label>
-                                {(() => {
-                                  const filteredBrands = giftCardBrands.filter(b => giftCardAmount >= (b.min_price_in_cents || 0) && giftCardAmount <= (b.max_price_in_cents || 100000))
-                                  return filteredBrands.length > 0 ? (
-                                    <div className="grid grid-cols-3 gap-2 max-h-32 overflow-y-auto">
-                                      {filteredBrands.map((brand) => (
-                                        <button
-                                          key={brand.brand_code}
-                                          type="button"
-                                          onClick={() => setGiftCardBrand(brand.brand_code)}
-                                          className={`p-2 rounded border text-center transition-all ${giftCardBrand === brand.brand_code ? 'border-green-500 bg-green-50 ring-1 ring-green-500' : 'border-gray-200 hover:border-gray-400'}`}
-                                        >
-                                          <img src={brand.image_url} alt={brand.name} className="w-full h-8 object-contain mb-1" />
-                                          <span className="text-[10px] text-gray-700 block truncate">{brand.name}</span>
-                                        </button>
-                                      ))}
-                                    </div>
-                                  ) : (
-                                    <p className="text-xs text-gray-500 italic">No brands available for this amount</p>
-                                  )
-                                })()}
-                              </div>
+                          <div>
+                            <label className="text-xs text-gray-600 block mb-1">Your Cash App Tag</label>
+                            <Input
+                              value={cashGiftCashtag}
+                              onChange={(e) => setCashGiftCashtag(e.target.value.replace(/[^a-zA-Z0-9_$]/g, ''))}
+                              placeholder="$yourcashtag"
+                              className="text-sm"
+                            />
+                          </div>
 
-                              <div>
-                                <label className="text-xs text-gray-600 block mb-1">Recipient Email</label>
-                                <Input
-                                  type="email"
-                                  value={giftCardEmail}
-                                  onChange={(e) => setGiftCardEmail(e.target.value)}
-                                  placeholder="recipient@email.com"
-                                  className="text-sm"
-                                />
-                              </div>
-                            </>
-                          )}
+                          <div>
+                            <label className="text-xs text-gray-600 block mb-1">Gift Amount</label>
+                            <div className="flex gap-2 flex-wrap">
+                              {[5, 10, 15, 20, 25, 50].map((amt) => (
+                                <button
+                                  key={amt}
+                                  type="button"
+                                  onClick={() => setCashGiftAmount(amt)}
+                                  className={`px-3 py-1 rounded text-sm font-bold transition-all ${cashGiftAmount === amt ? 'text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                                  style={cashGiftAmount === amt ? { background: '#00D632' } : {}}
+                                >
+                                  ${amt}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -1296,10 +1267,10 @@ export default function GreetingCardsApp() {
                       <span className="font-bold text-gray-800 text-lg" style={{ fontFamily: "Georgia, serif" }}>
                         Total Due Now: ${((selectedCard?.price || 0) + (youtubeClipEnabled && youtubeResolved ? 0.99 : 0)).toFixed(2)}
                       </span>
-                      {giftCardEnabled && giftCardBrand && giftCardAmount > 0 && (
-                        <div className="mt-2 p-2.5 bg-amber-50 border border-amber-200 rounded-lg">
-                          <p className="text-sm text-amber-800">
-                            <strong>${(giftCardAmount / 100).toFixed(0)} Gift Card</strong> — Your card will be charged ${(giftCardAmount / 100).toFixed(2)} only when the recipient redeems the gift card.
+                      {cashGiftEnabled && cashGiftCashtag && cashGiftAmount > 0 && (
+                        <div className="mt-2 p-2.5 bg-green-50 border border-green-200 rounded-lg">
+                          <p className="text-sm text-green-800">
+                            <strong>${cashGiftAmount} Cash Gift</strong> — Your recipient will get a link to request ${cashGiftAmount} from your Cash App ($<span>{cashGiftCashtag.replace(/^\$/, '')}</span>).
                           </p>
                         </div>
                       )}
