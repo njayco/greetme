@@ -37,7 +37,10 @@ lib/resendClient.ts          - Resend email client (via Replit connector)
 lib/stripeClient.ts          - Stripe client and StripeSync initialization
 lib/initStripe.ts            - Stripe schema migration and webhook setup
 lib/youtubeAddon.ts          - Dynamic YouTube addon Stripe product/price provisioning
-lib/webhookHandlers.ts       - Stripe webhook processing (YouTube clip verification)
+lib/webhookHandlers.ts       - Stripe webhook processing (YouTube clip + gift card fulfillment)
+lib/giftbitClient.ts         - Giftbit API client (brands, campaigns, links)
+app/api/giftbit/brands/      - Gift card brand listing API (cached)
+app/api/giftbit/fulfill/     - Gift card manual fulfillment API
 public/images/               - Card images and assets (incl. gen-* AI images)
 scripts/                     - Generation and seed scripts
 scripts/generate-cards.ts    - AI card generation script (covers + text)

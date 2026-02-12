@@ -103,6 +103,12 @@ export default function GreetingCardsApp() {
   const [youtubeLoading, setYoutubeLoading] = useState(false)
   const [youtubeError, setYoutubeError] = useState("")
   const [youtubeStartTime, setYoutubeStartTime] = useState("0:00")
+  const [giftCardEnabled, setGiftCardEnabled] = useState(false)
+  const [giftCardBrands, setGiftCardBrands] = useState<Array<{ brand_code: string; name: string; image_url: string }>>([])
+  const [giftCardBrand, setGiftCardBrand] = useState<string>("")
+  const [giftCardAmount, setGiftCardAmount] = useState<number>(500)
+  const [giftCardEmail, setGiftCardEmail] = useState("")
+  const [giftCardBrandsLoading, setGiftCardBrandsLoading] = useState(false)
 
   const cardsPerPage = 8
 
@@ -248,6 +254,10 @@ export default function GreetingCardsApp() {
     setYoutubeResolved(null)
     setYoutubeError("")
     setYoutubeStartTime("0:00")
+    setGiftCardEnabled(false)
+    setGiftCardBrand("")
+    setGiftCardAmount(500)
+    setGiftCardEmail("")
   }
 
   const parseTimeToSeconds = (time: string): number => {
@@ -333,11 +343,17 @@ export default function GreetingCardsApp() {
       return
     }
 
+    if (giftCardEnabled && (!giftCardBrand || !giftCardEmail || !giftCardAmount)) {
+      alert('Please fill in all gift card details (brand, amount, and recipient email).')
+      return
+    }
+
     const cardPrice = selectedCard.price || 0
     const stripeProduct = stripeProducts[selectedCard.id.toString()]
     const needsClipPayment = youtubeClipEnabled && youtubeResolved
     const needsCardPayment = cardPrice > 0 && stripeProduct?.priceId
-    const needsCheckout = needsCardPayment || needsClipPayment
+    const needsGiftCardPayment = giftCardEnabled && giftCardBrand && giftCardEmail && giftCardAmount > 0
+    const needsCheckout = needsCardPayment || needsClipPayment || needsGiftCardPayment
 
     if (needsCheckout) {
       setIsProcessingPayment(true)
@@ -347,6 +363,15 @@ export default function GreetingCardsApp() {
           to: formData.to,
           note: formData.personalNote,
           youtube: getYoutubeShareData(),
+        }
+        if (needsGiftCardPayment) {
+          const selectedBrandObj = giftCardBrands.find(b => b.brand_code === giftCardBrand)
+          shareBody.giftCard = {
+            brandCode: giftCardBrand,
+            brandName: selectedBrandObj?.name || giftCardBrand,
+            amountCents: giftCardAmount,
+            recipientEmail: giftCardEmail,
+          }
         }
         if (selectedCard.isCustomCard && selectedCard.customCardId) {
           shareBody.customCardId = selectedCard.customCardId
@@ -376,6 +401,16 @@ export default function GreetingCardsApp() {
         }
         if (needsCardPayment) {
           checkoutBody.priceId = stripeProduct.priceId
+        }
+        if (needsGiftCardPayment) {
+          const selectedBrandObj = giftCardBrands.find(b => b.brand_code === giftCardBrand)
+          checkoutBody.giftCard = {
+            brandCode: giftCardBrand,
+            brandName: selectedBrandObj?.name || giftCardBrand,
+            amountCents: giftCardAmount,
+            recipientEmail: giftCardEmail,
+            recipientName: formData.to,
+          }
         }
 
         const response = await fetch('/api/checkout', {
@@ -1142,9 +1177,97 @@ export default function GreetingCardsApp() {
                       )}
                     </div>
 
+                    <div className="mt-4 p-3 rounded-lg border border-gray-200 bg-white/50">
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="font-bold text-gray-800 text-sm" style={{ fontFamily: "Georgia, serif" }}>
+                          Add a Gift Card
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const next = !giftCardEnabled
+                            setGiftCardEnabled(next)
+                            if (next && giftCardBrands.length === 0) {
+                              setGiftCardBrandsLoading(true)
+                              fetch('/api/giftbit/brands')
+                                .then(r => r.json())
+                                .then(data => {
+                                  setGiftCardBrands(data.brands || [])
+                                  if (data.brands?.length > 0) setGiftCardBrand(data.brands[0].brand_code)
+                                })
+                                .catch(() => {})
+                                .finally(() => setGiftCardBrandsLoading(false))
+                            }
+                            if (!next) {
+                              setGiftCardBrand("")
+                              setGiftCardAmount(500)
+                              setGiftCardEmail("")
+                            }
+                          }}
+                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${giftCardEnabled ? 'bg-green-500' : 'bg-gray-300'}`}
+                        >
+                          <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${giftCardEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
+                        </button>
+                      </div>
+
+                      {giftCardEnabled && (
+                        <div className="space-y-3 mt-3">
+                          {giftCardBrandsLoading ? (
+                            <p className="text-sm text-gray-500">Loading gift card brands...</p>
+                          ) : (
+                            <>
+                              <div>
+                                <label className="text-xs text-gray-600 block mb-1">Brand</label>
+                                <div className="grid grid-cols-3 gap-2 max-h-32 overflow-y-auto">
+                                  {giftCardBrands.map((brand) => (
+                                    <button
+                                      key={brand.brand_code}
+                                      type="button"
+                                      onClick={() => setGiftCardBrand(brand.brand_code)}
+                                      className={`p-2 rounded border text-center transition-all ${giftCardBrand === brand.brand_code ? 'border-green-500 bg-green-50 ring-1 ring-green-500' : 'border-gray-200 hover:border-gray-400'}`}
+                                    >
+                                      <img src={brand.image_url} alt={brand.name} className="w-full h-8 object-contain mb-1" />
+                                      <span className="text-[10px] text-gray-700 block truncate">{brand.name}</span>
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+
+                              <div>
+                                <label className="text-xs text-gray-600 block mb-1">Amount</label>
+                                <div className="flex gap-2 flex-wrap">
+                                  {[500, 1000, 1500, 2000, 2500, 5000].map((amt) => (
+                                    <button
+                                      key={amt}
+                                      type="button"
+                                      onClick={() => setGiftCardAmount(amt)}
+                                      className={`px-3 py-1 rounded text-sm font-bold transition-all ${giftCardAmount === amt ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                                    >
+                                      ${(amt / 100).toFixed(0)}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+
+                              <div>
+                                <label className="text-xs text-gray-600 block mb-1">Recipient Email</label>
+                                <Input
+                                  type="email"
+                                  value={giftCardEmail}
+                                  onChange={(e) => setGiftCardEmail(e.target.value)}
+                                  placeholder="recipient@email.com"
+                                  className="text-sm"
+                                />
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
                     <div className="text-left mb-5 mt-4">
                       <span className="font-bold text-gray-800 text-lg" style={{ fontFamily: "Georgia, serif" }}>
-                        Total: ${((selectedCard?.price || 0) + (youtubeClipEnabled && youtubeResolved ? 0.99 : 0)).toFixed(2)}
+                        Total: ${((selectedCard?.price || 0) + (youtubeClipEnabled && youtubeResolved ? 0.99 : 0) + (giftCardEnabled && giftCardBrand ? giftCardAmount / 100 : 0)).toFixed(2)}
                       </span>
                     </div>
 

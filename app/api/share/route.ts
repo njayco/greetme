@@ -13,7 +13,7 @@ function generateShortId(): string {
 
 export async function POST(request: NextRequest) {
   try {
-    const { cardId, customCardId, from, to, note, youtube } = await request.json();
+    const { cardId, customCardId, from, to, note, youtube, giftCard } = await request.json();
 
     if (!customCardId && !cardId) {
       return NextResponse.json({ error: 'cardId or customCardId is required' }, { status: 400 });
@@ -73,10 +73,20 @@ export async function POST(request: NextRequest) {
       attempts++;
     }
 
+    let giftCardBrand: string | null = null;
+    let giftCardAmountCents: number | null = null;
+    let giftCardRecipientEmail: string | null = null;
+
+    if (giftCard && giftCard.brandCode && giftCard.amountCents && giftCard.recipientEmail) {
+      giftCardBrand = String(giftCard.brandCode).trim().slice(0, 100);
+      giftCardAmountCents = Math.max(100, Math.floor(Number(giftCard.amountCents)));
+      giftCardRecipientEmail = String(giftCard.recipientEmail).trim().slice(0, 255);
+    }
+
     await client.query(
-      `INSERT INTO shared_cards (id, card_id, sender_name, recipient_name, personal_note, custom_card_id, youtube_video_id, youtube_url, youtube_title, youtube_start_seconds, youtube_end_seconds, youtube_clip_enabled)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
-      [shortId, numericCardId, senderName, recipientName, personalNote, safeCustomCardId, youtubeVideoId, youtubeUrl, youtubeTitle, youtubeStartSeconds, youtubeEndSeconds, false]
+      `INSERT INTO shared_cards (id, card_id, sender_name, recipient_name, personal_note, custom_card_id, youtube_video_id, youtube_url, youtube_title, youtube_start_seconds, youtube_end_seconds, youtube_clip_enabled, gift_card_brand, gift_card_amount_cents, gift_card_recipient_email, gift_card_status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`,
+      [shortId, numericCardId, senderName, recipientName, personalNote, safeCustomCardId, youtubeVideoId, youtubeUrl, youtubeTitle, youtubeStartSeconds, youtubeEndSeconds, false, giftCardBrand, giftCardAmountCents, giftCardRecipientEmail, giftCardBrand ? 'pending' : null]
     );
 
     await client.end();
