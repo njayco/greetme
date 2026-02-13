@@ -1,0 +1,70 @@
+Here’s a **revised, tighter Replit prompt** that focuses specifically on making the **saved signature render at the bottom of the BACK page** (not the centerfold), with the **printed sender name under it**, and keeping everything consistent with your current GreetMe structure.
+
+```text
+You are working inside my existing GreetMe digital greeting card app (Next.js/React). I already added a Signature feature during card creation (draw/upload + saved signatureUrl). Now I need you to PLAN + IMPLEMENT the FINAL RENDERING so the signature appears at the BOTTOM of the BACK page of the card (not under the personal note in the centerfold).
+
+CONTEXT
+- The card has tabs/steps: Cover, Centerfold, Back.
+- The Back page currently shows a “From / To” style layout (and/or a small back message area).
+- I want the saved signature image + printed sender name to render at the very bottom of the Back page, inside the white card area, aligned like a real signature.
+
+GOALS
+1) Rendering location:
+   - Signature must appear ONLY on the Back page view (the “Back” tab/section/page).
+   - Place it at the bottom of the white card panel (visually pinned to the bottom), not floating mid-content.
+   - Do NOT place it on Centerfold.
+
+2) Visual layout:
+   - Signature block should be aligned right by default (like signing a card).
+   - Signature image max width: 220px (responsive on mobile), keep aspect ratio.
+   - Printed name under the signature (e.g., “Najee Jeremiah” or the Sender name), slightly smaller than normal text.
+   - Add spacing so it looks clean:
+     - ~16–24px padding from bottom of the card
+     - ~8px gap between signature image and printed name
+
+3) Data:
+   - Use signatureUrl from the card model.
+   - Printed name should come from the sender name field already in the card (ex: senderName / fromName). If there isn’t a dedicated senderName field, create one and ensure it’s saved (it already exists in UI as “From:” so reuse that value).
+   - If no signatureUrl, show nothing (don’t leave empty boxes).
+
+IMPLEMENTATION DETAILS
+A) Find the Back page component/layout:
+   - Identify the React component that renders the Back page (Back tab).
+   - Ensure the Back page container is a flex column so we can pin signature to bottom:
+       - Outer card content: display:flex; flex-direction:column; height:100%;
+       - Content area above can grow (flex:1)
+       - Signature block goes at the end and sits at bottom.
+
+B) Add a SignatureBlock component (recommended):
+   - components/SignatureBlock.tsx
+   - Props: signatureUrl?: string | null, printedName?: string
+   - Renders:
+       - <img src={signatureUrl} … />
+       - <div>{printedName}</div>
+   - Only render if signatureUrl exists.
+
+C) Styling rules:
+   - Use Tailwind if project uses it; otherwise use existing CSS modules.
+   - Ensure it doesn’t overflow the card.
+   - Works on iOS Safari + Android Chrome.
+
+D) Checklist / QA:
+   - Test with: signatureUrl present + senderName present -> shows signature at bottom-right with printed name under.
+   - Test with: signatureUrl missing -> nothing shows.
+   - Test on mobile: the signature scales down and remains anchored at bottom.
+   - Test on different card lengths: the signature stays at bottom even if the back message content is short/long.
+
+DELIVERABLES
+- A short PLAN first (where you’ll add code, how you’ll anchor it, what fields you’ll use).
+- Then implement code changes.
+- After implementation, tell me:
+  - Which file controls the Back page rendering
+  - How to test it in the UI (exact steps)
+  - Any edge cases you handled
+
+IMPORTANT
+- Reuse my existing “From” name (sender) instead of asking for a new field unless it truly doesn’t exist.
+- Do not change the overall look of the card—just add the signature block at the bottom of the Back page.
+```
+
+If you want, I can also rewrite this prompt to match your **exact file names/components** once you paste (or screenshot) the file tree around the card renderer (like `CardViewer.tsx`, `CardPreview.tsx`, `BackPage.tsx`, etc.).
