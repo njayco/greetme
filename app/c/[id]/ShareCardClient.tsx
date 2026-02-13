@@ -291,9 +291,9 @@ function CashGiftSection({ cashGift, senderName }: { cashGift: CashGiftData; sen
   return (
     <div className="mt-4 p-4 rounded-xl text-center" style={{ background: 'linear-gradient(135deg, #00D632 0%, #00B83F 100%)' }}>
       <p className="text-white font-bold text-lg mb-1" style={{ fontFamily: 'Georgia, serif' }}>
-        {senderName} sent you ${cashGift.amount}!
+        {senderName} wants to send you a Gift!
       </p>
-      <p className="text-white/90 text-xs mb-3">via Cash App to $<span className="font-semibold">{sanitizedTag}</span></p>
+      <p className="text-white/90 text-xs mb-3">Request ${cashGift.amount} from $<span className="font-semibold">{sanitizedTag}</span> via Cash App</p>
 
       <a
         href={cashAppUrl}
