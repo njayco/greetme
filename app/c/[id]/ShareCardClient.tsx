@@ -54,6 +54,7 @@ type Props = {
   giftCard?: GiftCardData | null;
   cashGift?: CashGiftData | null;
   voiceNoteUrl?: string | null;
+  signatureUrl?: string | null;
 };
 
 /**
@@ -395,7 +396,7 @@ function CashGiftSection({ cashGift, senderName }: { cashGift: CashGiftData; sen
   );
 }
 
-export default function ShareCardClient({ cardData, senderName, recipientName, personalNote, categoryName, youtubeClip, giftCard, cashGift, voiceNoteUrl }: Props) {
+export default function ShareCardClient({ cardData, senderName, recipientName, personalNote, categoryName, youtubeClip, giftCard, cashGift, voiceNoteUrl, signatureUrl }: Props) {
   const [cardView, setCardView] = useState<'cover' | 'centerfold' | 'back'>('cover');
   const [syncedPlaying, setSyncedPlaying] = useState<boolean | null>(null);
   const [voiceNoteFinished, setVoiceNoteFinished] = useState(false);
@@ -553,8 +554,8 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
       // Back of the card — closing message with sender/recipient info
       case 'back':
         return (
-          <div className="aspect-[3/4] bg-gradient-to-b from-gray-50 to-white rounded-lg shadow-2xl flex items-center justify-center p-6 border border-gray-200">
-            <div className="text-center w-full">
+          <div className="aspect-[3/4] bg-gradient-to-b from-gray-50 to-white rounded-lg shadow-2xl flex flex-col p-6 border border-gray-200">
+            <div className="flex-1 text-center w-full">
               <div className="mb-6 p-5 bg-white rounded-lg shadow-sm border border-gray-100">
                 <p className="text-lg text-gray-700 font-medium mb-5" style={{ fontFamily: "Georgia, serif" }}>{cardData.back}</p>
                 <div className="space-y-4 text-left">
@@ -570,6 +571,16 @@ export default function ShareCardClient({ cardData, senderName, recipientName, p
               </div>
               <div className="text-xs text-gray-500 italic" style={{ fontFamily: "Georgia, serif" }}>GreetMe 2024</div>
             </div>
+            {signatureUrl && (
+              <div className="flex flex-col items-end mt-4 pr-2 pb-2">
+                <img
+                  src={signatureUrl.startsWith('/objects/') ? `/api/uploads/serve?path=${encodeURIComponent(signatureUrl)}` : signatureUrl}
+                  alt="Signature"
+                  className="max-w-[220px] max-h-[80px] object-contain"
+                />
+                <span className="text-sm text-gray-600 mt-2" style={{ fontFamily: "Georgia, serif" }}>{senderName}</span>
+              </div>
+            )}
           </div>
         );
     }

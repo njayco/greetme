@@ -69,6 +69,7 @@ async function getSharedCard(id: string) {
     } : null;
 
     const voiceNoteUrl = row.voice_note_url || null;
+    const signatureUrl = row.signature_url || null;
 
     const giftCard = row.gift_card_brand && row.gift_card_amount_cents ? {
       amountCents: row.gift_card_amount_cents,
@@ -114,6 +115,7 @@ async function getSharedCard(id: string) {
         giftCard,
         cashGift,
         voiceNoteUrl,
+        signatureUrl,
       };
     }
 
@@ -133,6 +135,7 @@ async function getSharedCard(id: string) {
       giftCard,
       cashGift,
       voiceNoteUrl,
+      signatureUrl,
     };
   } catch (error) {
     console.error('Error fetching shared card:', error);
@@ -229,6 +232,7 @@ export default async function SharePage({ params }: Props) {
       giftCard={data.giftCard}
       cashGift={data.cashGift}
       voiceNoteUrl={data.voiceNoteUrl}
+      signatureUrl={data.signatureUrl}
     />
   );
 }

@@ -11,6 +11,7 @@ import { Eye, EyeOff, ChevronLeft, ChevronRight, Copy, Share2, ArrowLeft } from 
 
 import { categoryGroups, cardCategories, type CategoryType, type SubcategoryType } from '@/lib/cardData';
 import VoiceNoteRecorder from '@/components/VoiceNoteRecorder';
+import SignaturePad from '@/components/SignaturePad';
 
 function CloudDecoration({ className = "" }: { className?: string }) {
   return (
@@ -114,6 +115,7 @@ export default function GreetingCardsApp() {
   const [cashGiftEnabled, setCashGiftEnabled] = useState(false)
   const [cashGiftAmount, setCashGiftAmount] = useState<number>(5)
   const [cashGiftCashtag, setCashGiftCashtag] = useState("")
+  const [signatureUrl, setSignatureUrl] = useState<string | null>(null)
 
   const cardsPerPage = 8
 
@@ -316,6 +318,7 @@ export default function GreetingCardsApp() {
         note: formData.personalNote,
         youtube: getYoutubeShareData(),
         voiceNoteUrl: voiceNoteUrl || undefined,
+        signatureUrl: signatureUrl || undefined,
       }
       if (cashGiftEnabled && cashGiftCashtag && cashGiftAmount > 0) {
         shareBody.cashGift = {
@@ -381,6 +384,7 @@ export default function GreetingCardsApp() {
           note: formData.personalNote,
           youtube: getYoutubeShareData(),
           voiceNoteUrl: voiceNoteUrl || undefined,
+          signatureUrl: signatureUrl || undefined,
         }
         if (cashGiftEnabled && cashGiftCashtag && cashGiftAmount > 0) {
           shareBody.cashGift = {
@@ -594,8 +598,8 @@ export default function GreetingCardsApp() {
         )
       case "back":
         return (
-          <div className="aspect-[3/4] bg-gradient-to-b from-gray-50 to-white rounded-lg shadow-2xl flex items-center justify-center p-6 border border-gray-200">
-            <div className="text-center w-full">
+          <div className="aspect-[3/4] bg-gradient-to-b from-gray-50 to-white rounded-lg shadow-2xl flex flex-col p-6 border border-gray-200">
+            <div className="flex-1 text-center w-full">
               <div className="mb-6 p-5 bg-white rounded-lg shadow-sm border border-gray-100">
                 <p className="text-lg text-gray-700 font-medium mb-5" style={{ fontFamily: "Georgia, serif" }}>{card.back}</p>
                 <div className="space-y-4 text-left">
@@ -611,6 +615,16 @@ export default function GreetingCardsApp() {
               </div>
               <div className="text-xs text-gray-500 italic" style={{ fontFamily: "Georgia, serif" }}>GreetMe 2024</div>
             </div>
+            {signatureUrl && (
+              <div className="flex flex-col items-end mt-4 pr-2 pb-2">
+                <img
+                  src={signatureUrl.startsWith('/objects/') ? `/api/uploads/serve?path=${encodeURIComponent(signatureUrl)}` : signatureUrl}
+                  alt="Signature"
+                  className="max-w-[220px] max-h-[80px] object-contain"
+                />
+                <span className="text-sm text-gray-600 mt-2" style={{ fontFamily: "Georgia, serif" }}>{data.from}</span>
+              </div>
+            )}
           </div>
         )
       default:
@@ -1262,6 +1276,8 @@ export default function GreetingCardsApp() {
                         </div>
                       )}
                     </div>
+
+                    <SignaturePad onSignatureChange={setSignatureUrl} />
 
                     <div className="text-left mb-3 mt-4">
                       <span className="font-bold text-gray-800 text-lg" style={{ fontFamily: "Georgia, serif" }}>

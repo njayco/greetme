@@ -13,7 +13,7 @@ function generateShortId(): string {
 
 export async function POST(request: NextRequest) {
   try {
-    const { cardId, customCardId, from, to, note, youtube, giftCard, voiceNoteUrl, cashGift } = await request.json();
+    const { cardId, customCardId, from, to, note, youtube, giftCard, voiceNoteUrl, cashGift, signatureUrl } = await request.json();
 
     if (!customCardId && !cardId) {
       return NextResponse.json({ error: 'cardId or customCardId is required' }, { status: 400 });
@@ -84,6 +84,7 @@ export async function POST(request: NextRequest) {
     }
 
     const safeVoiceNoteUrl = voiceNoteUrl ? String(voiceNoteUrl).trim().slice(0, 500) : null;
+    const safeSignatureUrl = signatureUrl ? String(signatureUrl).trim().slice(0, 500) : null;
 
     let cashGiftAmount: number | null = null;
     let cashGiftCashtag: string | null = null;
@@ -102,9 +103,9 @@ export async function POST(request: NextRequest) {
     }
 
     await client.query(
-      `INSERT INTO shared_cards (id, card_id, sender_name, recipient_name, personal_note, custom_card_id, youtube_video_id, youtube_url, youtube_title, youtube_start_seconds, youtube_end_seconds, youtube_clip_enabled, gift_card_brand, gift_card_amount_cents, gift_card_recipient_email, gift_card_status, voice_note_url, cash_gift_amount, cash_gift_cashtag, cash_gift_status)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)`,
-      [shortId, numericCardId, senderName, recipientName, personalNote, safeCustomCardId, youtubeVideoId, youtubeUrl, youtubeTitle, youtubeStartSeconds, youtubeEndSeconds, false, giftCardBrand, giftCardAmountCents, giftCardRecipientEmail, giftCardBrand ? 'pending' : null, safeVoiceNoteUrl, cashGiftAmount, cashGiftCashtag, cashGiftCashtag ? 'pending' : null]
+      `INSERT INTO shared_cards (id, card_id, sender_name, recipient_name, personal_note, custom_card_id, youtube_video_id, youtube_url, youtube_title, youtube_start_seconds, youtube_end_seconds, youtube_clip_enabled, gift_card_brand, gift_card_amount_cents, gift_card_recipient_email, gift_card_status, voice_note_url, cash_gift_amount, cash_gift_cashtag, cash_gift_status, signature_url)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)`,
+      [shortId, numericCardId, senderName, recipientName, personalNote, safeCustomCardId, youtubeVideoId, youtubeUrl, youtubeTitle, youtubeStartSeconds, youtubeEndSeconds, false, giftCardBrand, giftCardAmountCents, giftCardRecipientEmail, giftCardBrand ? 'pending' : null, safeVoiceNoteUrl, cashGiftAmount, cashGiftCashtag, cashGiftCashtag ? 'pending' : null, safeSignatureUrl]
     );
 
     await client.end();
