@@ -16,6 +16,7 @@ Created by **Najee Jeremiah**
 - [Voice Notes](#voice-notes)
 - [Greet Me for Artists](#greet-me-for-artists)
 - [Cash Gifting via Cash App](#cash-gifting-via-cash-app)
+- [Personal Signature](#personal-signature)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Card Categories](#card-categories)
@@ -40,6 +41,7 @@ Created by **Najee Jeremiah**
 - **Greet Me Clips** — attach a 30-second YouTube audio clip to any card for $0.99, powered by YouTube
 - **Voice Notes** — record or upload a personal voice message (up to 30 seconds) that plays alongside the YouTube clip with synced playback controls
 - **Cash Gifting via Cash App** — attach a cash gift ($5–$50) to any card; recipient requests money directly through Cash App
+- **Personal Signature** — draw your signature on the card with touch/mouse or upload an image; it appears on the Back page like a real greeting card
 - **Stripe payment integration** for premium Valentine's Day cards ($0.99 - $2.99), personal artist cards ($4.99), and audio clip add-ons ($0.99)
 - **Shareable short links** that work on social media with OG metadata previews
 - **Email confirmations** sent automatically after purchase via Resend
@@ -208,8 +210,8 @@ GreetMe lets senders attach a cash gift to any greeting card. The money is sent 
 
 1. **Enable Cash Gift** - On the Customize screen, toggle "Add Cash Gift" and enter your Cash App $cashtag and select an amount ($5, $10, $15, $25, or $50)
 2. **Send the Card** - The card is sent with the cash gift info attached. No payment is processed through GreetMe for the gift amount
-3. **Recipient Opens Card** - On the Centerfold tab, the recipient sees a green Cash App section with the gift amount and a "Request in Cash App" button
-4. **Request Money** - Tapping the button opens Cash App with the amount and sender's $cashtag pre-filled via deep link. The recipient just taps "Request"
+3. **Recipient Opens Card** - On the Centerfold tab, the recipient sees a green Cash App section saying "{Sender} wants to send you a Gift! Request ${amount} from ${cashtag} via Cash App" with a button to open the sender's Cash App profile
+4. **Request Money** - Tapping the button opens the sender's Cash App profile page, where the recipient can request the gift amount
 5. **Sender Approves** - The sender approves the request in their Cash App
 6. **Confirm Receipt** - The recipient returns to GreetMe and taps "I received it" to confirm
 
@@ -238,10 +240,41 @@ For recipients who don't have Cash App, an expandable help section walks them th
 
 | Component | Details |
 |---|---|
-| **Deep Link Generator** | `lib/cashAppLinks.ts` — Generates Cash App deep link URLs with pre-filled amount, cashtag, and note |
+| **Profile Link Generator** | `lib/cashAppLinks.ts` — Generates Cash App profile URLs for recipients to request money from senders |
 | **Confirmation API** | `POST /api/cashgift/confirm` — Sets `cash_gift_status` to `confirmed` |
 | **Share Page UI** | `CashGiftSection` in `app/c/[id]/ShareCardClient.tsx` — Green Cash App branded section with request button and help guide |
 | **Database Columns** | `cash_gift_amount` (INTEGER), `cash_gift_cashtag` (VARCHAR), `cash_gift_status` (VARCHAR), `cash_gift_confirmed_at` (TIMESTAMP) on `shared_cards` |
+
+---
+
+## Personal Signature
+
+GreetMe lets senders add a personal signature to their greeting card, just like signing a real card. The signature appears at the bottom-right of the Back page alongside the sender's printed name.
+
+### How Signatures Work
+
+1. **Draw or Upload** - On the Customize screen, use the signature pad to draw your signature with your finger (mobile) or mouse (desktop). You can also upload a signature image (PNG, JPG, or WEBP, max 5MB)
+2. **Auto-Upload** - After you stop drawing, the signature is automatically uploaded to Object Storage within 1 second
+3. **Preview** - The signature appears in real-time on the Back tab of the card preview
+4. **Clear or Remove** - Clear the canvas to start over, or remove a saved signature entirely
+5. **Recipient Sees It** - When the recipient opens the card and views the Back tab, the signature and printed sender name appear anchored at the bottom-right of the card
+
+### Signature Display
+
+- Signature image: max 220px wide, maintains aspect ratio
+- Printed name appears below the signature in Georgia serif font
+- Right-aligned to match traditional card signing conventions
+- Only renders when a signature is present (no empty boxes)
+- Responsive on mobile — scales down while staying anchored at bottom
+
+### Technical Details
+
+| Component | Details |
+|---|---|
+| **Signature Pad** | `components/SignaturePad.tsx` — HTML5 Canvas with touch/mouse drawing, file upload option, auto-upload after 1s pause |
+| **Upload API** | `POST /api/signature/upload` — Accepts FormData with `signature` field, stores to Object Storage under `signatures/` |
+| **Storage** | Replit Object Storage under `signatures/` directory, served via `/api/uploads/serve` |
+| **Database Column** | `signature_url` (TEXT, nullable) on `shared_cards` table |
 
 ---
 
@@ -288,6 +321,8 @@ greetme/
 │   │   │   └── [id]/route.ts        # Gift card redemption (charge + fulfill)
 │   │   ├── voice-note/
 │   │   │   └── upload/route.ts      # Voice note upload (Object Storage)
+│   │   ├── signature/
+│   │   │   └── upload/route.ts      # Signature image upload (Object Storage)
 │   │   ├── artists/
 │   │   │   ├── upload/route.ts       # Artist image upload (Object Storage)
 │   │   │   ├── create/route.ts       # Artist card creation with Stripe
@@ -304,6 +339,7 @@ greetme/
 ├── components/                       # shadcn/ui components
 │   ├── YouTubeClipPlayer.tsx        # YouTube clip player with red bar UI & sync
 │   ├── VoiceNoteRecorder.tsx        # Voice note recorder/uploader component
+│   ├── SignaturePad.tsx             # Signature drawing/upload component
 │   └── ui/                           # Button, Card, Input, etc.
 ├── lib/
 │   ├── cardData.ts                   # All card & category definitions
